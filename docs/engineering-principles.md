@@ -14,7 +14,7 @@ These one word statements are used to not only capture the qualities we strive f
 ## Principles
 ### The Principle of Least Authority
 
-Provide application code the absolute minimal amount of authority required to perform it's essential functions. Wherever appropriate, break down large methods with broad authority into smaller functions with minimal authority. Minimizing what a method *can* do reduces the scope of what could possibly go wrong. When something does go wrong, small isolated methods, written with the least amount of authority required, are easier to troubleshoot.
+Provide application code the absolute minimal amount of authority required to perform its essential functions. Wherever appropriate, break down large methods with broad authority into smaller functions with minimal authority. Minimizing what a method *can* do reduces the scope of what could possibly go wrong. When something does go wrong, small isolated methods, written with the least amount of authority required, are easier to troubleshoot.
 
 ### The Principle of Core Purity
 
