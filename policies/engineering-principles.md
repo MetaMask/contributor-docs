@@ -5,10 +5,9 @@ Engineering principles define the core tenets and beliefs that the engineering t
 These one word statements are used to not only capture the qualities we strive for in our software, but also prioritizes those values. Keep in mind that being the last value in this list does not imply it is of no importance, it is still more important than all of the other qualities not mentioned here. 
 1. Security
 2. Stability
-3. Safety
-4. Privacy
-5. Maintainability
-6. Usability
+3. Privacy
+4. Maintainability
+5. Usability
 
 
 ## Principles
@@ -18,7 +17,7 @@ Provide application code the absolute minimal amount of authority required to pe
 
 ### The Principle of Code Purity
 
-Whenever possible prefer small, pure functions. Pure functions are those that given the same inputs will always return the same output, and that have no side effects. When designing application architecture, the ideal solution will include a layer wherein side effects and mutation (imperative code) are encapsulated, and the majority of the application code should be pure. There may be different imperative code layers for different aspects of the application. For example, 
+Whenever possible prefer pure, functional code over imperative code. Pure code is free of side effects, and will return the same output given the same inputs. Imperative code is code that produces side effects, such as mutation or state changes. Imperative code is not avoidable but we should strive to keep as much of our application logic pure as possible. 
 
 
 ### The Principle of Incremental Change
@@ -44,5 +43,8 @@ We should prioritize fixing bugs and improving stability over creating new featu
 
 ### The Principle of Relability
 
-We provide external facing APIs that developers rely upon to build out their products. Every change we make to those APIs must be analyzed for potentially breaking functionality of the apps in our ecosystem. When we make breaking changes we are creating work for countless other organizations and individuals, and only by their good graces will they make the requested changes. We must view these breaking changes as a potential reset of our momentum within the ecosystem. Breaking changes should only be made for critical reasons of security or stability that cannot be made by any other means. Furthermore, a generous migration period must be planned and ecosystem outreach must occur to ensure a smooth transition.
+We provide a pleathora of features in our applications that users expect to be supported, and that they rely upon for their day to day activities. We must handle feature deprecation gracefully, and inform users well in advance that a feature is being sunsetted or replaced. If we remove features or experiences from our product without warning it will alienate our users and cause them to seek out other solutions. 
 
+We also provide external facing APIs that app developers utilize to build their products. Every change we make to thes APIs must be analyzed for potentially breaking functionality of the apps in our ecosystem. When we make breaking changes we are creating work for countless other organizations and individuals, and only by their good graces will they make the requested changes. We must view these breaking changes as a potential reset of our momentum within the ecosystem. Breaking changes should only be made for critical reasons of security or stability that cannot be made by any other means.
+
+When removing a feature or making a breaking change to an API is necessary, then a generous migration period must be planned and ecosystem or user outreach must occur to ensure a smooth transition.
