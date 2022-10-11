@@ -16,9 +16,9 @@ These one word statements are used to not only capture the qualities we strive f
 
 Provide application code the absolute minimal amount of authority required to perform its essential functions. Wherever appropriate, break down large methods with broad authority into smaller functions with minimal authority. Minimizing what a method *can* do reduces the scope of what could possibly go wrong. When something does go wrong, small isolated methods, written with the least amount of authority required, are easier to troubleshoot.
 
-### The Principle of Core Purity
+### The Principle of Code Purity
 
-Whenever possible prefer small, pure functions. Pure functions are those that given the same inputs will always return the same output, and that have no side effects. Where side effects must occur, keep the core of the application code pure and move imperative methods to the outer edges of the application layer.
+Whenever possible prefer small, pure functions. Pure functions are those that given the same inputs will always return the same output, and that have no side effects. When designing application architecture, the ideal solution will include a layer wherein side effects and mutation (imperative code) are encapsulated, and the majority of the application code should be pure. There may be different imperative code layers for different aspects of the application. For example, 
 
 
 ### The Principle of Incremental Change
@@ -35,14 +35,14 @@ We believe in the right of our users to own their own identity and data. We must
 
 ### The Principle of Auditability
 
-All code contributions must be reviewed thoroughly for code quality, usability and adherence to these principles. Code contributions must be kept as small as possible (see Principle of Incremental Change) to promote auditability. Avoid long running feature branches because they are not auditable, and pose a risk to the stability and security of the product.
+All code contributions must be reviewed thoroughly for code quality, usability and adherence to these principles. Code contributions must be kept as small as possible (see Principle of Incremental Change) to promote auditability. Avoid long running feature branches because they are not auditable, and pose a risk to the stability and security of the product. We should engage in self-audit of code that we contribute, as well as actively engage in code review of others' pull requests to ensure best practices, and engineering principles are reflected in the work.
 
 
 ### The Principle of "Be Methodical and Fix Things"
 
 We should prioritize fixing bugs and improving stability over creating new features whenever possible. All code generates new bugs and builds technical debt, this is inevitable. However, if we focus on building our features with stability in mind and throw out the "Move Fast and Break Things" mentality of most web 2.0 applications we can minimize the amount of bugs we introduce. Furthermore, whenever bugs are known to exist we should expend the necessary energy to remedy them. 
 
-### The Principle of Ecosystem Momentum
+### The Principle of Relability
 
 We provide external facing APIs that developers rely upon to build out their products. Every change we make to those APIs must be analyzed for potentially breaking functionality of the apps in our ecosystem. When we make breaking changes we are creating work for countless other organizations and individuals, and only by their good graces will they make the requested changes. We must view these breaking changes as a potential reset of our momentum within the ecosystem. Breaking changes should only be made for critical reasons of security or stability that cannot be made by any other means. Furthermore, a generous migration period must be planned and ecosystem outreach must occur to ensure a smooth transition.
 
