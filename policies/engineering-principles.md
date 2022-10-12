@@ -41,7 +41,7 @@ All code contributions must be reviewed thoroughly for code quality, usability a
 
 We should prioritize fixing bugs and improving stability over creating new features whenever possible. All code generates new bugs and builds technical debt, this is inevitable. However, if we focus on building our features with stability in mind and throw out the "Move Fast and Break Things" mentality of most web 2.0 applications we can minimize the amount of bugs we introduce. Furthermore, whenever bugs are known to exist we should expend the necessary energy to remedy them. 
 
-### The Principle of Relability
+### The Principle of Reliability
 
 We provide a pleathora of features in our applications that users expect to be supported, and that they rely upon for their day to day activities. We must handle feature deprecation gracefully, and inform users well in advance that a feature is being sunsetted or replaced. If we remove features or experiences from our product without warning it will alienate our users and cause them to seek out other solutions. 
 
