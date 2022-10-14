@@ -9,6 +9,7 @@ These are the qualities that we strive for in our software. (These values aren't
 * Privacy
 * Maintainability
 * Usability
+* Transparency
 
 
 ## Principles
@@ -30,8 +31,12 @@ We believe in the right of our users to own their own identity and data. We must
 
 ### The Principle of Auditability
 
-All code contributions must be reviewed thoroughly for code quality, usability and adherence to these principles. Code contributions must be kept as small as possible (see Principle of Incremental Change) to promote auditability. Avoid long running feature branches because they are not auditable, and pose a risk to the stability and security of the product. We should engage in self-audit of code that we contribute, as well as actively engage in code review of others' pull requests to ensure best practices, and engineering principles are reflected in the work.
+As we are committed to providing a high level of security and privacy within our product, we must also maintain a auditable, publically accessible, and transparent codebase. We musn't ask our users to trust our products implicitly, but instead write code that explicitly illustrates our values. In order for our codebase to be easily auditable, our code must have the following qualities: 
 
+1. Readability - Our code should be easily read, and be free of obfuscation or subterfuge.
+2. Consistency - Our code should follow consistent standards to assist auditors in tracing code paths across multiple repositories or code from varying authors. 
+3. Usability - Our code must maintain a standard of high quality and usability, and reflect the qualities listed in the values section above.
+4. Traceability - Our code should have a public record of changes made, with details about why the change was made.
 
 ### The Principle of "Be Methodical and Fix Things"
 
