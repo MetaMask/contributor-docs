@@ -18,7 +18,7 @@ Provide application code the absolute minimal amount of authority required to pe
 
 ### The Principle of Code Purity
 
-Whenever possible prefer pure, functional code over imperative code. Pure code is free of side effects, and will return the same output given the same inputs. Imperative code is code that produces side effects, such as mutation or state changes. Imperative code is not avoidable but we should strive to keep as much of our application logic pure as possible. 
+Whenever possible prefer pure, functional code over imperative code. Pure code is free of side effects, and will return the same output given the same inputs. Imperative code is code that produces side effects, such as mutation or state changes. Imperative code is not avoidable but we should strive to keep as much of our application logic as pure as possible. 
 
 
 ### The Principle of Incremental Change
