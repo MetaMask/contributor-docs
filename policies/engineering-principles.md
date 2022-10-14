@@ -26,7 +26,7 @@ To minimize the risk to the stability and security of the application, changes t
 
 ### The Principle of Incremental Decentralization
 
-We may sometimes ship with centralized services by default, but if we must, users should be able to opt out of any of these during onboarding, ideally easily swapping them out for decentralized alternatives. When we build features that rely upon centralized services we must build them in such a way where the experience isn't completely broken when the service is disrupted. We are trying to build a decentralized future and we must make choices that move us directionally towards those goals.
+We are trying to build a decentralized future and we must make choices that move us directionally towards those goals. This means that users should be able to swap centralized services out for decentralized alternatives. Additionally, when we build features that rely upon centralized services we must build them in such a way where the experience isn't completely broken when the service is disrupted. 
 
 ### The Principle of Self-Sovereign Identity
 
