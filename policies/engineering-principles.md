@@ -28,7 +28,7 @@ To minimize the risk to the stability and security of the application, changes t
 
 We may sometimes ship with centralized services by default, but if we must, users should be able to opt out of any of these during onboarding, ideally easily swapping them out for decentralized alternatives. When we build features that rely upon centralized services we must build them in such a way where the experience isn't completely broken when the service is disrupted. We are trying to build a decentralized future and we must make choices that move us directionally towards those goals.
 
-### The Principle of Self-Soverign Identity
+### The Principle of Self-Sovereign Identity
 
 We believe in the right of our users to own their own identity and data. We must go to great lengths to protect that right. Where we have features or services that might infringe upon that right we must treat those features as opt in, not opt out. When we do build features that make user data known to us we must not collect any personally identifiable information, and any data that can be tied to any chain must be collected in an anonymity protecting way. This principle must be extended to cover all third party code as well.
 
