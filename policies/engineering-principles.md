@@ -1,5 +1,5 @@
 # Engineering Principles
-Engineering principles define the core tenets and beliefs that the engineering team and all contributors are expected to keep front of mind. These tenets are meant to reflect the values of the organization. Principles typically come in the form of punchy one line statements, but a great deal of depth can be written on each one to further inform of the intent of the statement.
+Engineering principles define the core tenets and beliefs that the engineering team and all contributors are expected to keep front of mind. These tenets are meant to reflect the values of the organization.
 
 ## Core Engineering Values
 These are the qualities that we strive for in our software. (These values aren't ranked, but are all of equal importance.)
