@@ -16,11 +16,6 @@ These are the qualities that we strive for in our software. (These values aren't
 
 Provide application code the absolute minimal amount of authority required to perform its essential functions. Wherever appropriate, break down large methods with broad authority into smaller functions with minimal authority. Minimizing what a method *can* do reduces the scope of what could possibly go wrong. When something does go wrong, small, isolated methods, written with the least amount of authority required, are easier to troubleshoot.
 
-### The Principle of Code Purity
-
-Whenever possible prefer pure, functional code over imperative code. Pure code is free of side effects, and will return the same output given the same inputs. Imperative code is code that produces side effects, such as mutation or state changes. Imperative code is not avoidable but we should strive to keep as much of our application logic as pure as possible. 
-
-
 ### The Principle of Incremental Change
 
 To minimize the risk to the stability and security of the application, changes to the code should be incremental and as small as possible. Large changes to the codebase become difficult to review effectively and make the commit history less itemized. Furthermore, incremental change promotes better test coverage and makes it easier to require tests to cover the introduced changes.
