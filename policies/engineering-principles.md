@@ -44,7 +44,7 @@ We should prioritize fixing bugs and improving stability over creating new featu
 
 ### The Principle of Reliability
 
-We provide a plethora of features in our applications that users expect to be supported, and that they rely upon for their day to day activities. We must handle feature deprecation gracefully, and inform users well in advance that a feature is being sunsetted or replaced. If we remove features or experiences from our product without warning it will alienate our users and cause them to seek out other solutions. 
+We provide a plethora of features in our applications that users expect to be supported, and that they rely upon for their day-to-day activities. We must handle feature deprecation gracefully, and inform users well in advance that a feature is being sunsetted or replaced. If we remove features or experiences from our product without warning it will alienate our users and cause them to seek out other solutions. 
 
 We also provide external facing APIs that app developers utilize to build their products. Every change we make to these APIs must be analyzed for potentially breaking functionality of the apps in our ecosystem. When we make breaking changes we are creating work for countless other organizations and individuals, and only by their good graces will they make the requested changes. We must view these breaking changes as a potential reset of our momentum within the ecosystem. Breaking changes should only be made for critical reasons of security or stability that cannot be made by any other means.
 
