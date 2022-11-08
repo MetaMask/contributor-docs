@@ -27,7 +27,7 @@ We are trying to build a decentralized future and we must make choices that move
 
 ### The Principle of Self-Sovereign Identity
 
-We believe in the right of our users to own their own identity and data. We must go to great lengths to protect that right. Where we have features or services that might infringe upon that right we must treat those features as opt in, not opt out. When we do build features that make user data known to us we must not collect any personally identifiable information, and any data that can be tied to any chain must be collected in an anonymity protecting way. This principle must be extended to cover all third party code as well.
+We believe in the right of our users to own their own identity and data. We must go to great lengths to protect that right. Where we have features or services that might infringe upon that right, we must treat those features as opt-in, not opt-out. When we do build features that make user data known to us, we must not collect any personally identifiable information, and any data that can be tied to any chain must be collected in an anonymity-protecting way. This principle must be extended to cover all third-party code as well.
 
 ### The Principle of Auditability
 
