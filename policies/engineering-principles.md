@@ -31,7 +31,7 @@ We believe in the right of our users to own their own identity and data. We must
 
 ### The Principle of Auditability
 
-As we are committed to providing a high level of security and privacy within our product, we must also maintain a auditable, publically accessible, and transparent codebase. We musn't ask our users to trust our products implicitly, but instead write code that explicitly illustrates our values. In order for our codebase to be easily auditable, our code must have the following qualities: 
+As we are committed to providing a high level of security and privacy within our product, we must also maintain an auditable, publically accessible, and transparent codebase. We mustn't ask our users to trust our products implicitly, but instead, write code that explicitly illustrates our values. In order for our codebase to be easily auditable, our code must have the following qualities: 
 
 1. Readability - Our code should be easily read, and be free of obfuscation or subterfuge.
 2. Consistency - Our code should follow consistent standards to assist auditors in tracing code paths across multiple repositories or code from varying authors. 
