@@ -8,9 +8,9 @@ This document is not only a set of guidelines, but also a template for other gui
 
 Guidelines may differ in how closely they are intended to be followed. To designate the importance of a guideline, include an emoji in its header to assign it to one of three categories:
 
-1. **🙏 (Essential):** These are guidelines that we really want everyone to follow. There shouldn't be a reason not to follow such a guideline, but anyone who feels that it should be changed or removed is free to start a discussion in a pull request.
-2. **🌳 (Strongly Recommended):** These are guidelines that everyone ought to try to follow. Teams or projects may opt to bypass or change them, however, if they have a good reason to do so.
-3. **💡 (Recommended):** These are guidelines that have multiple alternatives (because each is arbitrary relative to one another). When you are writing such a guideline, enumerate these alternatives and suggest one of them for the reader to follow.
+1. **🙏 (Standard):** These are guidelines that it really behooves everyone to follow. There shouldn't be a reason not to follow them, but anyone who feels that a guideline should be changed or removed should start a discussion in a pull request.
+2. **🌳 (Recommended):** These are guidelines that everyone ought to follow, though teams or projects may opt to bypass or change them if they have a good reason to do so.
+3. **💡 (Suggested):** These are guidelines that offer one way to solve a problem among multiple, equally valid alternatives. When you are writing such a guideline, enumerate these alternatives and suggest one of them for the reader to follow.
 
 ## 🙏 Be direct
 
@@ -24,7 +24,7 @@ Remove extraneous language in both the guideline itself and the elaboration (see
 
 If a discussion exists in Slack or GitHub which spawned your guideline, link to that discussion. Or, if a book, blog post, or related work exists which can help to shine light on your guideline's utility, link to the resource.
 
-Although not strictly necessary for arbitrary guidelines — where the problems they are solving have multiple possible solutions and none of the solutions have a significant advantage over the other — or for axiomatic guidelines — where the values they express are assumed to be good, such that the absence of these values is assumed to be bad — including a context or rationale with your guideline is still helpful for onboarding.
+Although not strictly necessary for arbitrary guidelines (which aim to solve problems with multiple, equal-advantage solutions) or for axiomatic guidelines (which abide by values assumed to be good over those assumed to be bad), including a context or rationale with your guideline is still helpful for onboarding.
 
 Here is an example:
 
