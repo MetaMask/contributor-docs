@@ -7,41 +7,41 @@ The secure developmet lifecycle describes the approach that is used to define, d
 This lifecycle is intended to be used by software teams including product managers, designers, developers and quality assurance to develop secure software products.
 
 ## Policy
-This lifecycle integrates secruity into all aspects of application software development which is comprized of seven phases. 
+This lifecycle integrates secruity into all aspects of application software development which is comprized of six phases. 
 
 1. Requirements Gathering and Planning:
-   - Identify feature scope, goals, and resources required for both development and security testing.
-   - Define functional and security requirements for the feature.
-      - Consider security aspects such as (//TODO add ref) core engineering principles, authentication, data encryption and secure communication protocols.
+- Identify the scope, goals, and necessary resources for development
+- Define functional and security requirements for the feature 
+    - Considering core engineering principles (link)
+    - Security controls such as authentication, data encryption, and secure communication protocols
 
 2. Design:
-   - Create a feature architecture that incorporates security controls identified. 
-   - Perform threat modeling to identify potential risks and design appropriate countermeasures.
-   - Document design decisions related to security controls and their implementation.
+- Create a feature description that incorporates identified security controls and meet definition of ready (link)
+- Perform threat modeling to identify potential risks and design appropriate countermeasures
+- Document design decisions, security controls, implementation and verificatio
 
 3. Development:
-   - Follow coding standards and secure coding practices (//TODO add ref).
-   - Implement feature and security controls according to the design.
-   - Conduct code reviews to identify and fix issues.
-   - Feature passes automated security testing checks in the development process.
+- Adhere to coding standards and secure coding practices (link)
+- Implement features and security controls according to the design
+- Conduct code reviews to identify and address issues
+- Ensure automated code quality and security testing checks are passing prior to testing
 
-4. Testing:
-   - Perform functional testing to ensure the application meets the desired requirements.
-   - Conduct security testing (e.g. static code analysis, dynamic scanning, and penetration testing).
-   - Address any identified issues or vulnerabilities and validate fixes.
-   - Document testing and results perfomed on feature. 
+3. Testing:
+- Perform functional testing to validate the application meets desired requirements
+- Conduct security testing idenfitied during the planning phase (e.g. static code analysis, dynamic scanning, and penetration testing)
+- Address identified issues and vulnerabilities, and validate the effectiveness of fixes
+- Document testing activities and results for the feature
 
-5. Deployment:
-   - Prepare the application for deployment, considering secure configuration and hardening measures.
-   - Utilize secure deployment practices, such as code signing and secure distribution channels.
-   - Implement mechanisms for secure updates and patches.
+4. Deployment:
+- Prepare the application for deployment, considering secure configuration and hardening measures
+- Utilize secure deployment practices, such as code signing and secure distribution channels
+- Implement mechanisms for secure updates and patches to ensure ongoing security
 
-6. Maintenance and Support:
-   - Establish an incident response plan to handle security breaches or incidents. (//TODO add ref to security team response plan)
-   - Monitor for issues and security vulnerabilities and apply patches or updates as needed (//TODO add ref to bug triage).
-   - Provide ongoing support, including user education on security best practices.
+5. Maintenance and Support:
+- In the event of security breach or incident follow established incident response plan (link)
+- Monitor for issues and security vulnerabilities, and apply patches or updates according to response plan (link)
 
-7. Post-Deployment:
-   - Collect and analyze feedback from users to identify potential security issues.
-   - Incorporate security enhancements and bug fixes into future releases.
-   - Continuously evaluate and improve the security posture of the application.
+6. Post-Deployment:
+- Collect and analyze user feedback to identify potential issues or security vulnerabilities
+- Incorporate security enhancements and bug fixes into future releases
+- Continuously evaluate and improve the security posture of the application
