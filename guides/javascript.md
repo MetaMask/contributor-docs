@@ -174,9 +174,60 @@ async function makeRequest() {
 }
 ```
 
-## `await` promises before `return`ing them
+## `await` promises before returning them
 
-Using `return await` rather than just `return` for an asynchronous operation leads to a more complete stack trace in Node and in Chromium browsers, both of which use the V8 JavaScript engine, because when an asynchronous operation is `await`ed, the engine will remember the function where the `await` occurred, which means that it can place that function on the stack trace (otherwise it would get lost).
+An `async` function that returns a rejected promise created via another `async` function may disappear from the stack trace. This is solved by `await`ing the promise before returning it.
+
+<details><summary><b>Read more</b></summary>
+<br/>
+<p>If you save the following to a file (say, <code>/tmp/example.js</code>) and run it with <code>node</code>:</p>
+
+``` javascript
+async function foo() {
+  return bar();
+}
+
+async function bar() {
+  await Promise.resolve();
+  throw new Error('BEEP BEEP');
+}
+
+foo().catch(error => console.log(error.stack));
+```
+
+then you will see the following in the terminal (as of Node 18):
+
+```
+Error: BEEP BEEP
+    at bar (/private/tmp/example.js:7:9)
+```
+
+Notice how `foo` is completely missing from the stack trace!
+
+However, if you put an `await` before the call to `bar`:
+
+``` javascript
+async function foo() {
+  return await bar();
+}
+
+async function bar() {
+  await Promise.resolve();
+  throw new Error('BEEP BEEP');
+}
+
+foo().catch(error => console.log(error.stack));
+```
+
+you will now see it at the bottom of the stack trace:
+
+```
+Error: BEEP BEEP
+    at bar (/private/tmp/example.js:7:9)
+    at async foo (/private/tmp/example.js:2:10)
+```
+
+</details>
 
 🚫
 
@@ -196,10 +247,12 @@ async function makeRequest() {
 }
 ```
 
+> [!WARNING]\
+> `await`ing promises has a significant performance impact when transpiling to ES6. [**Read more**](https://arthur.place/the-cost-of-return-await).
+
 ### Read more
 
-* <https://v8.dev/blog/fast-async#improved-developer-experience>
-* <https://docs.google.com/document/d/13Sy_kBIJGP0XT34V1CV3nkWya4TwYx9L3Yv45LdGB6Q/edit>
+- ["The cost of return `await`" by Arthur Fiorette](https://arthur.place/the-cost-of-return-await)
 
 ## Use Jest's mock functions instead of Sinon
 
