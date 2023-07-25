@@ -250,10 +250,6 @@ async function makeRequest() {
 > [!WARNING]\
 > `await`ing promises has a significant performance impact when transpiling to ES6. [**Read more**](https://arthur.place/the-cost-of-return-await).
 
-### Read more
-
-- ["The cost of return `await`" by Arthur Fiorette](https://arthur.place/the-cost-of-return-await)
-
 ## Use Jest's mock functions instead of Sinon
 
 Jest incorporates most of the features of Sinon with a slimmer API:
