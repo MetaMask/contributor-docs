@@ -103,15 +103,7 @@ const [isRemoved, setIsRemoved] = useState(false);
 
 ## 💡 Place names of secondary concepts first in boolean variable names
 
-Sometimes a boolean variable describes a subject that's different than the context where the variable is defined:
-
-``` javascript
-const ownedAccount = Boolean(ownedAccountName);
-```
-
-In naming such a variable, there are a couple of different routes you could take.
-
-One way is to always place the verb at the beginning:
+When naming a boolean variable that includes a subject, the previous guideline suggests that you can place the verb at the beginning:
 
 ``` javascript
 const isRecipientOwnedAccount = Boolean(ownedAccountName);
