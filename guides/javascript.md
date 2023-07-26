@@ -114,10 +114,11 @@ However, this naming strategy creates a point of friction for objects, arrays, o
 ``` jsx
 <SenderToRecipient
   isRecipientOwnedAccount={isRecipientOwnedAccount}
+  onClick={onClick}
   recipientName={toName}
   recipientNickname={toNickname}
-  senderName={fromName}
   senderAddress={fromAddress}
+  senderName={fromName}
 />
 ```
 
@@ -134,8 +135,9 @@ This would result in:
   recipientIsOwnedAccount={isRecipientOwnedAccount}
   recipientName={toName}
   recipientNickname={toNickname}
-  senderName={fromName}
+  onClick={onClick}
   senderAddress={fromAddress}
+  senderName={fromName}
 />
 ```
 
