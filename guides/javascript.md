@@ -240,6 +240,3 @@ async function makeRequest() {
   return await response.json();
 }
 ```
-
-> [!WARNING]\
-> `await`ing promises has a significant performance impact when transpiling to ES6. [**Read more**](https://arthur.place/the-cost-of-return-await).
