@@ -1,4 +1,4 @@
-# TypeScript
+# TypeScript Guidelines
 
 These guidelines specifically apply to TypeScript.
 
