@@ -24,26 +24,26 @@ function formatChangelog() {
 }
 ```
 
-For a function or method that returns a boolean, prefix the name with a descriptive verb so that readers don't confuse it with a boolean variable.
+For a function or method that returns a boolean, reword the name to start with a descriptive verb (e.g. `getNOUN` as opposed to `isSTATE`) so that it doesn't collide with a variable that shares its name, which would trigger the ESLint `no-shadow` rule:
 
 🚫
 
 ``` javascript
-class NetworkController {
-  isEIP1559Compatible() {
-    // ...
-  }
+function isEIP1559Compatible() {
+  // ...
 }
+
+const isEIP1559Compatible = isEIP1559Compatible();
 ```
 
 ✅
 
 ``` javascript
-class NetworkController {
-  determineEIP1559Compatibility() {
-    // ...
-  }
+function getEIP1559Compatibility() {
+  // ...
 }
+
+const isEIP1559Compatible = getEIP1559Compatibility();
 ```
 
 ### Read more
