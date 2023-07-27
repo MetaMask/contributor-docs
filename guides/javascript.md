@@ -122,7 +122,7 @@ However, this naming strategy creates a point of friction for objects, arrays, o
 />
 ```
 
-It is potentially more "greppable" if properties that concern the same concept are kept together instead of separate. To address this, you may wish to place the subject of the variable name at the beginning:
+It is potentially easier to read if properties that concern the same concept are kept together instead of separate. To address this, you may wish to place the subject of the variable name at the beginning:
 
 ``` javascript
 const recipientIsOwnedAccount = Boolean(ownedAccountName);
