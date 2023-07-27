@@ -162,7 +162,7 @@ function makeRequest() {
 
 ``` javascript
 async function makeRequest() {
-  const response = await fetch("https://google.com");
+  const response = await fetch('https://google.com');
   const json = await response.json();
   return json['page_views'];
 }
