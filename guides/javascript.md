@@ -149,7 +149,7 @@ Asynchronous code written using `async`/`await` syntax looks less complex and mo
 
 ``` javascript
 function makeRequest() {
-  return fetch("https://google.com")
+  return fetch('https://google.com')
     .then((response) => {
       return response.json().then((json) => {
         return json['page_views'];
