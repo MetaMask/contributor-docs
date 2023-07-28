@@ -49,3 +49,20 @@ A common way to provide an example is to offer a dichotomy, a passage of code wh
 By default, a guideline is intended to be followed unless there is a good reason not to do so.
 
 Occasionally, however, a guideline may offer a set of options among which the reader may choose. To designate this type of guideline, prefix the header with 💡.
+
+## Understand the connection to MetaMask's ESLint rules
+
+There is a notable overlap between the code guidelines in this repository and [MetaMask's ESLint rules](https://github.com/MetaMask/eslint-config). Both are intended to establish a standard code style across all projects in the MetaMask ecosystem but offer two different perspectives.
+
+The ESLint rules enforce standards in an automated, streamlined fashion. In general, if a standard can be codified as a rule, then it should be, so that it can be easily distributed.
+
+The guidelines in this repository, on the other hand, are intended to be consulted manually and are useful in two ways:
+
+1. To explain the rationale for an existing ESLint rule. The link to the rule can be specified within a note at the top of the guideline:
+
+   ``` markdown
+   > [!NOTE]\
+   > This guideline is enforced in [MetaMask's standard ESLint configuration](https://github.com/MetaMask/eslint-config) via [`no-await-in-loop`](https://eslint.org/docs/latest/rules/no-await-in-loop).
+   ```
+
+2. To document a style that is not possible to enforce as a rule, either because it would be difficult to do, or because there is no clear standard. For instance, some guidelines may ask the reader to make a decision between two or more alternatives or may require context that can only be gleaned by a human reading the code instead of a machine.
