@@ -1,7 +1,7 @@
 # Secure Development Lifecycle Policy
 
 ## Purpose
-The secure developmet lifecycle describes the approach that is used to define, develop, deliver and maintain software. 
+The secure development lifecycle describes the approach that is used to define, develop, deliver and maintain software. 
 
 ## Scope
 This lifecycle is intended to be used by software teams including product managers, designers, developers and quality assurance to develop secure software products.
