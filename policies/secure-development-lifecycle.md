@@ -28,7 +28,7 @@ This lifecycle integrates security into all aspects of application software deve
 
 3. Testing:
 - Perform functional testing to validate the application meets desired requirements
-- Conduct security testing idenfitied during the planning phase (e.g. static code analysis, dynamic scanning, and penetration testing)
+- Conduct security testing identified during the planning phase (e.g. static code analysis, dynamic scanning, and penetration testing)
 - Address identified issues and vulnerabilities, and validate the effectiveness of fixes
 - Document testing activities and results for the feature
 
