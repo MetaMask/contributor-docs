@@ -18,7 +18,7 @@ This lifecycle integrates secruity into all aspects of application software deve
 2. Design:
 - Create a feature description that incorporates identified security controls and meet definition of ready (link)
 - Perform threat modeling to identify potential risks and design appropriate countermeasures
-- Document design decisions, security controls, implementation and verificatio
+- Document design decisions, security controls, implementation and verification
 
 3. Development:
 - Adhere to coding standards and secure coding practices (link)
