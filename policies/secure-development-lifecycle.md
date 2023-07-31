@@ -7,7 +7,7 @@ The secure development lifecycle describes the approach that is used to define, 
 This lifecycle is intended to be used by software teams including product managers, designers, developers and quality assurance to develop secure software products.
 
 ## Policy
-This lifecycle integrates secruity into all aspects of application software development which is comprized of six phases. 
+This lifecycle integrates security into all aspects of application software development which is comprized of six phases. 
 
 1. Requirements Gathering and Planning:
 - Identify the scope, goals, and necessary resources for development
