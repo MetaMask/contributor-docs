@@ -38,7 +38,7 @@ This lifecycle integrates security into all aspects of application software deve
 - Implement mechanisms for secure updates and patches to ensure ongoing security
 
 5. Maintenance and Support:
-- In the event of security breach or incident follow established incident response plan (link)
+- In the event of security breach or incident, follow established incident response plan (link)
 - Monitor for issues and security vulnerabilities, and apply patches or updates according to response plan (link)
 
 6. Post-Deployment:
