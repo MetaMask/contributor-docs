@@ -10,8 +10,8 @@ This lifecycle is intended to be used by software teams including product manage
 This lifecycle integrates security into all aspects of application software development which is comprized of six phases. 
 
 1. Requirements Gathering and Planning:
-- Identify the scope, goals, and necessary resources for development
-- Define functional and security requirements for the feature 
+  - Identify the scope, goals, and necessary resources for development
+  - Define functional and security requirements for the feature 
     - Considering core engineering principles (link)
     - Security controls such as authentication, data encryption, and secure communication protocols
 
