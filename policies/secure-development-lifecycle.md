@@ -16,7 +16,7 @@ This lifecycle integrates security into all aspects of application software deve
     - Security controls such as authentication, data encryption, and secure communication protocols
 
 2. Design:
-- Create a feature description that incorporates identified security controls and meet definition of ready (link)
+- Create a feature description that incorporates identified security controls and meets definition of ready (link)
 - Perform threat modeling to identify potential risks and design appropriate countermeasures
 - Document design decisions, security controls, implementation and verification
 
