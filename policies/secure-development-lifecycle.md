@@ -4,7 +4,7 @@
 The secure development lifecycle describes the approach that is used to define, develop, deliver and maintain software. 
 
 ## Scope
-This lifecycle is intended to be used by software teams including product managers, designers, developers and quality assurance to develop secure software products.
+This lifecycle is intended to be used by software teams including product managers, designers, developers and quality assurance to develop secure software products. This policy describes the lifecycle of feature development.
 
 ## Policy
 This lifecycle integrates security into all aspects of application software development which is comprized of six phases. 
@@ -24,24 +24,22 @@ This lifecycle integrates security into all aspects of application software deve
 - Adhere to coding standards and secure coding practices (link)
 - Implement features and security controls according to the design
 - Conduct code reviews to identify and address issues
-- Ensure automated code quality and security testing checks are passing prior to testing
+- Ensure automated code quality and security testing checks are passing
 
 3. Testing:
-- Perform functional testing to validate the application meets desired requirements
+- Perform testing to validate the application meets desired requirements. The testing methodology is set by project specific guidelines. 
 - Conduct security testing identified during the planning phase (e.g. static code analysis, dynamic scanning, and penetration testing)
 - Address identified issues and vulnerabilities, and validate the effectiveness of fixes
 - Document testing activities and results for the feature
 
-4. Deployment:
+4. Release and Monitoring:
 - Prepare the application for deployment, considering secure configuration and hardening measures
-- Utilize secure deployment practices, such as code signing and secure distribution channels
-- Implement mechanisms for secure updates and patches to ensure ongoing security
-
-5. Maintenance and Support:
+    - Utilize secure deployment practices, such as code signing and secure distribution channels
+    - Implement mechanisms for secure updates and patches to ensure ongoing security
 - In the event of security breach or incident, follow established incident response plan (link)
 - Monitor for issues and security vulnerabilities, and apply patches or updates according to response plan (link)
 
-6. Post-Deployment:
+5. Post-Release:
 - Collect and analyze user feedback to identify potential issues or security vulnerabilities
 - Incorporate security enhancements and bug fixes into future releases
 - Continuously evaluate and improve the security posture of the application
