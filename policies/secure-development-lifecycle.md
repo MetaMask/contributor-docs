@@ -26,20 +26,20 @@ This lifecycle integrates security into all aspects of application software deve
 - Conduct code reviews to identify and address issues
 - Ensure automated code quality and security testing checks are passing
 
-3. Testing:
+4. Testing:
 - Perform testing to validate the application meets desired requirements. The testing methodology is set by project specific guidelines. 
 - Conduct security testing identified during the planning phase (e.g. static code analysis, dynamic scanning, and penetration testing)
 - Address identified issues and vulnerabilities, and validate the effectiveness of fixes
 - Document testing activities and results for the feature
 
-4. Release and Monitoring:
+5. Release and Monitoring:
 - Prepare the application for deployment, considering secure configuration and hardening measures
     - Utilize secure deployment practices, such as code signing and secure distribution channels
     - Implement mechanisms for secure updates and patches to ensure ongoing security
 - In the event of security breach or incident, follow established [incident response plan](https://www.notion.so/General-Incident-Response-Playbook-f221656d1fb2415e805f29f26fabac93)
-- Monitor for issues and security vulnerabilities, and apply patches or updates according to [response plan](https://www.notion.so/MetaMask-Triaging-Framework-53bf8b5377fc4ceaad34177fc6e8740e#a200109fe0894c96876527a4290b4c0a)
+- Monitor for issues and security vulnerabilities, and apply patches or updates according to [triage framework](https://www.notion.so/MetaMask-Triaging-Framework-53bf8b5377fc4ceaad34177fc6e8740e#a200109fe0894c96876527a4290b4c0a)
 
-5. Post-Release:
+6. Post-Release:
 - Collect and analyze user feedback to identify potential issues or security vulnerabilities
 - Incorporate security enhancements and bug fixes into future releases
 - Continuously evaluate and improve the security posture of the application
