@@ -12,16 +12,16 @@ This lifecycle integrates security into all aspects of application software deve
 1. Requirements Gathering and Planning:
   - Identify the scope, goals, and necessary resources for development
   - Define functional and security requirements for the feature 
-    - Considering core engineering principles (link)
+    - Considering [core engineering principles](https://github.com/MetaMask/contributor-docs/blob/main/policies/engineering-principles.md)
     - Security controls such as authentication, data encryption, and secure communication protocols
 
 2. Design:
-- Create a feature description that incorporates identified security controls and meets definition of ready (link)
+- Create a feature description that incorporates identified security controls and meets [definition of ready](https://www.notion.so/What-is-the-Definition-of-Ready-fa1df34b96734791be1293d4f536869c)
 - Perform threat modeling to identify potential risks and design appropriate countermeasures
 - Document design decisions, security controls, implementation and verification
 
 3. Development:
-- Adhere to coding standards and secure coding practices (link)
+- Adhere to [coding standards and secure coding practices](https://github.com/MetaMask/contributor-docs/tree/main/guides)
 - Implement features and security controls according to the design
 - Conduct code reviews to identify and address issues
 - Ensure automated code quality and security testing checks are passing
@@ -36,8 +36,8 @@ This lifecycle integrates security into all aspects of application software deve
 - Prepare the application for deployment, considering secure configuration and hardening measures
     - Utilize secure deployment practices, such as code signing and secure distribution channels
     - Implement mechanisms for secure updates and patches to ensure ongoing security
-- In the event of security breach or incident, follow established incident response plan (link)
-- Monitor for issues and security vulnerabilities, and apply patches or updates according to response plan (link)
+- In the event of security breach or incident, follow established [incident response plan](https://www.notion.so/General-Incident-Response-Playbook-f221656d1fb2415e805f29f26fabac93)
+- Monitor for issues and security vulnerabilities, and apply patches or updates according to [response plan](https://www.notion.so/MetaMask-Triaging-Framework-53bf8b5377fc4ceaad34177fc6e8740e#a200109fe0894c96876527a4290b4c0a)
 
 5. Post-Release:
 - Collect and analyze user feedback to identify potential issues or security vulnerabilities
