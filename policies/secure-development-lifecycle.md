@@ -23,7 +23,7 @@ This lifecycle integrates security into all aspects of application software deve
 3. Development:
 - Adhere to [coding standards and secure coding practices](https://github.com/MetaMask/contributor-docs/tree/main/guides)
 - Implement features and security controls according to the design
-- Conduct code reviews to identify and address issues
+- Conduct code review for all changes
 - Ensure automated code quality and security testing checks are passing
 
 4. Testing:
