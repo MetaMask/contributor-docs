@@ -1,3 +1,3 @@
-# Guides (DRAFT)
+# Guides 
 
 A collection of guidelines and best practices.

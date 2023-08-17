@@ -1,4 +1,4 @@
-# MetaMask Contributor Documentation (DRAFT)
+# MetaMask Contributor Documentation 
 
 Everything needed to contribute to MetaMask repositories effectively.
 
