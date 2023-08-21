@@ -338,18 +338,18 @@ describe('BlockTracker', () => {
 });
 ```
 
-## Be conscious of phases
+## 💡 Highlight the "exercise" phase
 
-All unit tests follow [four phases](http://xunitpatterns.com/Four%20Phase%20Test.html).
+A test can be subdivided into up to four kinds of actions, also called ["phases"](http://xunitpatterns.com/Four%20Phase%20Test.html):
 
-1. **Setup:** Configuring the environment required to execute the code under test in a specific way
+1. **Setup:** Configuring the environment required to execute the code under test
 2. **Exercise:** Executing the code under test
-3. **Verify:** Confirming that the code behaves in an expected manner
+3. **Verify:** Confirming that the code under test behaves in an expected manner
 4. **Teardown:** Returning the environment to a clean slate
 
-Some phases may be represented in different forms, so it is important to be aware of their presence. For instance, the "setup" phase may occur within `beforeEach` hook, and the "teardown" phase may occur within an `afterEach` hook (or automatically by Jest).
+Be aware of the way that a test moves through these phases, particularly if some steps like "exercise" and "verify" are repeated, as this may indicate that your test is doing too much.
 
-💡 It can help readability, especially with large tests, to demarcate phases with line breaks:
+It can be helpful when composing and reading tests to surround the "exercise" phase with empty line breaks. Observe:
 
 1️⃣
 
