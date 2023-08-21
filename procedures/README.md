@@ -1,3 +1,3 @@
-# Procedures 
+# Procedures
 
-Procedures for every step of the software development lifecycle. 
+Procedures for every step of the software development lifecycle.

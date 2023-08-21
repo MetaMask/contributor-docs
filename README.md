@@ -1,4 +1,4 @@
-# MetaMask Contributor Documentation 
+# MetaMask Contributor Documentation
 
 Everything needed to contribute to MetaMask repositories effectively.
 
@@ -7,6 +7,6 @@ Everything needed to contribute to MetaMask repositories effectively.
 - [Policies](./getting-started/)
   - Policies that all contributors are asked to follow.
 - [Procedures](./getting-started/)
-  - Procedures for every step of the software development lifecycle. 
+  - Procedures for every step of the software development lifecycle.
 - [Guides](./getting-started/)
   - A collection of guidelines and best practices.

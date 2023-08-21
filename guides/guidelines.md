@@ -18,7 +18,7 @@ If a discussion exists in a public GitHub repository which provides context arou
 
 Use a "Read more" section to collect multiple resources:
 
-``` markdown
+```markdown
 ### Read more
 
 - [Link 1](https://example1.com)
@@ -60,7 +60,7 @@ The guidelines in this repository, on the other hand, are intended to be consult
 
 1. To explain the rationale for an existing ESLint rule. The link to the rule can be specified within a note at the top of the guideline:
 
-   ``` markdown
+   ```markdown
    > [!NOTE]\
    > This guideline is enforced in [MetaMask's standard ESLint configuration](https://github.com/MetaMask/eslint-config) via [`no-await-in-loop`](https://eslint.org/docs/latest/rules/no-await-in-loop).
    ```
