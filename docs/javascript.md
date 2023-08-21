@@ -1,9 +1,5 @@
 # JavaScript Guidelines
 
-## Use the latest version of our ESLint config
-
-If you're working on a project, there's a good chance that you're using our shared ESLint rules, which codifies decisions we've made around code style and can be used to align that project with other projects in our ecosystem. Make sure the project is up to date with the various packages within the [`eslint-config`](https://github.com/MetaMask/eslint-config) monorepo.
-
 ## Use a verb phrase for function/method names
 
 When naming a function or method, describe the action, not the outcome.

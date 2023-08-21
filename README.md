@@ -8,5 +8,6 @@ This is a living repository — nothing is set in stone! If there is a change yo
 
 - [Engineering Principles](./docs/engineering-principles.md)
 - [JavaScript Guidelines](./docs/javascript.md)
-- [TypeScript Guidelines](./docs/typescript.md)
+- [Secure Development Lifecycle Policy](./docs/sdlc.md)
 - [Testing Guidelines](./docs/testing.md)
+- [TypeScript Guidelines](./docs/typescript.md)
