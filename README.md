@@ -1,12 +1,13 @@
-# MetaMask Contributor Documentation (DRAFT)
+# MetaMask Contributor Documentation
 
-Everything needed to contribute to MetaMask repositories effectively.
+Welcome! Here you can find the principles, policies, and practices which are followed by MetaMask engineers in building MetaMask. These resources are designed to enable all builders, whether internal or external, in making meaningful contributions to any part of the MetaMask ecosystem.
 
-- [Getting started](./getting-started/)
-  - Start here if you are a new contributor, or if you are reading this documentation for the first time.
-- [Policies](./getting-started/)
-  - Policies that all contributors are asked to follow.
-- [Procedures](./getting-started/)
-  - Procedures for every step of the software development lifecycle. 
-- [Guides](./getting-started/)
-  - A collection of guidelines and best practices.
+This is a living repository — nothing is set in stone! If there is a change you want to introduce, feel free to start a discussion in an issue or propose the change itself in a pull request.
+
+## Table of Contents
+
+- [Engineering Principles](./docs/engineering-principles.md)
+- [JavaScript Guidelines](./docs/javascript.md)
+- [Secure Development Lifecycle Policy](./docs/sdlc.md)
+- [Testing Guidelines](./docs/testing.md)
+- [TypeScript Guidelines](./docs/typescript.md)
