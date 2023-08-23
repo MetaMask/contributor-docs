@@ -8,7 +8,6 @@
 - [Timer mocks](https://jestjs.io/docs/next/timer-mocks)
 - [Snapshots](https://jestjs.io/docs/next/snapshot-testing)
 - Automatic [parallelization of tests](https://jestjs.io/blog/2016/09/01/jest-15#buffered-console-messages) without [restricting usage of exclusive tests](https://mochajs.org/#exclusive-tests-are-disallowed)
-- [Automatic sandboxing of tests](https://jestjs.io/blog/2016/03/11/javascript-unit-testing-performance) to prevent accidental leaks when modules are mocked
 - A [consistent](https://jestjs.io/blog/2016/03/11/javascript-unit-testing-performance#adding-everything-up) [emphasis](https://jestjs.io/blog/2016/09/01/jest-15#new-cli-error-messages-and-summaries) on [great developer experience](https://jestjs.io/blog/2017/01/30/a-great-developer-experience)
 
 ## Colocate test files with implementation files
@@ -422,9 +421,9 @@ describe('KeyringController', () => {
 
 ## Keep tests isolated
 
-In order to be useful, tests must be deterministic. That is, a single test within a file must always pass each and every time, whether it is run on its own, alongside other tests in the same file, or other tests across other files.
+A single unit test must always pass each and every time, whether it is run on its own or alongside other tests (no matter the order in which those tests are run).
 
-To achieve determinism, tests must be performed in a clean room. If a test makes changes to any kind of state which persists outside of itself, it must revert those changes after completion to prevent contaminating other tests.
+To achieve this, tests must be performed in a clean room. If a test makes changes to any part of the environment that is defined outside of itself, it must revert those changes before completing to prevent contaminating other tests.
 
 There are a few different forms that this state can take:
 
