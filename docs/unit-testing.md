@@ -421,53 +421,24 @@ describe('KeyringController', () => {
 
 ## Keep tests isolated
 
-In order to be useful, tests must be deterministic. That is, a single test within a file must always pass each and every time, whether it is run on its own, alongside other tests in the same file, or other tests across other files.
+A test must pass whether it is run individually or in concert with other tests, regardless of the order it appears in the test suite.
 
-To achieve determinism, tests must be performed in a clean room. If a test makes changes to any kind of state which persists outside of itself, it must revert those changes after completion to prevent contaminating other tests.
+To achieve this, tests must be performed in a clean room. If a test makes changes to any part of the environment defined outside of itself, it must undo those changes before completing in order to prevent contaminating other tests.
 
-There are a few different forms that this state can take:
+Here are ways to do this:
 
-### Module mocks
+### Restore function mocks after each test
 
-Mocks for modules — objects reachable via `import` lines — are created via `jest.mock` declarations within a test file. Since modules are mocked once when a test file is read, they are global in the context of the file, so changes in one test can "bleed" over into another test:
+Set Jest's [`resetMocks`](https://jestjs.io/docs/configuration#resetmocks-boolean) and [`restoreMocks`](https://jestjs.io/docs/configuration#restoremocks-boolean) configuration options to `true`. This instructs Jest to reset the state of all mock functions and return them to their original implementations after each test. (This option is set in MetaMask's [module template](https://github.com/MetaMask/metamask-module-template).)
 
-``` typescript
-// Say `functionUnderTest` uses `config` internmally
-import { config } from "some-module";
-import { functionUnderTest } from "./module-under-test";
+<details><summary><b>Read more</b></summary>
+<br/>
 
-jest.mock("some-module", () => {
-  return {
-    ...jest.requireActual("some-module"),
-    config: {
-      isActive: true
-    }
-  };
-});
+Care must be taken to ensure that mock functions that are visible to multiple tests in a test file are properly reset, otherwise the state of those mock functions can bleed over into other tests.
 
-describe("module-under-test", () => {
-  describe("functionUnderTest", () => {
-    it("does something when isActive is false", () => {
-      // Oops! Since `config` is accessible throughout this file, this line
-      // changes not only this test but every other test after this
-      config.isActive = false;
-      expect(functionUnderTest()).toDoSomething();
-    });
+In this example, there are two tests. The second assumes that the spy on `getNetworkStatus` in the first test is removed, but that doesn't happen:
 
-    it("does something usually", () => {
-      // Now `config.isActive` will be `false` within `functionUnderTest`,
-      // so it may not do what you expect
-      expect(functionUnderTest()).toDoSomething();
-    })
-  });
-})
-```
-
-Setting Jest's [`resetModules`](https://jestjs.io/docs/configuration#resetmodules-boolean) option to `true` instructs Jest to recreate the module registry for each test (i.e. rerun the function that you pass to `jest.mock`), guaranteeing that state kept in modules gets reset appropriately. (This option is set in MetaMask's [module template](https://github.com/MetaMask/metamask-module-template).)
-
-### Partial function mocks
-
-Mocks for methods on objects are registered and accessible globally. This is not usually an issue if the object with the mocked method is defined inside of the test — in that case it will get garbage collected after the test is run — but if this is not the case, then state bleed can occur. For example:
+🚫
 
 ``` typescript
 const optionsMock = {
@@ -482,7 +453,7 @@ describe('token-utils', () => {
   });
 
   it("returns the details about the given token", () => {
-    // This won't work
+    // This will likely not work as `getNetworkStatus` still returns "loading"
     expect(getTokenDetails('0xABC123', optionsMock)).toStrictEqual({
       standard: 'ERC20',
       symbol: 'TEST'
@@ -491,9 +462,43 @@ describe('token-utils', () => {
 })
 ```
 
-Setting Jest's [`resetMocks`](https://jestjs.io/docs/configuration#resetmocks-boolean) option to `true` instructs Jest to unregister any previously registered partial mocks after each test, guaranteeing that garbage collection is not necessary to clean them up. (This option is set in MetaMask's [module template](https://github.com/MetaMask/metamask-module-template).)
+Minimally, you can save the spy to a variable and then call `mockRestore` on it before the test ends:
 
-### Global variables
+``` typescript
+const optionsMock = {
+  getNetworkStatus: () => 'available'
+};
+
+describe('token-utils', () => {
+  it("returns null if the network is still loading", () => {
+    const getNetworkStatusSpy = jest
+      .spyOn(optionsMock, 'getNetworkStatus')
+      .mockReturnValue('loading');
+    expect(getTokenDetails('0xABC123', optionsMock)).toBeNull();
+    getNetworkStatusSpy.mockRestore();
+  });
+
+  it("returns the details about the given token", () => {
+    // This will likely not work as `getNetworkStatus` still returns "loading"
+    expect(getTokenDetails('0xABC123', optionsMock)).toStrictEqual({
+      standard: 'ERC20',
+      symbol: 'TEST'
+    });
+  });
+})
+```
+
+But it is better to let Jest take care of this for you by setting `resetMocks` and `restoreMocks` in your Jest configuration.
+</details>
+
+### Reset global variables
+
+Create a helper function that wraps the code under test to ensure that changes to globals get undone after they are used.
+
+Where it makes sense, use [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) to pass globals to the code under test so that a mock implementation can be passed in tests.
+
+<details><summary><b>Read more</b></summary>
+<br/>
 
 Global variables are equivalent to properties of the global context (usually `global`). Changing these variables will naturally affect every test in a test file.
 
@@ -559,7 +564,7 @@ describe("NftDetails", () => {
 });
 ```
 
-💡 Now say the global you want to change is not a function:
+Now say the global you want to change is not a function:
 
 🚫
 
@@ -592,7 +597,7 @@ describe("interpretMethodData", () => {
 async function withEthereumProvider(ethereumProvider: Provider, test: () => void | Promise<void>) {
   const originalEthereumProvider = global.ethereumProvider;
   global.ethereumProvider = ethereumProvider;
-  await fn();
+  await test();
   global.ethereumProvider = originalEthereumProvider;
 }
 
@@ -636,8 +641,14 @@ describe("interpretMethodData", () => {
   });
 });
 ```
+</details>
 
-### Shared variables
+### Reset shared variables
+
+Create a helper function that wraps the code under test to ensure that changes to shared variables get undone after they are used.
+
+<details><summary><b>Read more</b></summary>
+<br/>
 
 If a variable used inside of a test is declared outside of the test, the value that the variable holds — and thus changes to that variable made inside the test — will remain even after the test ends.
 
@@ -702,7 +713,7 @@ describe("interpretMethodData", () => {
 });
 ```
 
-However, it is best to [avoid hooks altogether](#avoid-before-each-and-after-each). Instead, use a factory function which defines defaults and allows them to be overridden where they are needed:
+[Instead of using hooks](#avoid-before-each-and-after-each), however, use a factory function which defines defaults and allows them to be overridden where they are needed:
 
 ✅
 
@@ -742,44 +753,11 @@ describe("interpretMethodData", () => {
   });
 });
 ```
+</details>
 
-### Runtime Jest configuration
+### Learn more
 
-[Jest runs all test files in their own sandbox](https://cpojer.net/posts/building-a-javascript-testing-framework#isolate-tests-from-each-other), which ensures that any configuration options set at runtime, such as `testTimeout`, are properly reset per test. However, this behavior is not well known, and one should use alternatives if possible so as not to confuse readers by creating the illusion that global state is being modified. For instance, timeouts can be specified per test:
-
-🚫
-
-``` typescript
-jest.testTimeout(5000);
-
-describe("some-module", () => {
-  it("should do something", () => {
-    // ...
-  });
-
-  it("should do something else", () => {
-    // ...
-  });
-});
-```
-
-✅
-
-``` typescript
-describe("some-module", () => {
-  it("should do something", () => {
-    // ...
-  }, 5000);
-
-  it("should do something else", () => {
-    // ...
-  }, 5000);
-});
-```
-
-### Read more
-
-- ["Eradicating Non-Determinism in Tests"](https://martinfowler.com/articles/nonDeterminism.html#LackOfIsolation) by Martin Fowler
+- [Discussion on C2 Wiki about isolating unit tests](https://wiki.c2.com/?UnitTestIsolation)
 
 ## Avoid `beforeEach` and `afterEach`
 
