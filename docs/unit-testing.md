@@ -421,9 +421,9 @@ describe('KeyringController', () => {
 
 ## Keep tests isolated
 
-A single unit test must always pass each and every time, whether it is run on its own or alongside other tests (no matter the order in which those tests are run).
+In order to be useful, tests must be deterministic. That is, a single test within a file must always pass each and every time, whether it is run on its own, alongside other tests in the same file, or other tests across other files.
 
-To achieve this, tests must be performed in a clean room. If a test makes changes to any part of the environment that is defined outside of itself, it must revert those changes before completing to prevent contaminating other tests.
+To achieve determinism, tests must be performed in a clean room. If a test makes changes to any kind of state which persists outside of itself, it must revert those changes after completion to prevent contaminating other tests.
 
 There are a few different forms that this state can take:
 
