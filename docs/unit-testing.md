@@ -645,12 +645,14 @@ describe("interpretMethodData", () => {
 
 ### Reset shared variables
 
-Create a helper function that wraps the code under test to ensure that changes to shared variables get undone after they are used.
+Use helper functions instead of variables to define data shared between tests.
 
 <details><summary><b>Read more</b></summary>
 <br/>
 
-If a variable used inside of a test is declared outside of the test, the value that the variable holds — and thus changes to that variable made inside the test — will remain even after the test ends.
+Variables declared outside of tests are not reset automatically between tests. Thus, changes made to these variables in tests can affect later tests, breaking test isolation.
+
+For example:
 
 🚫
 
@@ -688,7 +690,7 @@ describe("interpretMethodData", () => {
   const network;
 
   beforeEach(() => {
-    // Now this variable is reset before each test, creating a clean slate
+    // Now this variable is reset before each test
     network = {
       provider: new HttpProvider('https://mainnet.infura.io/v3/abc123');
     };
@@ -705,7 +707,7 @@ describe("interpretMethodData", () => {
   });
 
   it("returns the signature for setApprovalForAll on Mainnet", () => {
-    // Okay, this will still use Mainnet
+    // This will use Mainnet, as expected
     expect(interpretMethodData('0x3fbac0ab', network)).toStrictEqual({
       name: 'Set Approval For All'
     });
@@ -718,13 +720,11 @@ describe("interpretMethodData", () => {
 ✅
 
 ``` typescript
-type Options = {
-  provider: HttpProvider
-};
-
 function buildNetwork({
   provider = HttpProvider('https://mainnet.infura.io/v3/abc123')
-}: Partial<Options> = {}) {
+}: Partial<{
+  provider: HttpProvider
+}> = {}) {
   return { provider };
 }
 
@@ -744,7 +744,7 @@ describe("interpretMethodData", () => {
   });
 
   it("returns the signature for setApprovalForAll on Mainnet", () => {
-    // This will use Mainnet by default because we defined this helper as such
+    // This test will use Mainnet by default thanks to how we defined the helper
     const network = buildNetwork();
 
     expect(interpretMethodData('0x3fbac0ab', network)).toStrictEqual({
