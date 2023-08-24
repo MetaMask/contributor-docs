@@ -815,7 +815,7 @@ However, this strategy ends up increasing the long-term maintenance cost of test
 - It makes debugging tests difficult later. Data that is critical to the purpose of a test — i.e., that is used in the execution or verification phase — may be hidden in a `beforeEach` hook, or it may be split across `beforeEach` and the test in question. This means that in order to trace data as it moves through the test, one must spend time piecing together the full picture.
 - It makes writing tests for new scenarios difficult. The setup steps in `beforeEach` may not apply to future tests that cover different scenarios. In these cases, the author is forced to take on a complex refactor to remove the `beforeEach` steps that don't apply, or pursue complex workarounds.
 
-A function solves the problems that hooks solve without introducing the problems that they simultaneously introduce. With this pattern, tests that need to customize setup data can do so easily by passing options to the function, and this draws a clear line from the verification phase to the setup phase:
+A setup function serves the same purpose as hooks without causing these problems. With this pattern, tests that need to customize setup data can do so easily by passing options to the function, and this draws a clear line from the verification phase to the setup phase:
 
 ✅
 
