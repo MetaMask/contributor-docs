@@ -845,7 +845,7 @@ async function withController(...args: WithControllerArgs) {
 
   try {
     await fn({ controller, onNetworkDidChangeListener });
-  } catch {
+  } finally {
     controller.destroy();
   }
 }
