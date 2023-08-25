@@ -318,19 +318,19 @@ and as a result, this is how the method ought to be tested:
 ``` typescript
 describe('BlockTracker', () => {
   describe('stop', () => {
-    it('does not reset the current block if the block tracker is already stopped', () => {
+    it('does not reset the current block if the block tracker is stopped', () => {
       // ...
     });
 
-    it('does not request to unsubscribe if the block tracker is already stopped', () => {
+    it('does not request to unsubscribe if the block tracker is stopped', () => {
       // ...
     });
 
-    it('resets the current block if the block tracker is already stopped', () => {
+    it('resets the current block if the block tracker is running', () => {
       // ...
     });
 
-    it('requests to unsubscribe if the block tracker is already stopped', () => {
+    it('requests to unsubscribe if the block tracker is running', () => {
       // ...
     });
   });
