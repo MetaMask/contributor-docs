@@ -159,7 +159,11 @@ describe('if "addToken" is true', () => {
 });
 ```
 
-## Use `it` to specify known behavior for a unit of code
+## Use `it` to specify the desired behavior for the code under test
+
+The purpose of a test is to verify that a piece of code acts in a manner that ultimately fulfills the wishes of the consumer. When running a test, then, it is valuable to know which behavior is being verified.
+
+This is where the test description comes into play. It gives readers an opportunity to use plain English to describe
 
 Use `it` to describe the behavior of a piece of code from the consumer's perspective as it stands today, not as it ought to be.
 
