@@ -165,7 +165,7 @@ Use `it` to describe the behavior of a piece of code from the consumer's perspec
 
 Do not use "should" at the start of the test name. The official Jest documentation [omits this word from their examples](https://jestjs.io/docs/next/getting-started), and it creates noise when reviewing the list of tests that Jest outputs after a run.
 
-Do not repeat the name of the function or method in the name of the test if it is possible to communicate what a consumer expects more clearly.
+Do not repeat the name of the function or method in the name of the test.
 
 ### Examples
 
