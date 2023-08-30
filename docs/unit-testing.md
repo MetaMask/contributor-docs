@@ -761,9 +761,117 @@ describe("interpretMethodData", () => {
 
 - [Discussion on C2 Wiki about isolating unit tests](https://wiki.c2.com/?UnitTestIsolation)
 
-## Avoid `beforeEach` and `afterEach`
+## Avoid the use of `beforeEach`
 
-When writing tests that need to be set up or torn down in a similar way, it may be tempting to extract the setup and teardown phases to `beforeEach` and `afterEach` hooks:
+Extract setup steps shared among multiple tests to functions instead of lumping them into a `beforeEach` hook:
+
+🚫
+
+``` typescript
+describe("TokenDetectionController", () => {
+  let getCurrentChainId: jest.mock<Promise<string>, []>;
+  let preferencesController: PreferencesController;
+  let tokenDetectionController: TokenDetectionController;
+
+  beforeEach(() => {
+    getCurrentChainId = jest.fn().mockResolvedValue("0x1");
+    preferencesController = new PreferencesController({
+      getCurrentChainId,
+    });
+    tokenDetectionController = new TokenDetectionController({
+      preferencesController,
+    });
+  });
+
+  describe("constructor", () => {
+    it("sets default state", () => {
+      expect(tokenDetectionController.state).toStrictEqual({
+        tokensByChainId: {},
+      });
+    });
+  });
+
+  describe("detectTokens", () => {
+    it("tracks tokens for the currently selected chain", async () => {
+      const sampleToken = { symbol: "TOKEN", address: "0x2" };
+      getCurrentChainId.mockResolvedValue("0x2");
+      jest.spyOn(tokenDetectionController, "fetchTokens").mockResolvedValue([
+        '0xAAA',
+        '0xBBB',
+      ]);
+
+      await tokenDetectionController.detectTokens();
+
+      expect(tokenDetectionController.state.tokensByChainId["0x2"]).toStrictEqual([
+        '0xAAA',
+        '0xBBB',
+      ]);
+    });
+  });
+});
+```
+
+✅
+
+``` typescript
+describe("TokenDetectionController", () => {
+  describe("constructor", () => {
+    it("sets default state", () => {
+      const { controller } = buildTokenDetectionController();
+
+      expect(controller.state).toStrictEqual({
+        tokensByChainId: {},
+      });
+    });
+  });
+
+  describe("detectTokens", () => {
+    it("tracks tokens for the currently selected chain", async () => {
+      const sampleToken = { symbol: "TOKEN", address: "0x2" };
+      const { controller } = buildTokenDetectionController({
+        getCurrentChainId: () => "0x2",
+      });
+      jest.spyOn(controller, "fetchTokens").mockResolvedValue([
+        '0xAAA',
+        '0xBBB',
+      ]);
+
+      await controller.detectTokens();
+
+      expect(controller.state.tokensByChainId["0x2"]).toStrictEqual([
+        '0xAAA',
+        '0xBBB',
+      ]);
+    });
+  });
+});
+
+function buildTokenDetectionController({
+  getCurrentChainId = () => '0x1'
+}: {
+  getCurrentChainId?: () => string
+}) {
+  const preferencesController = new PreferencesController({
+    getCurrentChainId,
+  });
+  const tokenDetectionController = new TokenDetectionController({
+    preferencesController,
+  });
+  return { controller: tokenDetectionController, preferencesController };
+}
+```
+
+<details><summary><b>Read more</b></summary>
+<br/>
+
+When writing tests that need to be set up in a similar way, it may be tempting to use a `beforeEach` hook. However, this strategy ends up increasing the long-term maintenance cost of tests for a couple of reasons:
+
+- It makes tests harder to read. Tests that run under different scenarios may require different ways of being set up, but using a `beforeEach` hook unnecessarily assigns the same importance to all setup steps listed there. This forces the reader to peruse all of the setup code in order to distinguish the signal from the noise.
+- It makes writing tests for new scenarios difficult. The setup steps specified in the `beforeEach` section may not perfectly apply to future tests that cover different scenarios. In these cases, the author may be forced to take on a complex refactor to remove the `beforeEach` steps that don't apply or pursue workarounds which decrease consistency and readability.
+
+Setup helper functions serve the same purpose as hooks without causing these problems. In this way, tests that need setup data for specific scenarios can specify them easily by passing options to the function, which communicates their importance to readers over other kinds of setup data in the context of the test. Plus, managing setup code becomes easier, as it can be refactored more easily if necessary.
+
+The functional pattern presented above can not only be applied to setup code but also teardown code. In that case, your helper becomes a wrapper by taking another function:
 
 🚫
 
@@ -811,13 +919,6 @@ describe('TokensController', () => {
   });
 });
 ```
-
-However, this strategy ends up increasing the long-term maintenance cost of tests for a couple of reasons:
-
-- It makes tests harder to read. Data that is critical to the purpose of a test — i.e., that is used in the execution or verification phase — may be hidden in a `beforeEach` hook, or it may be split across `beforeEach` and the test in question. This means that in order to trace data as it moves through the test, one must spend time piecing together the full picture.
-- It makes writing tests for new scenarios difficult. The setup steps in `beforeEach` may not apply to future tests that cover different scenarios. In these cases, the author is forced to take on a complex refactor to remove the `beforeEach` steps that don't apply, or pursue complex workarounds.
-
-A setup function serves the same purpose as hooks without causing these problems. With this pattern, tests that need to customize setup data can do so easily by passing options to the function, and this draws a clear line from the verification phase to the setup phase:
 
 ✅
 
@@ -882,22 +983,7 @@ describe('TokensController', () => {
   });
 });
 ```
-
-The only case in which `beforeEach` or `afterEach` is acceptable is when using the Jest API, such as when setting fake timers:
-
-``` typescript
-describe("some-module", () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
-  // ... tests go here ...
-});
-```
+</details>
 
 ## Keep critical data in the test
 
