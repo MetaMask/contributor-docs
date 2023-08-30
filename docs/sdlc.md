@@ -13,12 +13,11 @@ This lifecycle is intended to be used by software teams including product manage
 This lifecycle integrates security into all aspects of application software development which is comprised of six phases.
 
 1. Requirements Gathering and Planning:
-
-- Identify the scope, goals, and necessary resources for development
-- Define functional and security requirements for the feature
-  - Considering [core engineering principles](https://github.com/MetaMask/contributor-docs/blob/main/policies/engineering-principles.md)
-  - Security controls such as authentication, data encryption, and secure communication protocols
-- Inform the marketing team and customer support of the projected timelines, features, and any potential market impacts
+  - Identify the scope, goals, and necessary resources for development
+  - Define functional and security requirements for the feature 
+    - Considering [core engineering principles](./engineering-principles.md)
+    - Security controls such as authentication, data encryption, and secure communication protocols
+  - Inform the marketing team and customer support of the projected timelines, features, and any potential market impacts
 
 2. Design:
 
@@ -27,8 +26,7 @@ This lifecycle integrates security into all aspects of application software deve
 - Document design decisions, security controls, implementation and verification
 
 3. Development:
-
-- Adhere to [coding standards and secure coding practices](https://github.com/MetaMask/contributor-docs/tree/main/guides)
+- Adhere to [coding standards and secure coding practices](../README.md)
 - Implement features and security controls according to the design
 - Conduct code review for all changes
 - Ensure automated code quality and security testing checks are passing
