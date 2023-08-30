@@ -423,7 +423,7 @@ describe('KeyringController', () => {
 
 ## Keep tests isolated
 
-A test must pass whether it is run individually or in concert with other tests, regardless of the order it appears in the test suite.
+A test must pass whether it is run individually or whether it is run alongside other tests (in any order).
 
 To achieve this, tests must be performed in a clean room. If a test makes changes to any part of the environment defined outside of itself, it must undo those changes before completing in order to prevent contaminating other tests.
 
