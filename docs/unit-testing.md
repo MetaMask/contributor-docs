@@ -228,7 +228,7 @@ If you are using "and" in the name of a test, this could indicate the test invol
 🚫
 
 ``` typescript
-it("the block tracker is started and returns a promise that resolves to a block number", () => {
+it("starts the block tracker and returns the block number", () => {
   // ...
 });
 ```
@@ -240,7 +240,7 @@ it("starts the block tracker", () => {
   // ...
 });
 
-it("returns a promise that resolves to a block number", () => {
+it("returns the block number", () => {
   // ...
 });
 ```
