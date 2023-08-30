@@ -161,13 +161,11 @@ describe('if "addToken" is true', () => {
 
 ## Use `it` to specify the desired behavior for the code under test
 
-The purpose of a test is to verify that a piece of code acts in a manner that ultimately fulfills the wishes of the consumer. When running a test, then, it is valuable to know which behavior is being verified.
+Tests can be thought of as executable specifications for the behavior of a module of code.
 
-This is where the test description comes into play. It gives readers an opportunity to use plain English to describe
+Tests have names which describe a facet of the intended behavior being tested. This description is valuable in understanding what the module is designed to do and how it ought to be used by consumers. It also aids developers in tracing errors to their source.
 
-Use `it` to describe the behavior of a piece of code from the consumer's perspective as it stands today, not as it ought to be.
-
-Do not use "should" at the start of the test name. The official Jest documentation [omits this word from their examples](https://jestjs.io/docs/next/getting-started), and it creates noise when reviewing the list of tests that Jest outputs after a run.
+Do not use "should" at the beginning of the test name. The official Jest documentation [omits this word from their examples](https://jestjs.io/docs/next/getting-started), and it creates noise when reviewing the list of tests that Jest outputs after a run.
 
 Do not repeat the name of the function or method in the name of the test.
 
@@ -214,7 +212,7 @@ describe('TokensController', () => {
 ``` typescript
 describe('TokensController', () => {
   describe('addToken', () => {
-    it('adds the given token to the "tokens" array in state', () => {
+    it('adds the given token to "tokens" in state', () => {
       // ...
     });
   });
