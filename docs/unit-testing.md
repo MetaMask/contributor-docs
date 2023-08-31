@@ -161,13 +161,11 @@ describe('if "addToken" is true', () => {
 
 ## Use `it` to specify the desired behavior for the code under test
 
-Tests can be thought of as executable specifications for the behavior of a module of code.
-
-A test has a name which describes a facet of the intended behavior being tested. This description is valuable in understanding what the module is designed to do and how it ought to be used by consumers. It also aid developers in tracing errors to their source.
-
-Do not use "should" at the beginning of the test name. The official Jest documentation [omits this word from their examples](https://jestjs.io/docs/next/getting-started), and it creates noise when reviewing the list of tests that Jest outputs after a run.
+As each test [should focus on a single aspect of that behavior](#keep-tests-focused), its description should describe that behavior. This description helps to anchor the purpose of the test, understand the intended behavior, and debug differences with the actual behavior that may occur down the road.
 
 Do not repeat the name of the function or method in the name of the test.
+
+Do not use "should" at the beginning of the test name. The official Jest documentation [omits this word from their examples](https://jestjs.io/docs/next/getting-started), and it creates noise when reviewing the list of tests printed after a run.
 
 ### Examples
 
