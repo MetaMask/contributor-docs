@@ -31,9 +31,9 @@ src/
   permission-controller.test.ts
 ```
 
-## Use `describe` to group tests for methods
+## Use `describe` to group tests for the same function/method
 
-Using `describe` to wrap tests for a method makes it easier to spot these tests in a large file and makes it possible to run them on their own (using `.only`). It also helps to establish the subject of the test (the "it") and therefore keeps the test well named and focused.
+Wrapping tests for the same function or method in a `describe` makes it easier to spot them in a large test file and makes it possible to run them on their own (using `.only`). It also helps to establish the subject of each test (the "it") and therefore keeps it well described and focused.
 
 🚫
 
