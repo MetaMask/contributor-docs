@@ -1,0 +1,25 @@
+{
+  "name": "@metamask/contributor-docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "yarn lint:misc --check",
+    "lint:fix": "yarn lint:misc --write",
+    "lint:misc": "prettier '**/*.md' '**/*.yml' '!.yarnrc.yml' --ignore-path .gitignore --no-error-on-unmatched-pattern"
+  },
+  "devDependencies": {
+    "@lavamoat/allow-scripts": "^2.3.1",
+    "@lavamoat/preinstall-always-fail": "^1.0.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-packagejson": "^2.3.0"
+  },
+  "packageManager": "yarn@3.6.2",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@lavamoat/preinstall-always-fail": false
+    }
+  }
+}

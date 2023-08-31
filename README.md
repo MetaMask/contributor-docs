@@ -2,7 +2,7 @@
 
 Welcome! Here you can find the principles, policies, and practices which are followed by MetaMask engineers in building MetaMask. These resources are designed to enable all builders, whether internal or external, in making meaningful contributions to any part of the MetaMask ecosystem.
 
-This is a living repository — nothing is set in stone! If there is a change you want to introduce, feel free to start a discussion in an issue or propose the change itself in a pull request.
+This is a living repository — nothing is set in stone! If you're member of MetaMask and are interested in making updates to this repository, make sure to consult the [Contributing](./CONTRIBUTING.md) guide.
 
 ## Table of Contents
 

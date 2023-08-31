@@ -6,7 +6,7 @@ When naming a function or method, describe the action, not the outcome.
 
 🚫
 
-``` javascript
+```javascript
 function formattedChangelog() {
   // ...
 }
@@ -14,7 +14,7 @@ function formattedChangelog() {
 
 ✅
 
-``` javascript
+```javascript
 function formatChangelog() {
   // ...
 }
@@ -24,7 +24,7 @@ For a function or method that returns a boolean, reword the name to start with a
 
 🚫
 
-``` javascript
+```javascript
 function isEIP1559Compatible() {
   // ...
 }
@@ -34,7 +34,7 @@ const isEIP1559Compatible = isEIP1559Compatible();
 
 ✅
 
-``` javascript
+```javascript
 function getEIP1559Compatibility() {
   // ...
 }
@@ -55,13 +55,13 @@ Sometimes a variable that is intended to hold a boolean value does not have an e
 
 🚫
 
-``` javascript
+```javascript
 const removed = false;
 ```
 
 ✅
 
-``` javascript
+```javascript
 // Any of these would do
 const isRemoved = false;
 const wasRemoved = false;
@@ -73,13 +73,13 @@ If the name represents a negative statement, reword it into a positive statement
 
 🚫
 
-``` javascript
+```javascript
 const notEnoughGas = false;
 ```
 
 ✅
 
-``` javascript
+```javascript
 const hasEnoughGas = true;
 ```
 
@@ -87,13 +87,13 @@ Take special note of variables which are created via React's `useState` hook.
 
 🚫
 
-``` javascript
+```javascript
 const [removed, setRemoved] = useState(false);
 ```
 
 ✅
 
-``` javascript
+```javascript
 const [isRemoved, setIsRemoved] = useState(false);
 ```
 
@@ -101,13 +101,13 @@ const [isRemoved, setIsRemoved] = useState(false);
 
 When naming a boolean variable that includes a subject, the previous guideline suggests that you can place the verb at the beginning:
 
-``` javascript
+```javascript
 const isRecipientOwnedAccount = Boolean(ownedAccountName);
 ```
 
 However, this naming strategy creates a point of friction for objects, arrays, or React components, where it may be desirable to sort identifiers alphabetically. In that case you could end up with something like:
 
-``` jsx
+```jsx
 <SenderToRecipient
   isRecipientOwnedAccount={isRecipientOwnedAccount}
   onClick={onClick}
@@ -120,13 +120,13 @@ However, this naming strategy creates a point of friction for objects, arrays, o
 
 It is potentially easier to read if properties that concern the same concept are kept together instead of separate. To address this, you may wish to place the subject of the variable name at the beginning:
 
-``` javascript
+```javascript
 const recipientIsOwnedAccount = Boolean(ownedAccountName);
 ```
 
 This would result in:
 
-``` jsx
+```jsx
 <SenderToRecipient
   recipientIsOwnedAccount={isRecipientOwnedAccount}
   recipientName={toName}
@@ -143,20 +143,19 @@ Asynchronous code written using `async`/`await` syntax looks less complex and mo
 
 🚫
 
-``` javascript
+```javascript
 function makeRequest() {
-  return fetch('https://google.com')
-    .then((response) => {
-      return response.json().then((json) => {
-        return json['page_views'];
-      })
-    })
+  return fetch('https://google.com').then((response) => {
+    return response.json().then((json) => {
+      return json['page_views'];
+    });
+  });
 }
 ```
 
 ✅
 
-``` javascript
+```javascript
 async function makeRequest() {
   const response = await fetch('https://google.com');
   const json = await response.json();
@@ -172,7 +171,7 @@ An `async` function that returns a rejected promise created via another `async` 
 <br/>
 <p>If you save the following to a file (say, <code>/tmp/example.js</code>) and run it with <code>node</code>:</p>
 
-``` javascript
+```javascript
 async function foo() {
   return bar();
 }
@@ -182,7 +181,7 @@ async function bar() {
   throw new Error('BEEP BEEP');
 }
 
-foo().catch(error => console.log(error.stack));
+foo().catch((error) => console.log(error.stack));
 ```
 
 then you will see the following in the terminal (as of Node 18):
@@ -196,7 +195,7 @@ Notice how `foo` is completely missing from the stack trace!
 
 However, if you put an `await` before the call to `bar`:
 
-``` javascript
+```javascript
 async function foo() {
   return await bar();
 }
@@ -206,7 +205,7 @@ async function bar() {
   throw new Error('BEEP BEEP');
 }
 
-foo().catch(error => console.log(error.stack));
+foo().catch((error) => console.log(error.stack));
 ```
 
 you will now see it at the bottom of the stack trace:
@@ -221,7 +220,7 @@ Error: BEEP BEEP
 
 🚫
 
-``` javascript
+```javascript
 async function makeRequest() {
   const response = await fetch('https://some/url');
   return response.json();
@@ -230,7 +229,7 @@ async function makeRequest() {
 
 ✅
 
-``` javascript
+```javascript
 async function makeRequest() {
   const response = await fetch('https://some/url');
   return await response.json();
