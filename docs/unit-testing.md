@@ -163,7 +163,7 @@ describe('if "addToken" is true', () => {
 
 Tests can be thought of as executable specifications for the behavior of a module of code.
 
-Tests have names which describe a facet of the intended behavior being tested. This description is valuable in understanding what the module is designed to do and how it ought to be used by consumers. It also aids developers in tracing errors to their source.
+A test has a name which describes a facet of the intended behavior being tested. This description is valuable in understanding what the module is designed to do and how it ought to be used by consumers. It also aid developers in tracing errors to their source.
 
 Do not use "should" at the beginning of the test name. The official Jest documentation [omits this word from their examples](https://jestjs.io/docs/next/getting-started), and it creates noise when reviewing the list of tests that Jest outputs after a run.
 
