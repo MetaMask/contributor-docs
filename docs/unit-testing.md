@@ -121,22 +121,22 @@ describe('KeyringController', () => {
 });
 ```
 
-## 💡 Use `describe` to group tests for scenarios
+## 💡 Use `describe` to group tests under scenarios
 
-If you have many tests that verify the behavior of a piece of code under a particular condition, you might find it helpful to wrap those tests with a `describe` block. Use a phrase starting with `if ...` or `when ...` so as to form a sentence when combined with the test name.
+If you have many tests that verify the behavior of a piece of code under a particular condition, you might find it helpful to wrap them with a `describe` block so you only need to specify that condition once. Use a phrase starting with `if ...` or `when ...` so as to form a sentence when combined with the test description.
 
 1️⃣
 
 ```typescript
-it('calls addToken on the tokens controller if "addToken" is true', () => {
+it('delegates to the tokens controller when adding a token', () => {
   // ...
 });
 
-it('adds the new token to the state if "addToken" is true', () => {
+it('adds the new token to the state when adding a token', () => {
   // ...
 });
 
-it('returns a promise that resolves to true if "addToken" is true', () => {
+it('returns true when adding a token', () => {
   // ...
 });
 ```
@@ -144,8 +144,8 @@ it('returns a promise that resolves to true if "addToken" is true', () => {
 2️⃣
 
 ```typescript
-describe('if "addToken" is true', () => {
-  it('calls addToken on the tokens controller', () => {
+describe('when adding a token', () => {
+  it('delegates to the tokens controller', () => {
     // ...
   });
 
@@ -153,7 +153,7 @@ describe('if "addToken" is true', () => {
     // ...
   });
 
-  it('returns a promise that resolves to true', () => {
+  it('returns true', () => {
     // ...
   });
 });
