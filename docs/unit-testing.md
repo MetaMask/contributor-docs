@@ -996,26 +996,80 @@ describe('TokensController', () => {
 
 ## Keep critical data in the test
 
-Each test involves data that makes that test unique: the test may use special data to construct a scenario, render specific values to its environment, or call out to some other part of the system.
+A test may involve data that is essential for the test to set up a scenario and/or verify the intended behavior.
 
-Keeping this data in the test instead of spread out across the file or project makes that test easier to follow from beginning to end.
+Keeping this data inside of the test instead of spread out across the file or project makes the "story" that the test is telling easier to follow.
 
 🚫
 
 ```typescript
-const PASSWORD = 'abc123';
+const sampleMainnetTokenList = [
+  {
+    address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+    symbol: 'SNX',
+    decimals: 18,
+    occurrences: 11,
+    name: 'Synthetix',
+    iconUrl: 'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f.png',
+    aggregators: ['Aave', 'Bancor', 'CMC'],
+  },
+];
+const sampleMainnetTokensChainsCache = sampleMainnetTokenList.reduce(
+  (output, current) => {
+    output[current.address] = current;
+    return output;
+  },
+  {} as TokenListMap,
+);
+const sampleSingleChainState = {
+  tokenList: {
+    '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
+      address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+      symbol: 'SNX',
+      decimals: 18,
+      occurrences: 11,
+      name: 'Synthetix',
+      iconUrl: 'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f.png',
+      aggregators: ['Aave', 'Bancor', 'CMC'],
+    },
+  };
+};
+const sampleTwoChainState = {
+  tokensChainsCache: {
+    '0x1': {
+      timestamp,
+      data: sampleMainnetTokensChainsCache,
+    }
+  },
+}
 
-// ... many lines later ...
+// ... many, many lines later ...
 
-describe('KeyringController', () => {
-  describe('submitPassword', () => {
-    it('sets the password on the controller', async () => {
-      const keyringController = await initializeKeyringController({
-        password: PASSWORD,
+describe('TokensController', () => {
+  describe('start', () => {
+    it('loads the token list for the selected chain', async () => {
+      // The setup phase involves `sampleMainnetTokenList`...
+      nock(TOKEN_END_POINT_API)
+        .get(`/tokens/${convertHexToDecimal(ChainId.mainnet)}`)
+        .reply(200, sampleMainnetTokenList);
+      const controller = new TokenListController({
+        chainId: ChainId.mainnet,
       });
-      await keyringController.submitPassword(PASSWORD);
 
-      expect(keyringController.password).toBe(PASSWORD);
+      await controller.start();
+
+      // ...and the verification phase involves `sampleSingleChainState` and
+      // `sampleTwoChainState`. But it's not clear what they have to do with
+      // `sampleMainnetTokenList` without scrolling all the way up and reading
+      // all the way through the variables.
+      expect(controller.state.tokenList).toStrictEqual(
+        sampleSingleChainState.tokenList,
+      );
+      expect(
+        controller.state.tokensChainsCache[ChainId.mainnet].data,
+      ).toStrictEqual(
+        sampleTwoChainState.tokensChainsCache[ChainId.mainnet].data,
+      );
     });
   });
 });
@@ -1024,15 +1078,38 @@ describe('KeyringController', () => {
 ✅
 
 ```typescript
-describe('KeyringController', () => {
-  describe('submitPassword', () => {
-    it('sets the password on the controller', async () => {
-      const keyringController = await initializeKeyringController({
-        password: 'abc123',
+describe('TokensController', () => {
+  describe('start', () => {
+    it('loads the token list for the selected chain', async () => {
+      // Now all of the data that the test ends up using in the execution and
+      // verification phases is clearly spelled out. This also gives us an
+      // opportunity to simplify the test setup.
+      const chainIdInHex = '0x1';
+      const chainIdInDecimal = '1';
+      const tokensByAddress = {
+        '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
+          address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+          symbol: 'SNX',
+          decimals: 18,
+          occurrences: 11,
+          name: 'Synthetix',
+          iconUrl: 'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f.png',
+          aggregators: ['Aave', 'Bancor', 'CMC'],
+        };
+      };
+      nock(TOKEN_END_POINT_API)
+        .get(`/tokens/${chainIdInDecimal}`)
+        .reply(200, Object.values(tokensByAddress));
+      const controller = new TokenListController({
+        chainId: chainIdInHex,
       });
-      await keyringController.submitPassword('abc123');
 
-      expect(keyringController.password).toBe('abc123');
+      await controller.start();
+
+      expect(controller.state.tokenList).toStrictEqual(tokensByAddress);
+      expect(
+        controller.state.tokensChainsCache[chainIdInHex].data,
+      ).toStrictEqual(tokensByAddress);
     });
   });
 });
