@@ -217,11 +217,15 @@ describe('TokensController', () => {
 });
 ```
 
+### Read more
+
+- ["Tests as Specification"](http://xunitpatterns.com/Goals%20of%20Test%20Automation.html#Tests%20as%20Specification) and ["Tests as Documentation"](http://xunitpatterns.com/Goals%20of%20Test%20Automation.html#Tests%20as%20Documentation) in xUnit Patterns
+
 ## Keep tests focused
 
-Tests are easier to reason about and maintain when they cover only one aspect of the code.
+Tests are easier to reason about and maintain when they cover only one aspect of the intended behavior.
 
-If you are using "and" in the name of a test, this could indicate the test involves too much behavior and may need to be broken up.
+If you are using "and" in a test description, this could indicate the test is too large and may need to be broken up.
 
 🚫
 
