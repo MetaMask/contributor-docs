@@ -37,7 +37,7 @@ Wrap all tests for a file in a `describe` block named the same as the file itsel
 
 🚫
 
-``` typescript
+```typescript
 // file-utils.ts
 
 export function isFile() {
@@ -61,7 +61,7 @@ describe('isDirectory', () => {
 
 ✅
 
-``` typescript
+```typescript
 // file-utils.ts
 
 export function isFile() {
@@ -91,7 +91,7 @@ Using `describe` to wrap tests for a method makes it easier to spot these tests 
 
 🚫
 
-``` typescript
+```typescript
 describe('KeyringController', () => {
   it('adds a new account to the given keyring', () => {
     // ...
@@ -105,7 +105,7 @@ describe('KeyringController', () => {
 
 ✅
 
-``` typescript
+```typescript
 describe('KeyringController', () => {
   describe('addAccount', () => {
     it('adds a new account to the given keyring', () => {
@@ -127,23 +127,23 @@ If you have many tests that verify the behavior of a piece of code under a parti
 
 1️⃣
 
-``` typescript
+```typescript
 it('calls addToken on the tokens controller if "addToken" is true', () => {
   // ...
-})
+});
 
 it('adds the new token to the state if "addToken" is true', () => {
   // ...
-})
+});
 
 it('returns a promise that resolves to true if "addToken" is true', () => {
   // ...
-})
+});
 ```
 
 2️⃣
 
-``` typescript
+```typescript
 describe('if "addToken" is true', () => {
   it('calls addToken on the tokens controller', () => {
     // ...
@@ -173,25 +173,25 @@ Do not repeat the name of the function or method in the name of the test.
 
 🚫
 
-``` typescript
-it("should not stop the block tracker", () => {
+```typescript
+it('should not stop the block tracker', () => {
   // ...
 });
 ```
 
 ✅
 
-``` typescript
-it("does not stop the block tracker", () => {
+```typescript
+it('does not stop the block tracker', () => {
   // ...
 });
 ```
 
 🚫
 
-``` typescript
+```typescript
 describe('TokensController', () => {
-  it("addToken", () => {
+  it('addToken', () => {
     // ...
   });
 });
@@ -199,24 +199,24 @@ describe('TokensController', () => {
 
 🚫
 
-``` typescript
+```typescript
 describe('TokensController', () => {
   it('adds a token', () => {
     // ...
   });
-})
+});
 ```
 
 ✅
 
-``` typescript
+```typescript
 describe('TokensController', () => {
   describe('addToken', () => {
     it('adds the given token to "tokens" in state', () => {
       // ...
     });
   });
-})
+});
 ```
 
 ## Keep tests focused
@@ -227,20 +227,20 @@ If you are using "and" in the name of a test, this could indicate the test invol
 
 🚫
 
-``` typescript
-it("starts the block tracker and returns the block number", () => {
+```typescript
+it('starts the block tracker and returns the block number', () => {
   // ...
 });
 ```
 
 ✅
 
-``` typescript
-it("starts the block tracker", () => {
+```typescript
+it('starts the block tracker', () => {
   // ...
 });
 
-it("returns the block number", () => {
+it('returns the block number', () => {
   // ...
 });
 ```
@@ -257,7 +257,7 @@ Private code is a part of an interface that is not intended to be used by consum
 
 Test code marked as private as though it were directly part of the public interface where it is executed. For instance, although you might write the following:
 
-``` typescript
+```typescript
 // block-tracker.ts
 import { request } from '...';
 
@@ -291,7 +291,7 @@ export class BlockTracker extends EventEmitter {
 
 this is what consumers see:
 
-``` typescript
+```typescript
 // block-tracker.ts
 import { request } from '...';
 
@@ -317,7 +317,7 @@ export class BlockTracker extends EventEmitter {
 
 and as a result, this is how the method ought to be tested:
 
-``` typescript
+```typescript
 describe('BlockTracker', () => {
   describe('stop', () => {
     it('does not reset the current block if the block tracker is stopped', () => {
@@ -354,7 +354,7 @@ It can be helpful when composing and reading tests to surround the "exercise" ph
 
 1️⃣
 
-``` typescript
+```typescript
 describe('KeyringController', () => {
   describe('cacheEncryptionKey', () => {
     it('unlocks the keyrings with valid information', async () => {
@@ -381,13 +381,13 @@ describe('KeyringController', () => {
       expect(keyringController.encryptor.decryptWithKey.calledOnce).toBe(true);
       expect(keyringController.keyrings).toHaveLength(1);
     });
-  })
+  });
 });
 ```
 
 2️⃣
 
-``` typescript
+```typescript
 describe('KeyringController', () => {
   describe('cacheEncryptionKey', () => {
     it('unlocks the keyrings with valid information', async () => {
@@ -412,7 +412,7 @@ describe('KeyringController', () => {
       expect(keyringController.encryptor.decryptWithKey.calledOnce).toBe(true);
       expect(keyringController.keyrings).toHaveLength(1);
     });
-  })
+  });
 });
 ```
 
@@ -442,37 +442,37 @@ In this example, there are two tests. The second assumes that the spy on `getNet
 
 🚫
 
-``` typescript
+```typescript
 const optionsMock = {
-  getNetworkStatus: () => 'available'
+  getNetworkStatus: () => 'available',
 };
 
 describe('token-utils', () => {
-  it("returns null if the network is still loading", () => {
+  it('returns null if the network is still loading', () => {
     // Oops! This changes the return value of this mock for every other test
     jest.spyOn(optionsMock, 'getNetworkStatus').mockReturnValue('loading');
     expect(getTokenDetails('0xABC123', optionsMock)).toBeNull();
   });
 
-  it("returns the details about the given token", () => {
+  it('returns the details about the given token', () => {
     // This will likely not work as `getNetworkStatus` still returns "loading"
     expect(getTokenDetails('0xABC123', optionsMock)).toStrictEqual({
       standard: 'ERC20',
-      symbol: 'TEST'
+      symbol: 'TEST',
     });
   });
-})
+});
 ```
 
 Minimally, you can save the spy to a variable and then call `mockRestore` on it before the test ends:
 
-``` typescript
+```typescript
 const optionsMock = {
-  getNetworkStatus: () => 'available'
+  getNetworkStatus: () => 'available',
 };
 
 describe('token-utils', () => {
-  it("returns null if the network is still loading", () => {
+  it('returns null if the network is still loading', () => {
     const getNetworkStatusSpy = jest
       .spyOn(optionsMock, 'getNetworkStatus')
       .mockReturnValue('loading');
@@ -480,17 +480,18 @@ describe('token-utils', () => {
     getNetworkStatusSpy.mockRestore();
   });
 
-  it("returns the details about the given token", () => {
+  it('returns the details about the given token', () => {
     // This will likely not work as `getNetworkStatus` still returns "loading"
     expect(getTokenDetails('0xABC123', optionsMock)).toStrictEqual({
       standard: 'ERC20',
-      symbol: 'TEST'
+      symbol: 'TEST',
     });
   });
-})
+});
 ```
 
 But it is better to let Jest take care of this for you by setting `resetMocks` and `restoreMocks` in your Jest configuration.
+
 </details>
 
 ### Reset global variables
@@ -508,23 +509,23 @@ If the global you want to change is a function, it is best to mock the function 
 
 🚫
 
-``` typescript
-describe("NftDetails", () => {
-  it("opens a tab", () => {
+```typescript
+describe('NftDetails', () => {
+  it('opens a tab', () => {
     // This change will apply to every other test that's run after this one
-    global.platform = { openTab: jest.fn() }
+    global.platform = { openTab: jest.fn() };
 
     const { queryByTestId } = render(<NftDetails />);
     fireEvent.click(queryByTestId('nft-options__button'));
 
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: "https://testnets.opensea.io/assets/goerli/0xABC123/1",
+        url: 'https://testnets.opensea.io/assets/goerli/0xABC123/1',
       });
     });
   });
 
-  it("renders the View Opensea button after opening a tab", () => {
+  it('renders the View Opensea button after opening a tab', () => {
     const { queryByTestId } = render(<NftDetails />);
 
     fireEvent.click(queryByTestId('nft-options__button'));
@@ -538,24 +539,24 @@ describe("NftDetails", () => {
 
 ✅
 
-``` typescript
-describe("NftDetails", () => {
-  it("opens a tab", () => {
+```typescript
+describe('NftDetails', () => {
+  it('opens a tab', () => {
     // Now, as long as we set set Jest's `restoreMocks` configuration option to
     // true, this should work as expected
-    jest.spyOn(global.platform, "openTab").mockReturnValue();
+    jest.spyOn(global.platform, 'openTab').mockReturnValue();
 
     const { queryByTestId } = render(<NftDetails />);
     fireEvent.click(queryByTestId('nft-options__button'));
 
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: "https://testnets.opensea.io/assets/goerli/0xABC123/1",
+        url: 'https://testnets.opensea.io/assets/goerli/0xABC123/1',
       });
     });
   });
 
-  it("renders the View Opensea button after opening a tab", () => {
+  it('renders the View Opensea button after opening a tab', () => {
     const { queryByTestId } = render(<NftDetails />);
 
     fireEvent.click(queryByTestId('nft-options__button'));
@@ -570,22 +571,22 @@ Now say the global you want to change is not a function:
 
 🚫
 
-``` typescript
-describe("interpretMethodData", () => {
-  it("returns the signature for setApprovalForAll on Sepolia", () => {
+```typescript
+describe('interpretMethodData', () => {
+  it('returns the signature for setApprovalForAll on Sepolia', () => {
     // This change will apply to every other test that's run after this one
     global.ethereumProvider = new HttpProvider(
       'https://sepolia.infura.io/v3/abc123',
     );
     expect(interpretMethodData('0x3fbac0ab')).toStrictEqual({
-      name: 'Set Approval For All'
+      name: 'Set Approval For All',
     });
   });
 
-  it("returns the signature for setApprovalForAll on Mainnet", () => {
+  it('returns the signature for setApprovalForAll on Mainnet', () => {
     // Oops! This will still hit Sepolia
     expect(interpretMethodData('0x3fbac0ab')).toStrictEqual({
-      name: 'Set Approval For All'
+      name: 'Set Approval For All',
     });
   });
 });
@@ -595,28 +596,31 @@ describe("interpretMethodData", () => {
 
 1️⃣
 
-``` typescript
-async function withEthereumProvider(ethereumProvider: Provider, test: () => void | Promise<void>) {
+```typescript
+async function withEthereumProvider(
+  ethereumProvider: Provider,
+  test: () => void | Promise<void>,
+) {
   const originalEthereumProvider = global.ethereumProvider;
   global.ethereumProvider = ethereumProvider;
   await test();
   global.ethereumProvider = originalEthereumProvider;
 }
 
-describe("interpretMethodData", () => {
-  it("returns the signature for setApprovalForAll on Sepolia", () => {
+describe('interpretMethodData', () => {
+  it('returns the signature for setApprovalForAll on Sepolia', () => {
     const sepolia = new HttpProvider('https://sepolia.infura.io/v3/abc123');
     withEthereumProvider(sepolia, () => {
       expect(interpretMethodData('0x3fbac0ab')).toStrictEqual({
-        name: 'Set Approval For All'
+        name: 'Set Approval For All',
       });
     });
   });
 
-  it("returns the signature for setApprovalForAll on Mainnet", () => {
+  it('returns the signature for setApprovalForAll on Mainnet', () => {
     // Now this test will "just work"
     expect(interpretMethodData('0x3fbac0ab')).toStrictEqual({
-      name: 'Set Approval For All'
+      name: 'Set Approval For All',
     });
   });
 });
@@ -626,23 +630,24 @@ Even better, however, is to make use of [dependency injection](https://en.wikipe
 
 2️⃣
 
-``` typescript
-describe("interpretMethodData", () => {
-  it("returns the signature for setApprovalForAll on Sepolia", () => {
-    const provider = createFakeProvider({ network: "sepolia" });
+```typescript
+describe('interpretMethodData', () => {
+  it('returns the signature for setApprovalForAll on Sepolia', () => {
+    const provider = createFakeProvider({ network: 'sepolia' });
     expect(interpretMethodData(provider, '0x3fbac0ab')).toStrictEqual({
-      name: 'Set Approval For All'
+      name: 'Set Approval For All',
     });
   });
 
-  it("returns the signature for setApprovalForAll on Mainnet", () => {
-    const provider = createFakeProvider({ network: "mainnet" });
+  it('returns the signature for setApprovalForAll on Mainnet', () => {
+    const provider = createFakeProvider({ network: 'mainnet' });
     expect(interpretMethodData(provider, '0x3fbac0ab')).toStrictEqual({
-      name: 'Set Approval For All'
+      name: 'Set Approval For All',
     });
   });
 });
 ```
+
 </details>
 
 ### Reset shared variables
@@ -658,7 +663,7 @@ For example:
 
 🚫
 
-``` typescript
+```typescript
 const NETWORK = {
   provider: new HttpProvider('https://mainnet.infura.io/v3/abc123');
 };
@@ -687,7 +692,7 @@ It is tempting to reach for `beforeEach` to correct this:
 
 🚫
 
-``` typescript
+```typescript
 describe("interpretMethodData", () => {
   const network;
 
@@ -721,40 +726,39 @@ describe("interpretMethodData", () => {
 
 ✅
 
-``` typescript
+```typescript
 function buildNetwork({
-  provider = HttpProvider('https://mainnet.infura.io/v3/abc123')
+  provider = HttpProvider('https://mainnet.infura.io/v3/abc123'),
 }: Partial<{
-  provider: HttpProvider
+  provider: HttpProvider;
 }> = {}) {
   return { provider };
 }
 
-describe("interpretMethodData", () => {
-  it("returns the signature for setApprovalForAll on Sepolia", () => {
+describe('interpretMethodData', () => {
+  it('returns the signature for setApprovalForAll on Sepolia', () => {
     // Now `network` only lives for the duration of the test, so it cannot be
     // shared among other tests
     const network = buildNetwork({
-      provider: new HttpProvider(
-        'https://sepolia.infura.io/v3/abc123',
-      ),
+      provider: new HttpProvider('https://sepolia.infura.io/v3/abc123'),
     });
 
     expect(interpretMethodData('0x3fbac0ab', network)).toStrictEqual({
-      name: 'Set Approval For All'
+      name: 'Set Approval For All',
     });
   });
 
-  it("returns the signature for setApprovalForAll on Mainnet", () => {
+  it('returns the signature for setApprovalForAll on Mainnet', () => {
     // This test will use Mainnet by default thanks to how we defined the helper
     const network = buildNetwork();
 
     expect(interpretMethodData('0x3fbac0ab', network)).toStrictEqual({
-      name: 'Set Approval For All'
+      name: 'Set Approval For All',
     });
   });
 });
 ```
+
 </details>
 
 ### Learn more
@@ -767,14 +771,14 @@ Extract setup steps shared among multiple tests to functions instead of lumping 
 
 🚫
 
-``` typescript
-describe("TokenDetectionController", () => {
+```typescript
+describe('TokenDetectionController', () => {
   let getCurrentChainId: jest.mock<Promise<string>, []>;
   let preferencesController: PreferencesController;
   let tokenDetectionController: TokenDetectionController;
 
   beforeEach(() => {
-    getCurrentChainId = jest.fn().mockResolvedValue("0x1");
+    getCurrentChainId = jest.fn().mockResolvedValue('0x1');
     preferencesController = new PreferencesController({
       getCurrentChainId,
     });
@@ -783,29 +787,27 @@ describe("TokenDetectionController", () => {
     });
   });
 
-  describe("constructor", () => {
-    it("sets default state", () => {
+  describe('constructor', () => {
+    it('sets default state', () => {
       expect(tokenDetectionController.state).toStrictEqual({
         tokensByChainId: {},
       });
     });
   });
 
-  describe("detectTokens", () => {
-    it("tracks tokens for the currently selected chain", async () => {
-      const sampleToken = { symbol: "TOKEN", address: "0x2" };
-      getCurrentChainId.mockResolvedValue("0x2");
-      jest.spyOn(tokenDetectionController, "fetchTokens").mockResolvedValue([
-        '0xAAA',
-        '0xBBB',
-      ]);
+  describe('detectTokens', () => {
+    it('tracks tokens for the currently selected chain', async () => {
+      const sampleToken = { symbol: 'TOKEN', address: '0x2' };
+      getCurrentChainId.mockResolvedValue('0x2');
+      jest
+        .spyOn(tokenDetectionController, 'fetchTokens')
+        .mockResolvedValue(['0xAAA', '0xBBB']);
 
       await tokenDetectionController.detectTokens();
 
-      expect(tokenDetectionController.state.tokensByChainId["0x2"]).toStrictEqual([
-        '0xAAA',
-        '0xBBB',
-      ]);
+      expect(
+        tokenDetectionController.state.tokensByChainId['0x2'],
+      ).toStrictEqual(['0xAAA', '0xBBB']);
     });
   });
 });
@@ -813,10 +815,10 @@ describe("TokenDetectionController", () => {
 
 ✅
 
-``` typescript
-describe("TokenDetectionController", () => {
-  describe("constructor", () => {
-    it("sets default state", () => {
+```typescript
+describe('TokenDetectionController', () => {
+  describe('constructor', () => {
+    it('sets default state', () => {
       const { controller } = buildTokenDetectionController();
 
       expect(controller.state).toStrictEqual({
@@ -825,20 +827,19 @@ describe("TokenDetectionController", () => {
     });
   });
 
-  describe("detectTokens", () => {
-    it("tracks tokens for the currently selected chain", async () => {
-      const sampleToken = { symbol: "TOKEN", address: "0x2" };
+  describe('detectTokens', () => {
+    it('tracks tokens for the currently selected chain', async () => {
+      const sampleToken = { symbol: 'TOKEN', address: '0x2' };
       const { controller } = buildTokenDetectionController({
-        getCurrentChainId: () => "0x2",
+        getCurrentChainId: () => '0x2',
       });
-      jest.spyOn(controller, "fetchTokens").mockResolvedValue([
-        '0xAAA',
-        '0xBBB',
-      ]);
+      jest
+        .spyOn(controller, 'fetchTokens')
+        .mockResolvedValue(['0xAAA', '0xBBB']);
 
       await controller.detectTokens();
 
-      expect(controller.state.tokensByChainId["0x2"]).toStrictEqual([
+      expect(controller.state.tokensByChainId['0x2']).toStrictEqual([
         '0xAAA',
         '0xBBB',
       ]);
@@ -847,9 +848,9 @@ describe("TokenDetectionController", () => {
 });
 
 function buildTokenDetectionController({
-  getCurrentChainId = () => '0x1'
+  getCurrentChainId = () => '0x1',
 }: {
-  getCurrentChainId?: () => string
+  getCurrentChainId?: () => string;
 }) {
   const preferencesController = new PreferencesController({
     getCurrentChainId,
@@ -875,10 +876,12 @@ The functional pattern presented above can not only be applied to setup code but
 
 🚫
 
-``` typescript
+```typescript
 describe('TokensController', () => {
   let controller: TokensController;
-  let onNetworkDidChangeListener: (networkState: NetworkState) => void | undefined;
+  let onNetworkDidChangeListener: (
+    networkState: NetworkState,
+  ) => void | undefined;
 
   beforeEach(() => {
     onNetworkDidChange = jest.fn();
@@ -922,7 +925,7 @@ describe('TokensController', () => {
 
 ✅
 
-``` typescript
+```typescript
 type WithControllerOptions = Partial<TokensControllerOptions>;
 
 type WithControllerCallback = (setup: {
@@ -935,16 +938,19 @@ type WithControllerArgs =
   | [WithControllerCallback];
 
 async function withController(...args: WithControllerArgs) {
-  const [{
-    chainId = '0x1',
-    onNetworkDidChange = (listener) => {
-      onNetworkDidChangeListener = listener;
+  const [
+    {
+      chainId = '0x1',
+      onNetworkDidChange = (listener) => {
+        onNetworkDidChangeListener = listener;
+      },
     },
-  }, fn] = args.length === 1 ? [{}, args[0]] : args;
+    fn,
+  ] = args.length === 1 ? [{}, args[0]] : args;
   const onNetworkDidChangeListener: (networkState: NetworkState) => void;
 
   const controller = new TokensController({ chainId, onNetworkDidChange });
-  assert(onNetworkDidChangeListener, "onNetworkDidChangeListener was not set")
+  assert(onNetworkDidChangeListener, 'onNetworkDidChangeListener was not set');
 
   try {
     await fn({ controller, onNetworkDidChangeListener });
@@ -983,6 +989,7 @@ describe('TokensController', () => {
   });
 });
 ```
+
 </details>
 
 ## Keep critical data in the test
@@ -993,7 +1000,7 @@ Keeping this data in the test instead of spread out across the file or project m
 
 🚫
 
-``` typescript
+```typescript
 const PASSWORD = 'abc123';
 
 // ... many lines later ...
@@ -1009,12 +1016,12 @@ describe('KeyringController', () => {
       expect(keyringController.password).toBe(PASSWORD);
     });
   });
-})
+});
 ```
 
 ✅
 
-``` typescript
+```typescript
 describe('KeyringController', () => {
   describe('submitPassword', () => {
     it('sets the password on the controller', async () => {
@@ -1026,13 +1033,13 @@ describe('KeyringController', () => {
       expect(keyringController.password).toBe('abc123');
     });
   });
-})
+});
 ```
 
 ## Use Jest's mock functions instead of Sinon
 
 Jest incorporates most of the features of Sinon with a slimmer API:
 
-* `jest.fn()` can be used in place of `sinon.stub()`.
-* `jest.spyOn(object, method)` can be used in place of `sinon.spy(object, method)` or `sinon.stub(object, method)` (with the caveat that the method being spied upon will still be called by default).
-* `jest.useFakeTimers()` can be used in place of `sinon.useFakeTimers()` (though note that Jest's "clock" object had fewer features than Sinon's prior to Jest v29.5).
+- `jest.fn()` can be used in place of `sinon.stub()`.
+- `jest.spyOn(object, method)` can be used in place of `sinon.spy(object, method)` or `sinon.stub(object, method)` (with the caveat that the method being spied upon will still be called by default).
+- `jest.useFakeTimers()` can be used in place of `sinon.useFakeTimers()` (though note that Jest's "clock" object had fewer features than Sinon's prior to Jest v29.5).
