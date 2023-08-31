@@ -31,60 +31,6 @@ src/
   permission-controller.test.ts
 ```
 
-## Use `describe` to group tests for the module under test
-
-Wrap all tests for a file in a `describe` block named the same as the file itself:
-
-🚫
-
-```typescript
-// file-utils.ts
-
-export function isFile() {
-  // ...
-}
-
-export function isDirectory() {
-  // ...
-}
-
-// file-utils.test.ts
-
-describe('isFile', () => {
-  // ...
-});
-
-describe('isDirectory', () => {
-  // ...
-});
-```
-
-✅
-
-```typescript
-// file-utils.ts
-
-export function isFile() {
-  // ...
-}
-
-export function isDirectory() {
-  // ...
-}
-
-// file-utils.test.ts
-
-describe('file-utils', () => {
-  describe('isFile', () => {
-    // ...
-  });
-
-  describe('isDirectory', () => {
-    // ...
-  });
-});
-```
-
 ## Use `describe` to group tests for methods
 
 Using `describe` to wrap tests for a method makes it easier to spot these tests in a large file and makes it possible to run them on their own (using `.only`). It also helps to establish the subject of the test (the "it") and therefore keeps the test well named and focused.
