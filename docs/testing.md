@@ -4,10 +4,10 @@
 
 Jest incorporates most of the features of Sinon with a slimmer API:
 
-* `jest.fn()` can be used in place of `sinon.stub()`.
-* `jest.spyOn(object, method) can be used in place of `sinon.spy(object, method)`.
-* `jest.spyOn(object, method)` can be used in place of `sinon.stub(object, method)` (with the caveat that the method being spied upon will still be called by default).
-* `jest.useFakeTimers()` can be used in place of `sinon.useFakeTimers()` (though note that Jest's "clock" object had fewer features than Sinon's prior to Jest v29.5).
+- `jest.fn()` can be used in place of `sinon.stub()`.
+- `jest.spyOn(object, method) can be used in place of `sinon.spy(object, method)`.
+- `jest.spyOn(object, method)` can be used in place of `sinon.stub(object, method)` (with the caveat that the method being spied upon will still be called by default).
+- `jest.useFakeTimers()` can be used in place of `sinon.useFakeTimers()` (though note that Jest's "clock" object had fewer features than Sinon's prior to Jest v29.5).
 
 ## Don't test private code
 

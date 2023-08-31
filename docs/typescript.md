@@ -8,7 +8,7 @@ Although TypeScript is capable of inferring return types, adding them explicitly
 
 🚫
 
-``` javascript
+```javascript
 async function removeAccount(address: Hex) {
   const keyring = await this.getKeyringForAccount(address);
 
@@ -25,7 +25,7 @@ async function removeAccount(address: Hex) {
 
 ✅
 
-``` javascript
+```javascript
 async function removeAccount(address: Hex): Promise<KeyringControllerState> {
   const keyring = await this.getKeyringForAccount(address);
 
