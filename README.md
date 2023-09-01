@@ -9,5 +9,5 @@ This is a living repository — nothing is set in stone! If you're member of Met
 - [Engineering Principles](./docs/engineering-principles.md)
 - [JavaScript Guidelines](./docs/javascript.md)
 - [Secure Development Lifecycle Policy](./docs/sdlc.md)
-- [Testing Guidelines](./docs/testing.md)
 - [TypeScript Guidelines](./docs/typescript.md)
+- [Unit Testing Guidelines](./docs/unit-testing.md)
