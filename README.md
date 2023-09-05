@@ -7,6 +7,7 @@ This is a living repository — nothing is set in stone! If you're member of Met
 ## Table of Contents
 
 - [Engineering Principles](./docs/engineering-principles.md)
+- [Guide to Pull Requests](./docs/pull-requests.md)
 - [JavaScript Guidelines](./docs/javascript.md)
 - [Secure Development Lifecycle Policy](./docs/sdlc.md)
 - [TypeScript Guidelines](./docs/typescript.md)
