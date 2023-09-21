@@ -156,6 +156,8 @@ If you absolutely have to change the history of a pull request's branch, inform 
 
 When you press the big green "Squash & Merge" button on GitHub, you will be presented with an option to modify the commit message before you merge.
 
-If you've taken the time to [write a good pull request description](#use-the-description-to-explain-the-need-and-solution), you may be surprised to find your description buried at the bottom of this message. This happens because of how GitHub performs the squash function: if you've pushed up any commits other than the initial commit, GitHub will generate a new commit message for you that simply repeats all of their names. **As is, this unordered list will be persisted in the repository for all time.**
+The default "Squash & Merge" message can vary between repositories ([it is configurable in the repository settings](https://github.blog/changelog/2022-08-23-new-options-for-controlling-the-default-commit-message-when-merging-a-pull-request/)). Depending on the circumstance, it might contain the pull request description, the commit message, or a concatenated list of commit messages.
 
-To fix this, make sure you clear this box and replace it with the pull request description that _you_ want.
+Take the time to review this message to ensure that it describes the change well. For example, if the default message is a list of commits, you may want to replace it with the pull request description.
+
+However, please **do not modify the format of the commit title**. Some of our automated scripts depend on the title being formatted exactly as "Pull request title (#number)"; deviating from that could cause problems later on when preparing the next release. If you find that the title doesn't describe the change well, you can edit the title before merging.
