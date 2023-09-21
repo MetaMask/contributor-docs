@@ -160,4 +160,4 @@ The default "Squash & Merge" message can vary between repositories ([it is confi
 
 Take the time to review this message to ensure that it describes the change well. For example, if the default message is a list of commits, you may want to replace it with the pull request description.
 
-However, please **do not modify the format of the commit title**. Some of our automated scripts depend on the title being formatted exactly as "Pull request title (#number)"; deviating from that could cause problems later on when generating the changelog or preparing the next release. If you find that the title doesn't describe the change well, you can edit the title before merging.
+However, please **do not modify the format of the commit title**. Some of our automated scripts depend on the title being formatted exactly as "Pull request title (#number)"; deviating from that could cause problems later on when preparing the next release. If you find that the title doesn't describe the change well, you can edit the title before merging.
