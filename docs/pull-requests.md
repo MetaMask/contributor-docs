@@ -156,7 +156,7 @@ If you absolutely have to change the history of a pull request's branch, inform 
 
 When you press the big green "Squash & Merge" button on GitHub, you will be presented with an option to modify the commit message before you merge.
 
-The default "Squash & Merge" message can vary dramatically between repositories ([it is configurable in the repository settings](https://github.blog/changelog/2022-08-23-new-options-for-controlling-the-default-commit-message-when-merging-a-pull-request/)). Depending on the circumstance, it might contain the pull request description, the commit message, or a concatenate list of commit messages.
+The default "Squash & Merge" message can vary between repositories ([it is configurable in the repository settings](https://github.blog/changelog/2022-08-23-new-options-for-controlling-the-default-commit-message-when-merging-a-pull-request/)). Depending on the circumstance, it might contain the pull request description, the commit message, or a concatenate list of commit messages.
 
 Take the time to review this message to ensure that it describes the change well. For example, if the default message is a list of commits, you may want to replace it with the pull request description.
 
