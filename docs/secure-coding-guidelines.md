@@ -10,7 +10,7 @@ These guidelines apply to developers building client based applications at MetaM
 
 ## References
 
-The guidelines in this policy were gathered from concepts on the [OWASP Top 10 Site](https://owasp.org/www-project-top-ten/) and modified to meet the client applications being developed at MetaMask.
+The guidelines in this policy were gathered primarily from the [OWASP Top 10](https://owasp.org/www-project-top-ten/) and the [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/). We have included just the guidelines most relevant to MetaMask client applications.
 
 ## Guidelines
 
