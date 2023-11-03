@@ -30,7 +30,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### 1.2 Content Security
 
 1. Verify the content type of external data to ensure it matches expectations
-2. Enforce proper type checking, file type validation for file/media uploads and rendering 3rd party content
+2. Enforce proper type checking, file type validation for file/media uploads and rendering third party content
 3. Implement Content Security Policies (CSP) to mitigate XSS attacks when rendering external data
 
 #### 1.3 Data Serialization
@@ -73,7 +73,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 2. Errors should not leak data and be made more generic. This is especially important for code which handles data classified as **sensitive**.
 3. Production versions of applications shall have logging disabled
 
-### 4 3rd Party Integrations & Applications
+### 4 Third Party Integrations & Applications
 
 #### 4.1 Authentication and Authorization
 
