@@ -57,8 +57,6 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Content Security
 
-- Verify the content type of external data to ensure it matches expectations
-- Enforce proper type checking, file type validation for file/media uploads and rendering third party content
 - Implement Content Security Policies (CSP) to mitigate XSS attacks when rendering external data
 
 #### Data Serialization
