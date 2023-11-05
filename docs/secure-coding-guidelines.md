@@ -95,7 +95,6 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 - All errors should be handled
 - Errors should not leak data and be made more generic. This is especially important for code which handles data classified as **sensitive**
-- Production versions of applications shall have logging disabled
 
 ### Third Party Integrations & Applications
 
