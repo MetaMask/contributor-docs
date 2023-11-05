@@ -74,7 +74,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Data Security
 
 - Encrypt **sensitive** data prior to persisting
-- Limit the amount of time **sensitive** data is decrypted
+- Limit access to **sensitive** data
 
 #### Encryption
 
