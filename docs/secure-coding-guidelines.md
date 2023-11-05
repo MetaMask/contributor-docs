@@ -125,9 +125,6 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 - Using Socket.dev to check the health and maintenance status of dependencies and seek alternatives when necessary
 
-#### Review Dependency Licenses
-
-- Ensure dependencies' licenses align with your project's requirements
 
 #### Reduce Dependencies and Keep Them Minimal
 
