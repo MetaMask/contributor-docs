@@ -61,7 +61,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Data Serialization
 
-- Recommend using pure data formats such as CSV, JSON for serialization to avoid deserialization attacks
+- Use pure data formats (e.g. JSON, CSV) for serialization to avoid deserialization attacks
 
 ### Data Persistence & Encryption
 
