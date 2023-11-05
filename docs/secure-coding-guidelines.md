@@ -90,7 +90,6 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Logging
 
 - Secrets and **sensitive** data should not be logged
-- Console logging should be removed from production code using linters
 
 #### Error Handling
 
