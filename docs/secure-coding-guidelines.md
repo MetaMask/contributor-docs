@@ -120,7 +120,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Dependency Integrity
 
 - Use Dependabot to keep all dependencies up to date and to automate checks for updates
-- Pin dependency versions or use a yarn.lock file
+- Use a lockfile or pinned dependencies to maintain control over which version of each dependency is used
 
 #### Avoid Deprecated and Unmaintained Packages
 
