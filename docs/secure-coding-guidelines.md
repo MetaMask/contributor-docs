@@ -31,7 +31,6 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
   - Check that the format matches expectations
     - If we expect a 0x-prefixed hexadecimal string, ensure that the 0x is present
 
-- Preference should be given to libraries and frameworks that support input validation
 - Avoid dynamic code execution with untrusted data to prevent injection attacks
 
 #### Content Security
