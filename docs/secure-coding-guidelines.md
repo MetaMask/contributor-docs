@@ -31,7 +31,17 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
   - Check that the format matches expectations
     - If we expect a 0x-prefixed hexadecimal string, ensure that the 0x is present
 
-- Avoid dynamic code execution with untrusted data to prevent injection attacks
+- Avoid dynamic code execution with untrusted data
+
+  Dynamic code execution of untrusted data can allow for injection attacks. Prevent this by avoiding dynamic code execution completely where possible, but especially when the code being run was derived from untrusted data.
+
+  Examples of dynamic code execution:
+
+  - `eval`
+  - `new Function`
+  - Template processors (e.g. for HTML, SQL, etc.)
+  - DOM
+  - `javascript:` protocol
 
 #### Content Security
 
