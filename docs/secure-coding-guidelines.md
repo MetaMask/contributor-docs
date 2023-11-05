@@ -93,7 +93,9 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Error Handling
 
-- Errors should not leak data and be made more generic. This is especially important for code which handles data classified as **sensitive**
+- Avoid including data directly in error messages, especially **sensitive** data
+
+  For example, the error "Invalid hex data: ____" might indadvertantly leak a private key. Instead the error could be made more generic ("Invalid hex data"), or you could describe the problem without embedding the data ("Invalid hex data; missing 0x prefix").
 
 ### Third Party Integrations & Applications
 
