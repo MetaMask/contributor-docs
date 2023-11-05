@@ -55,9 +55,9 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
   - DOM
   - `javascript:` protocol
 
-#### Content Security
+#### Content Security Policy
 
-- Implement Content Security Policies (CSP) to mitigate XSS attacks when rendering external data
+- Use a Content Security Policy (CSP) to mitigate XSS attacks when rendering external data
 
 #### Data Serialization
 
