@@ -79,11 +79,11 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Encryption
 
 - **Sensitive** data should be secured at rest and in-transit using standard encryption protocols (e.g. cryptography libraries, OS level key management systems, https, etc.)
-- Cryptography of **sensitive** data should meet a minimum standard established by the security team during a threat assessment and annual reviews
+- Cryptography of **sensitive** data should meet a minimum standard established by the security team
 
 #### Passwords
 
-- Passwords used to decrypt content should adhere to security team recommendations during a threat assessment and annual reviews
+- Passwords used to decrypt content should adhere to security team recommendations
 
 ### Logging & Error Handling
 
