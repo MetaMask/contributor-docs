@@ -68,8 +68,8 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Data Classification
 
 - Classify the data in your application into at least two groups:
-- **Non-sensitive** data (e.g. publicly available, transactions, app theme settings, etc…)
-- **Sensitive** data (e.g. passwords, keys)
+  - **Non-sensitive** data (e.g. publicly available, transactions, app theme settings, etc…)
+  - **Sensitive** data (e.g. passwords, keys)
 
 #### Data Security
 
