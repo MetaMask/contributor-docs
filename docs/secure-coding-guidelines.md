@@ -41,7 +41,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 - When accepting a URI as input, ensure the scheme matches expectations
 
-  For example, a URL for a website or API would typically have a scheme of `https`.
+  For example, a URL for a website or API would typically have a scheme of `https`
 
 - Avoid dynamic code execution with untrusted data
 
@@ -94,7 +94,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Error Handling
 
 - All errors should be handled
-- Errors should not leak data and be made more generic. This is especially important for code which handles data classified as **sensitive**.
+- Errors should not leak data and be made more generic. This is especially important for code which handles data classified as **sensitive**
 - Production versions of applications shall have logging disabled
 
 ### Third Party Integrations & Applications
@@ -108,7 +108,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Integration/Application Integrity
 
-- Monitor integrations/applications for changes and security issues.
+- Monitor integrations/applications for changes and security issues
 
 #### Permissions
 
