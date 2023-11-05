@@ -39,6 +39,10 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
     - Some libraries do this automatically (e.g. React)
   - URL-encode data before including it in a URL
 
+- When accepting a URI as input, ensure the scheme matches expectations
+
+  For example, a URL for a website or API would typically have a scheme of `https`.
+
 - Avoid dynamic code execution with untrusted data
 
   Dynamic code execution of untrusted data can allow for injection attacks. Prevent this by avoiding dynamic code execution completely where possible, but especially when the code being run was derived from untrusted data.
