@@ -68,7 +68,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Data Classification
 
 - Classify the data in your application into at least two groups:
-  - **Non-sensitive** data (e.g. publicly available, transactions, app theme settings, etc…)
+  - **Non-sensitive** data (e.g. publicly available, transactions, app theme settings, etc.)
   - **Sensitive** data (e.g. passwords, keys)
 
 #### Data Security
@@ -78,12 +78,12 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Encryption
 
-- **Sensitive** data should be secured at rest and in-transit using standard encryption protocols (e.g. cryptography libraries, OS level key management systems, https, etc…)
+- **Sensitive** data should be secured at rest and in-transit using standard encryption protocols (e.g. cryptography libraries, OS level key management systems, https, etc.)
 - Cryptography of **sensitive** data should meet a minimum standard established by the security team during a threat assessment and annual reviews
 
 #### Passwords
 
-- Passwords used to decrypt content should adhere to security team recommendations during a threat assessment and annual reviews.
+- Passwords used to decrypt content should adhere to security team recommendations during a threat assessment and annual reviews
 
 ### Logging & Error Handling
 
