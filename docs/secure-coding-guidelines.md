@@ -18,12 +18,19 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Data Validation and Sanitization
 
-- Always validate and sanitize user inputs and reject any input that does not pass validation, such as:
-  1.  Checking the type is what we expect: (e.g. is a javascript object being passed in when a string is expected)
-  2.  Checking if the value is what within a range we expect: (e.g. is a negative number being provided when a positive one is expected)
-  3.  Checking if the format is what we expect: (e.g. do we expect a `0x` prefixed hex string but an alphanumeric string is provided instead)
-  4.  Checking if a value matches an allowed set of constants (e.g. is the value one of the few possible numbers we expect)
-- Validate and sanitize data from external sources before rendering it in the application's UI
+- Validate and sanitize all user input, and all data from external sources
+
+  For example:
+
+  - Check that the type matches expectations
+    - If a value should be a string, do not allow it to be an object
+    - Validation libraries can be used for more complex types of data
+  - Check that the value is is an allowed value or within the expected range
+    - If only a fixed set of values are expected, ensure the value matches one of them
+    - If a non-negative number is expected, do not allow the value to be negative
+  - Check that the format matches expectations
+    - If we expect a 0x-prefixed hexadecimal string, ensure that the 0x is present
+
 - Preference should be given to libraries and frameworks that support input validation
 - Avoid dynamic code execution with untrusted data to prevent injection attacks
 
