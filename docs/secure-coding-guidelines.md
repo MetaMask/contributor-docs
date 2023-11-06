@@ -45,7 +45,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 - Avoid dynamic code execution with untrusted data
 
-  Dynamic code execution of untrusted data can allow for injection attacks. Prevent this by avoiding dynamic code execution completely where possible, but especially when the code being run was derived from untrusted data.
+  Dynamic code execution of untrusted data can allow for injection attacks. If possible, avoid dynamic code execution completely. If you require dynamic code execution, consult with the security team on how to do this safely.
 
   Examples of dynamic code execution:
 
