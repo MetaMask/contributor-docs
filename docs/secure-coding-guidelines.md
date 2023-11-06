@@ -140,7 +140,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
       - If you've investigated a warning and found that it's not indicative of a malicious dependency, ignore it with a bot comment and explain your investigation with a short comment
       - Contact the security team if you're unsure how to investigate something, or if you'd like to disable a warning category
 
-#### LavaMoat
+#### LavaMoat (JavaScript projects only)
 
 - LavaMoat `allow-scripts` should be enabled on all projects
   - This project relies upon install scripts being disabled in your package manager. This can be verified by adding the dependency `@lavamoat/preinstall-always-fail`, which will cause installation to fail if scripts are enabled.
