@@ -97,7 +97,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
   For example, the error "Invalid hex data: \_\_\_\_" might indadvertantly leak a private key. Instead the error could be made more generic ("Invalid hex data"), or you could describe the problem without embedding the data ("Invalid hex data; missing 0x prefix").
 
-### Third Party Integrations & Applications
+### Third Party Integrations
 
 #### Authentication and Authorization
 
@@ -109,6 +109,8 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Integration/Application Integrity
 
 - Monitor integrations/applications for changes and security issues
+
+### Third Party Applications
 
 #### Permissions
 
