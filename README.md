@@ -10,6 +10,6 @@ This is a living repository — nothing is set in stone! If you're member of Met
 - [Guide to Pull Requests](./docs/pull-requests.md)
 - [JavaScript Guidelines](./docs/javascript.md)
 - [Secure Development Lifecycle Policy](./docs/sdlc.md)
-- [Secure Coding Guidelines](./docs/docs/secure-coding-guidelines.md)
+- [Secure Coding Guidelines](./docs/secure-coding-guidelines.md)
 - [TypeScript Guidelines](./docs/typescript.md)
 - [Unit Testing Guidelines](./docs/unit-testing.md)
