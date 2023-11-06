@@ -101,7 +101,9 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Authentication and Authorization
 
-- Store and manage API keys securely when accessing external sources
+- Store and manage API keys securely
+  - Each CI system should have a method of securely managing keys
+  - For keys used directly by developers, use 1Password
 - Do not bundle API tokens in client side applications unless you intend for them to be publicly accessible
 
 #### Integration/Application Integrity
