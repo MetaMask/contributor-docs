@@ -101,9 +101,6 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Authentication and Authorization
 
-- Store and manage API keys securely
-  - Each CI system should have a method of securely managing keys
-  - For keys used directly by developers, use 1Password
 - Do not bundle API tokens in client side applications unless you intend for them to be publicly accessible
 
 #### Integration/Application Integrity
@@ -162,8 +159,10 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Project secrets
 
-- Project secrets should be generated and shared using a password management system (1Password) and access to that system should follow the Principle of Least Authority
-- Build systems needing access to project secrets should store secrets in specific secret storage and obscured once placed into system
+- Store and manage project secrets securely
+  - Each CI system should have a method of securely managing secrets
+  - For secrets used directly by developers, use 1Password
+- Limit access to project secrets, following the Principle of Least Authority
 
 #### Application Integrity
 
