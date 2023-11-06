@@ -143,7 +143,12 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### LavaMoat
 
-- LavaMoat allow-scripts should be enabled on all projects
+- LavaMoat `allow-scripts` should be enabled on all projects
+  - This project relies upon install scripts being disabled in your package manager. This can be verified by adding the dependency `@lavamoat/preinstall-always-fail`, which will cause installation to fail if scripts are enabled.
+  - `allow-scripts` acts as an allowlist for install scripts. Use the `allow-scripts` binary after installing dependencies to run install scripts on the allowlist.
+    - On Yarn v3 projects, use the `yarn-plugin-allow-scripts` plugin to run allowed scripts automatically during install
+    - On other projects, use an npm script called `setup` that will call `install` and `allow-scripts` in sequence
+  - If you're unsure whether an install script is needed, leave it disabled
 - LavaMoat runtime should be enabled on all projects
 
 ### Operations & Infrastructure
