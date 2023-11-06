@@ -169,7 +169,3 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 - Application should be distributed through approved store portals (GitHub, App Store, Play Store, Firefox Store, Chrome Store)
 - Each distribution channel shall have provide release verifiability (certificate signing approval, hash verification)
-
-#### Auditability
-
-- All systems supporting the application shall have capability to audit modifications to the system
