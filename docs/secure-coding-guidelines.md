@@ -149,7 +149,12 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
     - On Yarn v3 projects, use the `yarn-plugin-allow-scripts` plugin to run allowed scripts automatically during install
     - On other projects, use an npm script called `setup` that will call `install` and `allow-scripts` in sequence
   - If you're unsure whether an install script is needed, leave it disabled
-- LavaMoat runtime should be enabled on all projects
+- LavaMoat runtime should be used for all Node.js build systems, and LavaMoat bundling tools should be used for all JavaScript client applications
+  - The LavaMoat runtime helps protect against malicious code in dependencies by isolating dependencies and reducing their capabilities
+  - The LavaMoat bundling tools will bundle client applications with a LavaMoat runtime and policy
+  - Regularly review your LavaMoat policies for suspicious permissions
+  - When the policy is updated, carefully review the diff to ensure that the capabilities granted to each dependency seem appropriate and legitimate
+  - Consult with the LavaMoat team if you have any questions
 
 ### Operations & Infrastructure
 
