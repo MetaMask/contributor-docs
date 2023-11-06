@@ -101,7 +101,6 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Authentication and Authorization
 
-- Implement access controls and authentication mechanisms for accessing external data
 - Store and manage API keys securely when accessing external sources
 - API keys used in client applications shall have a reduced scope adhering to Principle of Least Privilege
 - Do not bundle API tokens in client side applications unless you intend for them to be publicly accessible
