@@ -131,7 +131,15 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Audit and Monitor Dependencies
 
-- Projects should use the npm audit, Dependabot and Socket.dev tooling for periodic automated auditing of dependencies
+- Monitor dependencies for security vulnerabilities and other problems
+  - Periodically scan for security vulnerabilities (e.g. using tools like `npm audit`)
+  - Update dependencies quickly when they have security vulnerabilities
+  - Use Socket.dev to monitor dependencies for other noteworthy changes, such as maintainer changes, or the addition of install scripts or binary files
+    - Use the following etiquette when addressing Socket.dev warnings:
+      - Investigate and address all warnings before merging a PR
+      - Avoid using the `ignore-all` bot command, instead ignoring each warning one at a time
+      - If you've investigated a warning and found that it's not indicative of a malicious dependency, ignore it with a bot comment and explain your investigation with a short comment
+      - Contact the security team if you're unsure how to investigate something, or if you'd like to disable a warning category
 
 #### LavaMoat
 
