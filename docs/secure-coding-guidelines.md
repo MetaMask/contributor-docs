@@ -168,5 +168,5 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Application Integrity
 
-- Application should be distributed through approved store portals (GitHub, App Store, Play Store, Firefox Store, Chrome Store)
-- Each distribution channel shall have provide release verifiability (certificate signing approval, hash verification)
+- Application should be distributed through approved store portals (e.g. GitHub, App Store, Play Store, Firefox Store, Chrome Store)
+- Each distribution channel shall have provide release verifiability (e.g. certificate signing approval, hash verification)
