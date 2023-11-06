@@ -163,6 +163,8 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
   - Each CI system should have a method of securely managing secrets
   - For secrets used directly by developers, use 1Password
 - Limit access to project secrets, following the Principle of Least Authority
+- Prevent contributors from committing secrets to the repository
+  - GitHub has a "Secret scanning" setting that can help with this, and there are third-party tools like `2ms` (too many secrets) that can help as well
 
 #### Application Integrity
 
