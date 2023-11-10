@@ -4,13 +4,12 @@
 
 **Components should aim to meet these requirements:**
 
-- [ ]  Written in TypeScript
+- [ ]  Use TypeScript
 - [ ]  Include Storybook page
 - [ ]  Include unit tests
 - [ ]  Include relevant e2e tests
 - [ ]  Avoid unnecessary re-renders
-- [ ]  Avoid overloading components
-- [ ]  Strive for SRP (Single responsibility principle)
+- [ ]  Strive for the single-responsibility principle (SRP)
 
 **Components should aim to support these features:**
 
