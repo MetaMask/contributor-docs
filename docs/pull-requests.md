@@ -141,7 +141,7 @@ If you need to take over and merge someone else's branch, let them know so they 
 
 ### Rebase with caution
 
-Once you've created a pull request, avoid amending, rebasing, or otherwise altering the history of the branch, but push up each new change as a new commit instead. This has a few advantages:
+Once you've started receiving comments on a new pull request, avoid amending, rebasing, or otherwise altering the history of the branch, but push up each new change as a new commit instead. This has a few advantages:
 
 1. **It preserves the order of timeline activity in the Conversation view, helping reviewers follow pull requests over time.**
 
@@ -156,8 +156,6 @@ Once you've created a pull request, avoid amending, rebasing, or otherwise alter
 3. **It creates a smoother workflow for co-authors.**
 
    Since rebasing rewrites the history of a branch, someone else working on the same branch may receive an error from Git when attempting to pull the latest changes, and they may be forced to reset their branch to unblock future development. Not everyone may be familiar with this workflow, and this can lead to frustration.
-
-Make sure that when you click the button on GitHub to update a branch with its base branch, you do not choose the "rebase" option.
 
 If you absolutely have to change the history of a pull request's branch, inform your reviewers and/or collaborators appropriately.
 
