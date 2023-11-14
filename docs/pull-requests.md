@@ -139,14 +139,23 @@ If you sense that a conversation between you and the author is proceeding in an 
 
 If you need to take over and merge someone else's branch, let them know so they aren't surprised.
 
-### Rebase sparingly
+### Rebase with caution
 
-Once you've created a pull request, avoid amending, rebasing, or otherwise altering the history of the branch, but push up each new change as a new commit instead. This has two advantages:
+Once you've started receiving comments on a new pull request, avoid amending, rebasing, or otherwise altering the history of the branch, but push up each new change as a new commit instead. This has a few advantages:
 
-1. It keeps reviewers in the loop as changes are made. Keep in mind that they won't check your pull request as often as you will. If you've made a bunch of updates in response to feedback and now need a second round of reviews, then your reviewers can look over the list of most recent commits to catch up.
-2. It creates a smooth workflow with collaborators. If you're working with someone else but you change the history of the branch, they may have to now blow away their version of the branch and re-fetch it. This creates friction, causes frustration, and wastes time.
+1. **It preserves the order of timeline activity in the Conversation view, helping reviewers follow pull requests over time.**
 
-Make sure that when you click the button on GitHub to update a branch with its base branch, you do not choose the "rebase" option.
+   Reviewers tend to visit and revisit your pull request in multiple rounds over time. The timeline on the Conversation view of a pull request is an essential tool for reviewers to catch up on changes that have occurred since they've been away.
+
+   Typically, this timeline lists conversations and commits in the order that they occurred originally. Rebasing, however, lifts all commits from their surrounding conversations and moves them to the very end. This can cause confusion for reviewers and makes it more difficult for them to locate new commits (as all of them now look new).
+
+2. **It ensures that active conversations aren't marked as outdated.**
+
+   Since rebasing re-creates existing commits, it can confuse GitHub into thinking that a commit which is connected to a conversation is now outdated. This is misleading and can cause those conversations to be ignored by all parties involved.
+
+3. **It creates a smoother workflow for co-authors.**
+
+   Since rebasing rewrites the history of a branch, someone else working on the same branch may receive an error from Git when attempting to pull the latest changes, and they may be forced to reset their branch to unblock future development. Not everyone may be familiar with this workflow, and this can lead to frustration.
 
 If you absolutely have to change the history of a pull request's branch, inform your reviewers and/or collaborators appropriately.
 
