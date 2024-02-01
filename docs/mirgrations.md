@@ -1,6 +1,6 @@
 # State Migration Best Practices
 
-These best practices should apply to any team that contributes to an application that leverages local state.
+These best practices apply to any team that contributes to an application that leverages local state.
 
 ## Best Practices
 - When to Add a Migration: You should add a migration whenever you make a change to the shape of your state that is not backwards-compatible. This includes adding or removing properties, changing the type of a property, or moving properties around within the state tree (e.g. breaking controllers changes, etc...).
