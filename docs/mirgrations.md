@@ -3,7 +3,7 @@
 These best practices apply to any team that contributes to an application that leverages local state.
 
 ## Best Practices
-- When to Add a Migration: You should add a migration whenever you make a change to the shape of your state that is not backwards-compatible. This includes adding or removing properties, changing the type of a property, or moving properties around within the state tree (e.g. breaking controllers changes, etc...).
+- When to Add a Migration: add a migration whenever you make a change to the shape of your state that is not backwards-compatible. This includes adding or removing properties, changing the type of a property, or moving properties around within the state tree (e.g. breaking controllers changes, etc...).
 - Detecting Errors in a Migration: The best way to detect errors in a migration is through thorough testing. Write tests that take various shapes of old state and ensure that they are correctly transformed into the new state shape. Also, use TypeScript or another type system to help catch type errors.
 - Handling Migration Errors: If a migration fails, you should have a strategy in place to handle the error. This could be as simple as logging the error and continuing with the default state, or it could involve more complex error recovery logic. In any case, it's important to ensure that your app can still function in some way even if a migration fails.
 
