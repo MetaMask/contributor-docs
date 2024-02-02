@@ -38,10 +38,8 @@ These guidelines aren't meant to be a strict set of rules, they should be though
 
 ### Key
 
-✅Recommned
-⚠️ Use with caution, see notes
-❌Avoid
-🤔Explore usage
+✅ Recommned  ⚠️ Use with caution, see notes  ❌ Avoid  🤔 Explore usage
+
 
 ## Test names <a name="test-names"></a>
 
@@ -58,7 +56,6 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 | Send: | ❌ | should add Bob to the address book and send 1 TST to Bob | Meaningless `should` prefix. <br> The `and` decreases the readability of the test making it harder to understand what the test is doing as well as diagnose and fix issues |
 
 ### Proposal
-
 Review test names and take advantage of opportunities to increase the readability of the test. Identify tests with complex names that are testing multiple things and break them into multiple tests.
 
 | File | Current Test name | Proposed test names |
@@ -67,12 +64,12 @@ Review test names and take advantage of opportunities to increase the readabilit
 | test/e2e/tests/lockdown.spec.js | the UI and background environments are locked down | the UI environment is locked down <br> the background environment is locked down |
 
 
+
 ## Organization of test files <a name="organization-of-test-files"></a>
 
 It's essential to organise your test files. As test suites get bigger, a well-structured organisation makes it easier to search for tests as well as identify logical groups of tests that may be impacted by changes to an area of the extension. When tests are organised based on related features or functionality it becomes easier to identify common helper functions that can be shared across the tests, reducing duplication.
 
 ### Proposal
-
 We propose to reorganise tests into folders based on scenarios and features. This means that each type of scenario will have its own folder, and each feature team may own one or more folders. The reasons for this proposal are as follows:
 - This approach provides ownership of end-to-end (E2E) testing at the feature team level. Each feature team is aware of the features they own, making it easier for them to understand what tests we currently have and what's missing.
 - As we scale, we may reach a point where core teams can no longer keep track of each of the necessary test cases for specific team features. This knowledge would be better managed by the specific feature teams.
@@ -86,6 +83,7 @@ We propose to reorganise tests into folders based on scenarios and features. Thi
 | NFT | import | test/e2e/tests/nft/import-erc1155.spec.js | Consolidate all import tests for different tokens into a single repository |
 
 
+
 ## Element locators <a name="element-locators"></a>
 
 Crafting resilient locators is crucial for reliable tests. It’s important to write selectors resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated e.g. UI redesigns. As a result, less effort is required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another thing to consider is whether we would want our test to fail if the content of an element changes.
@@ -96,19 +94,24 @@ Crafting resilient locators is crucial for reliable tests. It’s important to w
 ```javascript
 await driver.clickElement('[data-testid="page-container-footer-next"]');
 ```
-✅ Ok to check the expected text as it is part of the user's experience.
+
+✅ Ok to check the expected text as it is part of the user's experience
 ```javascript
 await driver.clickElement({ text: 'Next', tag: 'button' });
 ```
+
  ⚠️ Coupled with styling: changes to how buttons are styled will cause this locator to fail
 ```javascript
 await driver.clickElement('.btn-primary');
+```
+
 ❌ 
 - Chaining direct descendants: changes to one element in the chain will cause this locator to fail
 - Using indexes: changes to the position of an element will cause this locator to fail
 ```javascript
 await driver.clickElement('footer > button:nth-of-type(2)');
 ```
+
 ❌ Xpath locators tend to be slower and more difficult to understand than CSS
 ```javascript
 await driver.clickElement('//*[@data-testid="page-container-footer-next"]')';
@@ -125,6 +128,7 @@ Replace CSS and XPath selectors with data-testid or query-based locators.
 ```javascript
 '[data-testid="account-details-qr-code"]'
 ```
+
 - ❌ Current locator:
 ```javascript
 '//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery Phrase to keep your wallet and funds secure')]'
@@ -133,6 +137,7 @@ Replace CSS and XPath selectors with data-testid or query-based locators.
 ```javascript
 '{ text: Backup your Secret Recovery Phrase to keep your wallet and funds secure, tag: div }'
 ```
+
 
 ## Wait for commands <a name="wait-for-commands"></a>
 
@@ -174,8 +179,7 @@ Remove duplicate blocking sleep methods. Identify areas where there is excessive
 | Function | File | Count | Proposed solution |
 | --- | --- | --- | --- |
 | sleepSeconds(sec) | test/e2e/mv3/multiple-restarts.spec.js | 1 | Remove the function and replace it with driver.delay avoiding further adoption of the function |
-| driver.delay(timeInMillis) | test/e2e/metamask-ui.spec.js | 48 | Investigate excessive usage. We have tried to replace all delays, but there are a few cases where our attempts have been unsuccessful. However, we should always strive to use as few delay calls as possible in our tests. We can start by marking the delay function as deprecated. Then, we do our best to eliminate existing calls.
-|
+| driver.delay(timeInMillis) | test/e2e/metamask-ui.spec.js | 48 | Investigate excessive usage: we have tried to replace all delays, but there are a few cases where our attempts have been unsuccessful. However, we should always strive to use as few delay calls as possible in our tests. We can start by marking the delay function as deprecated. Then, we do our best to eliminate existing calls. |
 | driver.delay(timeInMillis) | test/e2e/snaps/test-snap-dialog.spec.js | 18 | Investigate excessive usage. Identify potential opportunities to implement a waiting strategy specific to snaps. |
 | driver.delay(timeInMillis) | test/e2e/snaps/test-snap-management.spec.js | 16 | |
 | driver.delay(timeInMillis) | test/e2e/snaps/test-snap-managestate.spec.js | 9 | |
@@ -189,6 +193,7 @@ Gradually remove the delay variables, starting with ones that are hardly used.
 | largeDelayMs | 30 | Minimal usage in files other than metamask-ui.spec.js. Candidate for removal. Likely to be easy to remove once we complete the migration to fixtures. |
 | regularDelayMs | 60 | Widespread usage |
 | tinyDelayMs | 14 | Mostly used in performance tests |
+
 
 ### Repeatable tests
 
@@ -204,11 +209,12 @@ Avoiding conditional statements in the end-to-end tests promotes simpler and mor
 
 ### Proposal
 Remove conditional statements in test.
-- ❌ Current condition code in test:
+❌ Current condition code in test:
 ```javascript
 if (type !== signatureRequestType.signTypedData)
 ```
 Proposed solution: Structure the tests in a way that avoids branching logic
+
 
 ## Assertions <a name="assertions"></a>
 Assertions should verify expected behaviour and outcomes during test execution. When tests are responsible for assertions rather than being hidden in helper functions, it promotes test readability as expected results are explicitly stated. This makes it easier for engineers to quickly understand the intent of the test as well as the cause of failures.
@@ -238,7 +244,8 @@ AssertionError [ERR_ASSERTION]: Expected value to be true:
 -'Invalid box text content'
 ```
 
-❌⚠️ Race condition: it is possible that the completedTx is found before component rendering is complete, and then completedTx.getText() can return values that don't reflect the final state of the data, and don't reflect what the user will actually see.
+
+❌ Race condition: it is possible that the completedTx is found before component rendering is complete, and then completedTx.getText() can return values that don't reflect the final state of the data, and don't reflect what the user will actually see.
 ```javascript
 const completedTx = await driver.findElement('[data-testid="transaction-list-item"]');
 assert.equal(await completedTx.getText(), 'Send TST');
@@ -253,26 +260,17 @@ AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
 
 ### Proposal
 Provide clear and concise error messages in test assertions making it easier to diagnose and fix issues in the tests.
-- ❌ Current assertion:
+❌ Current assertion and current error message:
 ```javascript
 assert.equal(await qrCode.isDisplayed(), true);
+// AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: false !== true
 ```
-- ✅ Proposed assertion:
+- ✅ Proposed assertion and error message if we adopt the proposal:
 ```javascript
 assert.equal(await qrCode.isDisplayed(), true, ‘The QR code should be displayed’);
-```
-- ❌ Current error message:
-```javascript
-AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
-false !== true
-```
-- ✅ Error message if we adopt the proposal: 
-```javascript
-error:
-The QR code should be displayed + expected - actual
-  	-false
-  	+true
-
+// error: The QR code should be displayed + expected - actual 
+//		-false 
+//		+ true
 ```
 
 
@@ -290,6 +288,7 @@ Login
 Send TST
 Assertion
 ```
+
 - ⚠️ Use fixture to remove single redundant steps: Add Contact
 ```javascript
 new FixtureBuilder().withAddressBookControllerContactBob().build()
@@ -304,6 +303,7 @@ Add TST to wallet
 Send TST
 Assertion
 ```
+
 - ❌ Use the UI to build state
 ```javascript
 new FixtureBuilder().build()
@@ -327,6 +327,7 @@ Identify opportunities to use the FixtureBuilder to create the state, instead of
 | test/e2e/tests/multiple-transactions.spec.js | creates multiple queued transactions, then confirms | Ensure tests are different from the tests that line in test/e2e/tests/navigate-transactions.spec.js |
 | test/e2e/tests/multiple-transactions.spec.js | creates multiple queued transactions, then rejects | Create multiple transactions using the fixture builder rather than connecting to the test dapp and creating transactions through the UI |
 
+
 ### Proposal
 Investigate slow tests that take a long time to run, and see if there are opportunities to leverage fixtures instead of building the extension’s state in the UI.
 | File | Test Name | Time | Proposed solution |
@@ -336,6 +337,7 @@ Investigate slow tests that take a long time to run, and see if there are opport
 | test/e2e/tests/import-flow.spec.js | Import Account using private key and remove imported account | 1m | Replace UI steps that build up extension state with the FixtureBuilder |
 
 
+
 ## Enhancing test stability with request mocking <a name="enhancing-test-stability-with-request-mocking"></a>
 
 By intercepting network requests and substituting responses with predefined mocks, we can significantly improve the speed and stability of our end-to-end tests by eliminating reliance on external services. This approach not only gives us greater control over APIs, enabling us to test a wide range of scenarios including network errors, but also helps us verify the extension's behaviour under adverse network conditions. 
@@ -343,7 +345,7 @@ It's important to note that third-party websites and applications, which are bey
 
 ### Guidelines for intercepting network requests 
 Control the network by intercepting requests or waiting for requests to be responded to.
- - I. This could be a scam
+ - This could be a scam
 ```javascript
 // File: test/e2e/tests/security-provider.spec.js
 return {
@@ -353,7 +355,7 @@ return {
     },
 };
 ```
- - II. Request may not be safe: change the response body to mock a different scenario
+ - Request may not be safe: change the response body to mock a different scenario
 ```javascript
 // File: test/e2e/tests/security-provider.spec.js
 return {
@@ -363,7 +365,7 @@ return {
     },
 };
 ```
- - III. Request not verified: change the response code to simulate different response classes 
+ - Request not verified: change the response code to simulate different response classes 
 ```javascript
 // File: test/e2e/tests/security-provider.spec.js
 return {
@@ -371,7 +373,7 @@ return {
     json: {},
 }; 
 ```
-- IV. Waits for a request to be responded to.
+- Waits for a request to be responded to.
 ```javascript
 // File: test/e2e/tests/metrics.spec.js
 await driver.wait(async () => {
@@ -379,6 +381,7 @@ await driver.wait(async () => {
   return isPending === false;
 }, 10000);
 ```
+
 ### Proposal
 Move mocking functions to a central location.
 - Current mock code in test:
@@ -392,6 +395,7 @@ setupPhishingDetectionMocks(
 mockPhishingDetection(mockServer)
 ```
 Proposed solution: Move both mocking functions to `test/e2e/mock-e2e.js` 
+
 
 ### Guidelines for limiting third-party calls 
 By reducing reliance on external services and using techniques like response mocking and local simulations, we can control unpredictability and enhance test reliability.
@@ -419,12 +423,13 @@ Url: https://app.uniswap.org/#/swap
 
 ### Proposal
 Reduce the dependency on external sites by removing tests or mocking the dependency
-- Current external dependency in test:
+Current external dependency in test:
 ```javascript
 File: test/e2e/tests/import-flow.spec.js
 Test Name: Connects to a Hardware wallet for Trezor
 ```
 Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. We can create a fake version of this website for testing, and update our test build to use the fake version. Investigate phishing detection solution, replacing Github.com with an empty page
+
 
 
 ## Test Atomicity and Smart Test Coupling <a name="test-atomicity-and-smart-test-coupling"></a>
@@ -442,6 +447,8 @@ Here are some guidelines to decide when to isolate or combine tests:
 - Adopt a fail-fast philosophy: If an initial step in a test sequence fails, it may not be logical or efficient to proceed with subsequent steps. In such cases, adopting test coupling can be beneficial. However, consider the impact of a failure. If a failure in one part of a combined test makes it impossible to test the rest, but you still need to test the subsequent parts regardless of the outcome of the first part, it might be better to isolate the tests.
 
 Remember, the goal is to create tests that are reliable, easy to understand, and provide valuable feedback about your system. Whether you choose to isolate or combine tests will depend on what you're trying to achieve within your tests.  Ideally, we should aim for a large number of unit tests to test individual code pieces and a medium number of E2E tests for user flow testing that cover all the scenarios.
+
+
 
 ## Page Object Model <a name="page-object-model"></a>
 We would like to adopt the POM pattern. Similar to Mariona’s existing proposal [Page Object Model (POM) - Proposal](https://docs.google.com/document/d/1Hi64lJ8ZvTXNaoJZeh23_7HjhkRKtlcXrnYZKtQWeWk/edit#heading=h.y7td1yioh1l3). However, in the interim, there are steps we can take to reduce duplication and have clear separations of concerns in our helper files. A few of these can be found below.
