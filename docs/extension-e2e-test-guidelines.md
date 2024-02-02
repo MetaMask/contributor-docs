@@ -433,6 +433,7 @@ Current mock code in test:
 
 ```javascript
 // test/e2e/helpers.js
+
 setupPhishingDetectionMocks(mockServer, metamaskPhishingConfigResponse);
 
 mockPhishingDetection(mockServer);
