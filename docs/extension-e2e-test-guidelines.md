@@ -248,20 +248,16 @@ const isExpectedBoxContentPresentAndVisible =
     css: '[data-testid="mm-banner-alert-notification-text"]',
     text: options.text,
   });
-
 assert.equal(
   isExpectedBoxContentPresentAndVisible,
   true,
   'Invalid box text content',
 );
-```
 
-- Error message
-
-```javascript
-AssertionError [ERR_ASSERTION]: Expected value to be true:
-+ actual - expected
--'Invalid box text content'
+// Error message
+// AssertionError [ERR_ASSERTION]: Expected value to be true:
+// + actual - expected
+// -'Invalid box text content'
 ```
 
 ❌ Race condition: it is possible that the completedTx is found before component rendering is complete, and then completedTx.getText() can return values that don't reflect the final state of the data, and don't reflect what the user will actually see.
@@ -271,15 +267,12 @@ const completedTx = await driver.findElement(
   '[data-testid="transaction-list-item"]',
 );
 assert.equal(await completedTx.getText(), 'Send TST');
-```
 
-- Error message
-
-```javascript
-AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
-+ actual - expected
-+ 'Send Token'
-- 'Send TST'
+// Error message
+// AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+// + actual - expected
+// + 'Send Token'
+// - 'Send TST'
 ```
 
 ### Proposal
@@ -436,16 +429,13 @@ await driver.wait(async () => {
 
 Move mocking functions to a central location.
 
-- Current mock code in test:
+Current mock code in test:
 
 ```javascript
 // test/e2e/helpers.js
-setupPhishingDetectionMocks(
- mockServer,
- metamaskPhishingConfigResponse,
-)
-...
-mockPhishingDetection(mockServer)
+setupPhishingDetectionMocks(mockServer, metamaskPhishingConfigResponse);
+
+mockPhishingDetection(mockServer);
 ```
 
 Proposed solution: Move both mocking functions to `test/e2e/mock-e2e.js`
@@ -529,9 +519,9 @@ We would like to adopt the POM pattern. Similar to Mariona’s existing proposal
 | setupPhishingDetectionMocks | test/e2e/helpers.js          | test/e2e/mock-e2e.js                 | This method is related to mocking requests. This should live with the other mocking functionality |
 | assertAccountBalanceForDOM  | test/e2e/helpers.js          |                                      | the test                                                                                          |
 | roundToXDecimalPlaces       | test/e2e/helpers.js          | New file for utils                   | Should live with utils                                                                            |
-| generateRandNumBetween      | test/e2e/helpers.js          | New file for utils                   | See #Repeatable tests section. Alternatively, should live with utils                              |
-| sleepSeconds                | test/e2e/helpers.js          |                                      | See #Wait for commands section.                                                                   |
+| generateRandNumBetween      | test/e2e/helpers.js          | New file for utils                   | See Repeatable tests section. Alternatively, should live with utils                               |
+| sleepSeconds                | test/e2e/helpers.js          |                                      | See Wait for commands section.                                                                    |
 | terminateServiceWorker      | test/e2e/helpers.js          | New file for Chrome specific actions | Specific to Chrome and MV3. Should live in a new file                                             |
 | switchToNotificationWindow  | test/e2e/helpers.js          | test/e2e/webdriver/driver.js         | Should live with the other window management functions                                            |
 | getEventPayloads            | test/e2e/helpers.js          | test/e2e/mock-e2e.js                 | This method is related to mocking requests                                                        |
-| assertElementNotPresent     | test/e2e/webdriver/driver.js | Inside test                          | See #Assesrtions section. Should live inside the test                                             |
+| assertElementNotPresent     | test/e2e/webdriver/driver.js | Inside test                          | See Assesrtions section. Should live inside the test                                              |
