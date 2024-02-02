@@ -112,10 +112,7 @@ await driver.clickElement({ text: 'Next', tag: 'button' });
 await driver.clickElement('.btn-primary');
 ```
 
-❌
-
-- Chaining direct descendants: changes to one element in the chain will cause this locator to fail
-- Using indexes: changes to the position of an element will cause this locator to fail
+❌ Chaining direct descendants and using indexes: changes to one element position in the chain will cause this locator to fail
 
 ```javascript
 await driver.clickElement('footer > button:nth-of-type(2)');
@@ -131,25 +128,25 @@ await driver.clickElement('//*[@data-testid="page-container-footer-next"]')';
 
 Replace CSS and XPath selectors with data-testid or query-based locators.
 
-- ❌ Current locator:
+❌ Current locator:
 
 ```javascript
 .qr-code__wrapper
 ```
 
-- ✅ Proposed locator: Replace CSS locator with a data-testid
+✅ Proposed locator: Replace CSS locator with a data-testid
 
 ```javascript
 '[data-testid="account-details-qr-code"]';
 ```
 
-- ❌ Current locator:
+❌ Current locator:
 
 ```javascript
 '//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery Phrase to keep your wallet and funds secure')]'
 ```
 
-- ✅ Proposed locator: Replace XPATH with a query.
+✅ Proposed locator: Replace XPATH with a query.
 
 ```javascript
 '{ text: Backup your Secret Recovery Phrase to keep your wallet and funds secure, tag: div }';
@@ -220,6 +217,7 @@ Gradually remove the delay variables, starting with ones that are hardly used.
 | regularDelayMs | 60 | Widespread usage |
 | tinyDelayMs | 14 | Mostly used in performance tests |
 
+
 ### Repeatable tests
 
 Avoiding conditional statements in the end-to-end tests promotes simpler and more maintainable tests. A clear linear flow helps with understanding especially when it comes to identifying and fixing problems in failed tests. Changes in the extension's behaviour can easily break tests that rely on specific conditions to be met. It’s important to write repeatable tests that produce the same result every time they are run regardless of the environment. Conditional statements add variability to the tests as well as increase the test's complexity, making it harder to control the outcome. Changes to the test will need to be made in multiple places as the test logic is spread across branches.
@@ -235,14 +233,13 @@ Avoiding conditional statements in the end-to-end tests promotes simpler and mor
 
 ### Proposal
 
-Remove conditional statements in test.
 ❌ Current condition code in test:
 
 ```javascript
 if (type !== signatureRequestType.signTypedData)
 ```
 
-Proposed solution: Structure the tests in a way that avoids branching logic
+Proposed solution: Remove conditional statements in test, structure the tests in a way that avoids branching logic.
 
 
 
@@ -299,6 +296,7 @@ AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
 ### Proposal
 
 Provide clear and concise error messages in test assertions making it easier to diagnose and fix issues in the tests.
+
 ❌ Current assertion and current error message:
 
 ```javascript
@@ -306,7 +304,7 @@ assert.equal(await qrCode.isDisplayed(), true);
 // AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: false !== true
 ```
 
-- ✅ Proposed assertion and error message if we adopt the proposal:
+✅ Proposed assertion and error message if we adopt the proposal:
 
 ```javascript
 assert.equal(await qrCode.isDisplayed(), true, ‘The QR code should be displayed’);
