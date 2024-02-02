@@ -40,6 +40,8 @@ These guidelines aren't meant to be a strict set of rules, they should be though
 
 ✅ Recommned ⚠️ Use with caution, see notes ❌ Avoid 🤔 Explore usage
 
+
+
 ## Test names <a name="test-names"></a>
 
 The test name should communicate the purpose and behaviour of the test. A clear test name serves as a concise summary of what the test aims to verify, making it easier for everyone to understand and maintain the tests. Clear test names improve the readability of the test and help when it comes to debugging a failed test. You should be able to figure out the purpose of the test without going through the complete implementation. If the test is failing, it should be easy to figure out which functionality is broken from the test name.
@@ -63,6 +65,8 @@ Review test names and take advantage of opportunities to increase the readabilit
 | test/e2e/tests/add-account.spec.js | should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding | removes an account imported with a private key <br> impossible to remove an account generated from the SRP imported in onboarding |
 | test/e2e/tests/lockdown.spec.js    | the UI and background environments are locked down                                                                                                                 | the UI environment is locked down <br> the background environment is locked down                                                  |
 
+
+
 ## Organization of test files <a name="organization-of-test-files"></a>
 
 It's essential to organise your test files. As test suites get bigger, a well-structured organisation makes it easier to search for tests as well as identify logical groups of tests that may be impacted by changes to an area of the extension. When tests are organised based on related features or functionality it becomes easier to identify common helper functions that can be shared across the tests, reducing duplication.
@@ -81,6 +85,8 @@ We propose to reorganise tests into folders based on scenarios and features. Thi
 | Tests          | ppom            | test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js | -                                                                          |
 | Tests          | settings        | test/e2e/tests/clear-activity.spec.js                     | -                                                                          |
 | NFT            | import          | test/e2e/tests/nft/import-erc1155.spec.js                 | Consolidate all import tests for different tokens into a single repository |
+
+
 
 ## Element locators <a name="element-locators"></a>
 
@@ -149,6 +155,8 @@ Replace CSS and XPath selectors with data-testid or query-based locators.
 '{ text: Backup your Secret Recovery Phrase to keep your wallet and funds secure, tag: div }';
 ```
 
+
+
 ## Wait for commands <a name="wait-for-commands"></a>
 
 Using blocking sleep calls should be avoided, instead, we should leverage wait-for commands for synchronisation. Sleeps introduce static delays, causing a test to delay the execution for a fixed period of time. This approach is inefficient, too short and the test fails, too long results in slower execution. Wait commands wait until a specific condition is met before proceeding. They reduce unnecessary waiting and ensure the tests continue as soon as the desired state is reached, making the tests more reliable and performant. Selenium Webdriver provides 3 different waiting strategies:
@@ -200,7 +208,7 @@ Remove duplicate blocking sleep methods. Identify areas where there is excessive
 | --- | --- | --- | --- |
 | sleepSeconds(sec) | test/e2e/mv3/multiple-restarts.spec.js | 1 | Remove the function and replace it with driver.delay avoiding further adoption of the function |
 | driver.delay(timeInMillis) | test/e2e/metamask-ui.spec.js | 48 | Investigate excessive usage: we have tried to replace all delays, but there are a few cases where our attempts have been unsuccessful. However, we should always strive to use as few delay calls as possible in our tests. We can start by marking the delay function as deprecated. Then, we do our best to eliminate existing calls. |
-| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-dialog.spec.js<br>test/e2e/snaps/test-snap-management.spec.js<br>test/e2e/snaps/test-snap-managestate.spec.js | 43 | Investigate excessive usage. Identify potential opportunities to implement a waiting strategy specific to snaps. |
+| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-***.spec.js | 43 | Investigate excessive usage. Identify potential opportunities to implement a waiting strategy specific to snaps. |
 
 ### Proposal
 
@@ -235,6 +243,8 @@ if (type !== signatureRequestType.signTypedData)
 ```
 
 Proposed solution: Structure the tests in a way that avoids branching logic
+
+
 
 ## Assertions <a name="assertions"></a>
 
@@ -304,6 +314,8 @@ assert.equal(await qrCode.isDisplayed(), true, ‘The QR code should be displaye
 //		-false
 //		+ true
 ```
+
+
 
 ## Controlling state <a name="controlling-state"></a>
 
@@ -381,6 +393,8 @@ Investigate slow tests that take a long time to run, and see if there are opport
 | test/e2e/tests/import-flow.spec.js | Import wallet using Secret Recovery Phrase | 1m | Understand why this sends a transaction. Possibly remove all these steps. |
 | test/e2e/tests/add-account.spec.js | should not affect public address when using secret recovery phrase to recover account with non-zero balance | 1m | Replace UI steps that build up extension state with the FixtureBuilder |
 | test/e2e/tests/import-flow.spec.js | Import Account using private key and remove imported account | 1m | Replace UI steps that build up extension state with the FixtureBuilder |
+
+
 
 ## Enhancing test stability with request mocking <a name="enhancing-test-stability-with-request-mocking"></a>
 
@@ -497,6 +511,8 @@ Test Name: Connects to a Hardware wallet for Trezor
 
 Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. We can create a fake version of this website for testing, and update our test build to use the fake version. Investigate phishing detection solution, replacing Github.com with an empty page
 
+
+
 ## Test Atomicity and Smart Test Coupling <a name="test-atomicity-and-smart-test-coupling"></a>
 
 ### Guidelines
@@ -513,6 +529,8 @@ Here are some guidelines to decide when to isolate or combine tests:
 - Adopt a fail-fast philosophy: If an initial step in a test sequence fails, it may not be logical or efficient to proceed with subsequent steps. In such cases, adopting test coupling can be beneficial. However, consider the impact of a failure. If a failure in one part of a combined test makes it impossible to test the rest, but you still need to test the subsequent parts regardless of the outcome of the first part, it might be better to isolate the tests.
 
 Remember, the goal is to create tests that are reliable, easy to understand, and provide valuable feedback about your system. Whether you choose to isolate or combine tests will depend on what you're trying to achieve within your tests. Ideally, we should aim for a large number of unit tests to test individual code pieces and a medium number of E2E tests for user flow testing that cover all the scenarios.
+
+
 
 ## Page Object Model <a name="page-object-model"></a>
 
