@@ -180,9 +180,7 @@ Remove duplicate blocking sleep methods. Identify areas where there is excessive
 | --- | --- | --- | --- |
 | sleepSeconds(sec) | test/e2e/mv3/multiple-restarts.spec.js | 1 | Remove the function and replace it with driver.delay avoiding further adoption of the function |
 | driver.delay(timeInMillis) | test/e2e/metamask-ui.spec.js | 48 | Investigate excessive usage: we have tried to replace all delays, but there are a few cases where our attempts have been unsuccessful. However, we should always strive to use as few delay calls as possible in our tests. We can start by marking the delay function as deprecated. Then, we do our best to eliminate existing calls. |
-| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-dialog.spec.js | | |
-| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-management.spec.js | | |
-| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-managestate.spec.js | 43 | Investigate excessive usage. Identify potential opportunities to implement a waiting strategy specific to snaps. |
+| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-dialog.spec.js<br>test/e2e/snaps/test-snap-management.spec.js<br>test/e2e/snaps/test-snap-managestate.spec.js | 43 | Investigate excessive usage. Identify potential opportunities to implement a waiting strategy specific to snaps. |
 
 
 ### Proposal
