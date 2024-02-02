@@ -180,9 +180,9 @@ Remove duplicate blocking sleep methods. Identify areas where there is excessive
 | --- | --- | --- | --- |
 | sleepSeconds(sec) | test/e2e/mv3/multiple-restarts.spec.js | 1 | Remove the function and replace it with driver.delay avoiding further adoption of the function |
 | driver.delay(timeInMillis) | test/e2e/metamask-ui.spec.js | 48 | Investigate excessive usage: we have tried to replace all delays, but there are a few cases where our attempts have been unsuccessful. However, we should always strive to use as few delay calls as possible in our tests. We can start by marking the delay function as deprecated. Then, we do our best to eliminate existing calls. |
-| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-dialog.spec.js | 18 | Investigate excessive usage. Identify potential opportunities to implement a waiting strategy specific to snaps. |
-| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-management.spec.js | 16 | |
-| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-managestate.spec.js | 9 | |
+| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-dialog.spec.js | | |
+| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-management.spec.js | | |
+| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-managestate.spec.js | 43 | Investigate excessive usage. Identify potential opportunities to implement a waiting strategy specific to snaps. |
 
 
 ### Proposal
@@ -278,7 +278,7 @@ assert.equal(await qrCode.isDisplayed(), true, ‘The QR code should be displaye
 To achieve test atomicity and ensure our E2E tests are stable and reliable, we need to control the state of the extension programmatically, rather than relying on the application UI. Setting the state programmatically eliminates unnecessary UI interactions, decreasing the amount of possible breaking points in a test. It improves test stability by minimising issues caused by timing synchronisation or inconsistencies in the UI, reducing the test execution time and allowing the test to provide fast and focused feedback.
 
 ### Guidelines
-- ✅ Use fixture to remove multiple redundant steps: Add Contact, Open test dapp, Connect to test dapp, Deploy TST, Add TST to wallet
+✅ Use fixture to remove multiple redundant steps: Add Contact, Open test dapp, Connect to test dapp, Deploy TST, Add TST to wallet
 ```javascript
 new FixtureBuilder().withAddressBookControllerContactBob().withTokensControllerERC20().build()
 ```
@@ -289,7 +289,7 @@ Send TST
 Assertion
 ```
 
-- ⚠️ Use fixture to remove single redundant steps: Add Contact
+⚠️ Use fixture to remove single redundant steps: Add Contact
 ```javascript
 new FixtureBuilder().withAddressBookControllerContactBob().build()
 ```
@@ -304,7 +304,7 @@ Send TST
 Assertion
 ```
 
-- ❌ Use the UI to build state
+❌ Use the UI to build state
 ```javascript
 new FixtureBuilder().build()
 ```
