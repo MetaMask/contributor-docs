@@ -148,7 +148,7 @@ Replace CSS and XPath selectors with data-testid or query-based locators.
 
 ## Wait for commands <a name="wait-for-commands"></a>
 
-Using blocking sleep calls should be avoided, instead, we should leverage wait-for commands for synchronisation. Sleeps introduce static delays, causing a test to delay the execution for a fixed period of time. This approach is inefficient, too short and the test fails, too long results in slower execution. Wait commands wait until a specific condition is met before proceeding. They reduce unnecessary waiting and ensure the tests continue as soon as the desired state is reached, making the tests more reliable and performant. Selenium Webdriver provides 3 different waiting strategies:
+Some steps in an end-to-end test require a condition to be met before running. It is tempting to use "sleep" calls, which cause the test to pause execution for a fixed period of time. This approach is inefficient: sleeping for too long may unnecessarily lengthen the execution and sleeping for too short may lead to an intermittently failing test. Instead, leverage "wait-for" commands, which still pause but ensure the tests continue as soon as the desired state is reached, making the tests more reliable and performant. Selenium Webdriver provides 3 different waiting strategies:
 
 - _Explicit_ - pauses the execution of the test until a condition is met
 - _Implicit_ - polls the DOM for a specified period of time when waiting for elements
