@@ -23,7 +23,7 @@ This document serves as a guideline to approach end-to-end test automation in ou
 
 These guidelines aren't meant to be a strict set of rules, they should be thought of as an approach to writing robust end-to-end tests. Use them where they make sense and adapt them as necessary to complement your tests.
 
-### TLDR
+### TL;DR
 
 - Write test names that explain the behaviour of the test
 - Organization of test files
