@@ -38,7 +38,7 @@ These guidelines aren't meant to be a strict set of rules, they should be though
 
 ### Key
 
-✅ Recommned ⚠️ Use with caution, see notes ❌ Avoid 🤔 Explore usage
+✅ Recommend⚠️ Use with caution, see notes ❌ Avoid 🤔 Explore usage
 
 ## Test names <a name="test-names"></a>
 
