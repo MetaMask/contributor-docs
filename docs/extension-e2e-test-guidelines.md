@@ -150,9 +150,9 @@ Replace CSS and XPath selectors with data-testid or query-based locators.
 
 Using blocking sleep calls should be avoided, instead, we should leverage wait-for commands for synchronisation. Sleeps introduce static delays, causing a test to delay the execution for a fixed period of time. This approach is inefficient, too short and the test fails, too long results in slower execution. Wait commands wait until a specific condition is met before proceeding. They reduce unnecessary waiting and ensure the tests continue as soon as the desired state is reached, making the tests more reliable and performant. Selenium Webdriver provides 3 different waiting strategies:
 
-- Explicit pauses the execution of the test until a condition is met
-- Implicit polls the DOM for a specified period of time when waiting for elements
-- Fluent specifies the amount of time to wait for a condition, as well as the frequency to check the condition
+- _Explicit_ - pauses the execution of the test until a condition is met
+- _Implicit_ - polls the DOM for a specified period of time when waiting for elements
+- _Fluent_ - specifies the amount of time to wait for a condition, as well as the frequency to check the condition
 
 ### Guidelines
 
