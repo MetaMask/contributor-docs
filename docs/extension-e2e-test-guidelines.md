@@ -474,7 +474,7 @@ Type: Dapp
 Url: https://app.uniswap.org/#/swap
 ```
 
-❌ No control for external dependency
+❌ No control for external dependency.
 
 ```javascript
 File: test/e2e/tests/import-flow.spec.js
