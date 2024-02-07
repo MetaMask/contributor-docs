@@ -33,22 +33,45 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 
 ### Guidelines
 
-| Test Suite    | Use | Test name                                                | Notes                                                                                                                                                                      |
-| ------------- | --- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Address Book: | ✅  | adds Bob to the address book                             | Readability                                                                                                                                                                |
-| Send:         | ✅  | send 1 TST to Bob                                        | Readability                                                                                                                                                                |
-| Address Book: | ⚠️  | should add Bob to the address book                       | Meaningless `should` prefix                                                                                                                                                |
-| Send:         | ⚠️  | should send 1 TST to Bob                                 | Meaningless `should` prefix                                                                                                                                                |
-| Send:         | ❌  | should add Bob to the address book and send 1 TST to Bob | Meaningless `should` prefix. <br> The `and` decreases the readability of the test making it harder to understand what the test is doing as well as diagnose and fix issues |
+✅ Recommended test names for readability
 
-### Proposal
+```javascript
+adds Bob to the address book
+send 1 TST to Bob
+```
 
-Review test names and take advantage of opportunities to increase the readability of the test. Identify tests with complex names that are testing multiple things and break them into multiple tests.
+⚠️ Test names remains approachable, recommend to avoid using the prefix meaningless 'should'
 
-| File                               | Current Test name                                                                                                                                                  | Proposed test names                                                                                                               |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| test/e2e/tests/add-account.spec.js | should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding | removes an account imported with a private key <br> impossible to remove an account generated from the SRP imported in onboarding |
-| test/e2e/tests/lockdown.spec.js    | the UI and background environments are locked down                                                                                                                 | the UI environment is locked down <br> the background environment is locked down                                                  |
+```javascript
+should add Bob to the address book
+should send 1 TST to Bob
+```
+
+❌ Test name should be completely avoided
+
+```javascript
+should add Bob to the address book and send 1 TST to Bob
+```
+
+✅ Recommended test names for readability
+
+```javascript
+removes an account imported with a private key
+impossible to remove an account generated from the SRP imported in onboarding
+
+the UI environment is locked down
+the background environment is locked
+```
+
+❌ Test name should be completely avoided
+
+```javascript
+// in file: test/e2e/tests/add-account.spec.js
+should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding
+
+// in file: should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding
+the UI and background environments are locked down
+```
 
 ## Organization of test files
 
