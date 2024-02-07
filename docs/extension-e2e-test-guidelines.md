@@ -1,19 +1,6 @@
 # MetaMask Extension E2E Test Guidelines
 
-## Table of Contents
-
-1. [General](#general)
-2. [Test names](#test-names)
-3. [Organization of test files](#organization-of-test-files)
-4. [Element locators](#element-locators)
-5. [Wait for commands](#wait-for-commands)
-6. [Assertions](#assertions)
-7. [Controlling state](#controlling-state)
-8. [Enhancing test stability with request mocking](#enhancing-test-stability-with-request-mocking)
-9. [Test Atomicity and Smart Test Coupling](#test-atomicity-and-smart-test-coupling)
-10. [Page Object Model](#page-object-model)
-
-## General <a name="general"></a>
+## General
 
 The primary goal of writing end-to-end (E2E) tests at MetaMask is to ensure that all of the user flows within the product function as designed. Therefore, test coverage is a crucial metric for evaluating and improving quality. The higher the coverage is, the more confidence this creates among engineers in the product, and the more effectively bugs can be identified and eliminated.
 
@@ -40,7 +27,7 @@ These guidelines aren't meant to be a strict set of rules, they should be though
 
 ✅ Recommend⚠️ Use with caution, see notes ❌ Avoid 🤔 Explore usage
 
-## Test names <a name="test-names"></a>
+## Test names
 
 The test name should communicate the purpose and behaviour of the test. A clear test name serves as a concise summary of what the test aims to verify, making it easier for everyone to understand and maintain the tests. Clear test names improve the readability of the test and help when it comes to debugging a failed test. You should be able to figure out the purpose of the test without going through the complete implementation. If the test is failing, it should be easy to figure out which functionality is broken from the test name.
 
@@ -63,7 +50,7 @@ Review test names and take advantage of opportunities to increase the readabilit
 | test/e2e/tests/add-account.spec.js | should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding | removes an account imported with a private key <br> impossible to remove an account generated from the SRP imported in onboarding |
 | test/e2e/tests/lockdown.spec.js    | the UI and background environments are locked down                                                                                                                 | the UI environment is locked down <br> the background environment is locked down                                                  |
 
-## Organization of test files <a name="organization-of-test-files"></a>
+## Organization of test files
 
 It's essential to organise your test files. As test suites get bigger, a well-structured organisation makes it easier to search for tests as well as identify logical groups of tests that may be impacted by changes to an area of the extension. When tests are organised based on related features or functionality it becomes easier to identify common helper functions that can be shared across the tests, reducing duplication.
 
@@ -82,7 +69,7 @@ We propose to reorganise tests into folders based on scenarios and features. Thi
 | Tests          | settings        | test/e2e/tests/clear-activity.spec.js                     | -                                                                          |
 | NFT            | import          | test/e2e/tests/nft/import-erc1155.spec.js                 | Consolidate all import tests for different tokens into a single repository |
 
-## Element locators <a name="element-locators"></a>
+## Element locators
 
 Crafting resilient locators is crucial for reliable tests. It’s important to write selectors resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated e.g. UI redesigns. As a result, less effort is required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another thing to consider is whether we would want our test to fail if the content of an element changes.
 
@@ -146,7 +133,7 @@ Replace CSS and XPath selectors with data-testid or query-based locators.
 '{ text: Backup your Secret Recovery Phrase to keep your wallet and funds secure, tag: div }';
 ```
 
-## Wait for commands <a name="wait-for-commands"></a>
+## Wait for commands
 
 Some steps in an end-to-end test require a condition to be met before running. It is tempting to use "sleep" calls, which cause the test to pause execution for a fixed period of time. This approach is inefficient: sleeping for too long may unnecessarily lengthen the execution and sleeping for too short may lead to an intermittently failing test. Instead, leverage "wait-for" commands, which still pause but ensure the tests continue as soon as the desired state is reached, making the tests more reliable and performant. Selenium Webdriver provides 3 different waiting strategies:
 
@@ -232,7 +219,7 @@ if (type !== signatureRequestType.signTypedData)
 
 Proposed solution: Remove conditional statements in test, structure the tests in a way that avoids branching logic.
 
-## Assertions <a name="assertions"></a>
+## Assertions
 
 Assertions should verify expected behaviour and outcomes during test execution. When tests are responsible for assertions rather than being hidden in helper functions, it promotes test readability as expected results are explicitly stated. This makes it easier for engineers to quickly understand the intent of the test as well as the cause of failures.
 
@@ -295,7 +282,7 @@ assert.equal(await qrCode.isDisplayed(), true, ‘The QR code should be displaye
 //		+ true
 ```
 
-## Controlling state <a name="controlling-state"></a>
+## Controlling state
 
 To achieve test atomicity and ensure our E2E tests are stable and reliable, we need to control the state of the extension programmatically, rather than relying on the application UI. Setting the state programmatically eliminates unnecessary UI interactions, decreasing the amount of possible breaking points in a test. It improves test stability by minimising issues caused by timing synchronisation or inconsistencies in the UI, reducing the test execution time and allowing the test to provide fast and focused feedback.
 
@@ -372,7 +359,7 @@ Investigate slow tests that take a long time to run, and see if there are opport
 | test/e2e/tests/add-account.spec.js | should not affect public address when using secret recovery phrase to recover account with non-zero balance | 1m | Replace UI steps that build up extension state with the FixtureBuilder |
 | test/e2e/tests/import-flow.spec.js | Import Account using private key and remove imported account | 1m | Replace UI steps that build up extension state with the FixtureBuilder |
 
-## Enhancing test stability with request mocking <a name="enhancing-test-stability-with-request-mocking"></a>
+## Enhancing test stability with request mocking
 
 By intercepting network requests and substituting responses with predefined mocks, we can significantly improve the speed and stability of our end-to-end tests by eliminating reliance on external services. This approach not only gives us greater control over APIs, enabling us to test a wide range of scenarios including network errors, but also helps us verify the extension's behaviour under adverse network conditions.
 It's important to note that third-party websites and applications, which are beyond the control of the MetaMask engineering team, may not always behave consistently or be available. Relying on these external services introduces a dependency into our tests, increasing the chance of test failures due to factors outside our control, such as content changes, service issues, or unstable network connections. Therefore, we should aim to minimise such dependencies and be prepared for intermittent access issues.
@@ -485,7 +472,7 @@ Test Name: Connects to a Hardware wallet for Trezor
 
 Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. We can create a fake version of this website for testing, and update our test build to use the fake version. Investigate phishing detection solution, replacing Github.com with an empty page
 
-## Test Atomicity and Smart Test Coupling <a name="test-atomicity-and-smart-test-coupling"></a>
+## Test Atomicity and Smart Test Coupling
 
 ### Guidelines
 
@@ -502,7 +489,7 @@ Here are some guidelines to decide when to isolate or combine tests:
 
 Remember, the goal is to create tests that are reliable, easy to understand, and provide valuable feedback about your system. Whether you choose to isolate or combine tests will depend on what you're trying to achieve within your tests. Ideally, we should aim for a large number of unit tests to test individual code pieces and a medium number of E2E tests for user flow testing that cover all the scenarios.
 
-## Page Object Model <a name="page-object-model"></a>
+## Page Object Model
 
 We would like to adopt the POM pattern. Similar to Mariona’s existing proposal [Page Object Model (POM) - Proposal](https://docs.google.com/document/d/1Hi64lJ8ZvTXNaoJZeh23_7HjhkRKtlcXrnYZKtQWeWk/edit#heading=h.y7td1yioh1l3). However, in the interim, there are steps we can take to reduce duplication and have clear separations of concerns in our helper files. A few of these can be found below.
 
