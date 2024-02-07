@@ -295,7 +295,6 @@ assert.equal(await qrCode.isDisplayed(), true);
 // AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: false !== true
 ```
 
-
 ## Controlling state
 
 To achieve test atomicity and ensure our E2E tests are stable and reliable, we need to control the state of the extension programmatically, rather than relying on the application UI. Setting the state programmatically eliminates unnecessary UI interactions, decreasing the amount of possible breaking points in a test. It improves test stability by minimising issues caused by timing synchronisation or inconsistencies in the UI, reducing the test execution time and allowing the test to provide fast and focused feedback.
@@ -390,7 +389,6 @@ scenario: import Account using private key and remove imported account
 solution: replace UI steps that build up extension state with the FixtureBuilder
 ```
 
-
 ## Enhancing test stability with request mocking
 
 By intercepting network requests and substituting responses with predefined mocks, we can significantly improve the speed and stability of our end-to-end tests by eliminating reliance on external services. This approach not only gives us greater control over APIs, enabling us to test a wide range of scenarios including network errors, but also helps us verify the extension's behaviour under adverse network conditions.
@@ -444,49 +442,46 @@ await driver.wait(async () => {
 }, 10000);
 ```
 
-
-
 ### Guidelines for limiting third-party calls
 
 By reducing reliance on external services and using techniques like response mocking and local simulations, we can control unpredictability and enhance test reliability.
 
-- ✅ Full control over the dapp by using versions. No internet connection required.
+✅ Full control over the dapp by using versions. No internet connection required.
 
 ```javascript
 Type: E2E Test Dapp
 Url: http://localhost:8080
 ```
 
-- ⚠️ Full control over changes or updates to the dapp by using versions. Requires an internet connection
+⚠️ Full control over changes or updates to the dapp by using versions. Requires an internet connection
 
 ```javascript
 Type: Test Snaps
 Url: https://metamask.github.io/test-snaps/5.1.0/
 ```
 
-- ⚠️ Partial control over changes or updates to the dapp. Requires an internet connection.
+⚠️ Partial control over changes or updates to the dapp. Requires an internet connection.
 
 ```javascript
 Type: E2E Test Dapp
 Url: https://metamask.github.io/test-dapp/
 ```
 
-- ❌ No control over changes or updates to the dapp. Requires an internet connection.
+❌ No control over changes or updates to the dapp. Requires an internet connection.
 
 ```javascript
 Type: Dapp
 Url: https://app.uniswap.org/#/swap
 ```
 
-- ❌ No control for external dependency
+❌ No control for external dependency
+
 ```javascript
 File: test/e2e/tests/import-flow.spec.js
 Test Name: Connects to a Hardware wallet for Trezor
 ```
 
-- ✅ Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. We can create a fake version of this website for testing, and update our test build to use the fake version. Investigate phishing detection solution, replacing Github.com with an empty page.
-
-
+✅ Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. We can create a fake version of this website for testing, and update our test build to use the fake version. Investigate phishing detection solution, replacing Github.com with an empty page.
 
 ## Test Atomicity and Smart Test Coupling
 
