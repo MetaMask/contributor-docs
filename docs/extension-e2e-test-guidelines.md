@@ -25,7 +25,7 @@ These guidelines aren't meant to be a strict set of rules, they should be though
 
 ### Key
 
-✅ Recommend⚠️ Use with caution, see notes ❌ Avoid 🤔 Explore usage
+✅ Recommend⚠️ Use with caution, see notes ❌ Avoid
 
 ## Test names
 
@@ -47,7 +47,7 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 - should send 1 TST to Bob
 ```
 
-❌ Test name should be completely avoided: Meaningless `should` prefix. The `and` decreases the readability of the test,making it harder to understand what the test is doing as well as diagnose and fix issues.
+❌ Test name should be completely avoided: meaningless `should` prefix, the `and` decreases the readability of the test,making it harder to understand what the test is doing as well as diagnose and fix issues.
 
 ```javascript
 should add Bob to the address book and send 1 TST to Bob
@@ -88,28 +88,22 @@ We propose to reorganise tests into folders based on scenarios and features. Thi
 
 Example for organization of test files by features and scenarios:
 
-I. Folder for tests import: consolidate all import tests for different tokens into a single repository
-
 ```javascript
 // current test path:
 test/e2e/tests/nft/import-erc1155.spec.js
-
-// recommanded test path:
+// recommanded test path: (consolidate all import tests for different tokens into a single repository)
 test/e2e/tests/tokens/import/import-erc1155.spec.js
-```
 
-II. Folder for settings and ppom
-
-```javascript
 // current test path:
 test/e2e/tests/clear-activity.spec.js
-test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js
-
 // recommanded test path:
 test/e2e/tests/settings/clear-activity.spec.js
+
+// current test path:
+test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js
+// recommanded test path:
 test/e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js
 ```
-
 
 ## Element locators
 
@@ -177,34 +171,55 @@ Replace CSS and XPath selectors with data-testid or query-based locators.
 
 ## Wait for commands
 
-Some steps in an end-to-end test require a condition to be met before running. It is tempting to use "sleep" calls, which cause the test to pause execution for a fixed period of time. This approach is inefficient: sleeping for too long may unnecessarily lengthen the execution and sleeping for too short may lead to an intermittently failing test. Instead, leverage "wait-for" commands, which still pause but ensure the tests continue as soon as the desired state is reached, making the tests more reliable and performant. Selenium Webdriver provides 3 different waiting strategies:
+Some steps in an end-to-end test require a condition to be met before running. It is tempting to use "sleep" calls, which cause the test to pause execution for a fixed period of time. This approach is inefficient: sleeping for too long may unnecessarily lengthen the execution and sleeping for too short may lead to an intermittently failing test. Instead, leverage "wait-for" commands, which still pause but ensure the tests continue as soon as the desired state is reached, making the tests more reliable and performant.
 
-- _Explicit_ - pauses the execution of the test until a condition is met
-- _Implicit_ - polls the DOM for a specified period of time when waiting for elements
-- _Fluent_ - specifies the amount of time to wait for a condition, as well as the frequency to check the condition
+💡 When do we need to wait?
+
+1. Before Locating the Element:
+   Ensure that the page or relevant components have fully loaded. Use explicit waits to wait for certain conditions, like the visibility of an element or the presence of an element in the DOM.
+
+2. CSS Selector and Element Existence:
+   Ensure that the CSS selector is correct and that the targeted element actually exists in the DOM at the time of the search. It's possible the element is dynamically loaded or changed due to a recent update in the application.
+
+3. Context Switching:
+   Consider switching the context to that iframe or modal before attempting to locate the element.
+
+4. Recent Changes:
+   If the issue started occurring recently, review any changes made to the application that could affect the visibility or availability of the element.
+
+5. Timeout Period:
+   If the default timeout is too short for the page or element to load, consider increasing the timeout period. This is especially useful for pages that take longer to load due to network latency or heavy JavaScript use.
 
 ### Guidelines
 
 ✅ Explicit wait: wait until a condition occurs.
 
 ```javascript
-await webdriver.wait(condition, timeout);
-await webdriver.waitForSelector(condition, timeout);
-await webdriver.waitForNonEmptyElement(condition, timeout);
-await webdriver.waitForElementNotPresent(condition, timeout);
-await webdriver.findElement(condition, timeout);
+await driver.wait(async () => {
+  info = await getBackupJson();
+  return info !== null;
+}, 10000);
 ```
 
-🤔 Fluent: not implemented in our codebase yet. Wait until a condition occurs, checking at a defined frequency
+✅ Explicit wait: wait until a condition occurs.
 
 ```javascript
-await webdriver.wait(condition, timeout, message, pollTimeout);
+await driver.wait(async () => {
+  const isPending = await mockedEndpoint.isPending();
+  return isPending === false;
+}, 3000);
 ```
 
-🤔 Implicit: not implemented in our codebase. Polls the DOM for an element until a defined duration
+✅ Explicit wait for element to load
 
 ```javascript
-await webdriver.manage().setTimeouts({ implicit: 10000 });
+await driver.waitForSelector('.import-srp__actions');
+```
+
+✅ Explicit wait for element no present especially when navigating pages
+
+```javascript
+await driver.waitForElementNotPresent('.loading-overlay__spinner');
 ```
 
 ❌ SetTimeout: the hard-coded wait may be longer than needed, resulting in slower test execution.
@@ -219,47 +234,25 @@ await driver.delay(timeInMillis);
 await new Promise((resolve) => setTimeout(resolve, timeInMillis));
 ```
 
-### Proposal
-
-Remove duplicate blocking sleep methods. Identify areas where there is excessive usage of blocking sleep calls, and analyse usage to see if the delays can be replaced with wait commands that wait for a window to appear, an element to render or a request to complete. This could be an opportunity to introduce a new wait command.
-| Function | File | Count | Proposed solution |
-| --- | --- | --- | --- |
-| sleepSeconds(sec) | test/e2e/mv3/multiple-restarts.spec.js | 1 | Remove the function and replace it with driver.delay avoiding further adoption of the function |
-| driver.delay(timeInMillis) | test/e2e/metamask-ui.spec.js | 48 | Investigate excessive usage: we have tried to replace all delays, but there are a few cases where our attempts have been unsuccessful. However, we should always strive to use as few delay calls as possible in our tests. We can start by marking the delay function as deprecated. Then, we do our best to eliminate existing calls. |
-| driver.delay(timeInMillis) | test/e2e/snaps/test-snap-\*\*\*.spec.js | 43 | Investigate excessive usage. Identify potential opportunities to implement a waiting strategy specific to snaps. |
-
-### Proposal
-
-Gradually remove the delay variables, starting with ones that are hardly used.
-| Function | Usage | Notes |
-| --- | --- | --- |
-| veryLargeDelayMs | 15 | Minimal usage in files other than metamask-ui.spec.js. Candidate for removal. Likely to be easy to remove once we complete the migration to fixtures. |
-| largeDelayMs | 30 | Minimal usage in files other than metamask-ui.spec.js. Candidate for removal. Likely to be easy to remove once we complete the migration to fixtures. |
-| regularDelayMs | 60 | Widespread usage |
-| tinyDelayMs | 14 | Mostly used in performance tests |
-
 ### Repeatable tests
 
 Avoiding conditional statements in the end-to-end tests promotes simpler and more maintainable tests. A clear linear flow helps with understanding especially when it comes to identifying and fixing problems in failed tests. Changes in the extension's behaviour can easily break tests that rely on specific conditions to be met. It’s important to write repeatable tests that produce the same result every time they are run regardless of the environment. Conditional statements add variability to the tests as well as increase the test's complexity, making it harder to control the outcome. Changes to the test will need to be made in multiple places as the test logic is spread across branches.
 
 ### Guidelines
 
-| Type             | Use | Notes                                                |
-| ---------------- | --- | ---------------------------------------------------- |
-| If statement     | ❌  | Introduces complexity and variability into the tests |
-| Ternary operator | ❌  | Introduces complexity and variability into the tests |
-| Switch           | ❌  | Introduces complexity and variability into the tests |
-| Short circuiting | ❌  | Introduces complexity and variability into the tests |
-
-### Proposal
-
-❌ Current condition code in test:
+❌ Avoid following statements as they introduce complexity and variability into the tests:
 
 ```javascript
+- If statement
+- Ternary operator
+- Switch
+- Short circuiting
+
+//example code:
 if (type !== signatureRequestType.signTypedData)
 ```
 
-Proposed solution: Remove conditional statements in test, structure the tests in a way that avoids branching logic.
+✅ Proposed solution: Remove conditional statements in test, structure the tests in a way that avoids branching logic.
 
 ## Assertions
 
@@ -392,14 +385,33 @@ Identify opportunities to use the FixtureBuilder to create the state, instead of
 | test/e2e/tests/multiple-transactions.spec.js | creates multiple queued transactions, then confirms | Ensure tests are different from the tests that line in test/e2e/tests/navigate-transactions.spec.js |
 | test/e2e/tests/multiple-transactions.spec.js | creates multiple queued transactions, then rejects | Create multiple transactions using the fixture builder rather than connecting to the test dapp and creating transactions through the UI |
 
-### Proposal
+1. Scenario - creates multiple queued transactions and then confirms.
 
-Investigate slow tests that take a long time to run, and see if there are opportunities to leverage fixtures instead of building the extension’s state in the UI.
-| File | Test Name | Time | Proposed solution |
-| --- | --- | --- | --- |
-| test/e2e/tests/import-flow.spec.js | Import wallet using Secret Recovery Phrase | 1m | Understand why this sends a transaction. Possibly remove all these steps. |
-| test/e2e/tests/add-account.spec.js | should not affect public address when using secret recovery phrase to recover account with non-zero balance | 1m | Replace UI steps that build up extension state with the FixtureBuilder |
-| test/e2e/tests/import-flow.spec.js | Import Account using private key and remove imported account | 1m | Replace UI steps that build up extension state with the FixtureBuilder |
+```javascript
+// test file: test/e2e/tests/multiple-transactions.spec.js
+solution: Ensure tests are different from the tests that line in test/e2e/tests/navigate-transactions.spec.js
+```
+
+2. Scenario - creates multiple queued transactions, then rejects.
+
+```javascript
+// test file: test/e2e/tests/multiple-transactions.spec.js
+solution: Create multiple transactions using the fixture builder rather than connecting to the test dapp and creating transactions through the UI
+```
+
+3. Scenario - should not affect public address when using secret recovery phrase to recover account with non-zero balance
+
+```javascript
+// test file: test/e2e/tests/add-account.spec.js
+solution: Replace UI steps that build up extension state with the FixtureBuilder
+```
+
+4. Scenario - import Account using private key and remove imported account
+
+```javascript
+// test file: test/e2e/tests/import-flow.spec.js
+solution: Replace UI steps that build up extension state with the FixtureBuilder
+```
 
 ## Enhancing test stability with request mocking
 
@@ -530,28 +542,3 @@ Here are some guidelines to decide when to isolate or combine tests:
 - Adopt a fail-fast philosophy: If an initial step in a test sequence fails, it may not be logical or efficient to proceed with subsequent steps. In such cases, adopting test coupling can be beneficial. However, consider the impact of a failure. If a failure in one part of a combined test makes it impossible to test the rest, but you still need to test the subsequent parts regardless of the outcome of the first part, it might be better to isolate the tests.
 
 Remember, the goal is to create tests that are reliable, easy to understand, and provide valuable feedback about your system. Whether you choose to isolate or combine tests will depend on what you're trying to achieve within your tests. Ideally, we should aim for a large number of unit tests to test individual code pieces and a medium number of E2E tests for user flow testing that cover all the scenarios.
-
-## Page Object Model
-
-We would like to adopt the POM pattern. Similar to Mariona’s existing proposal [Page Object Model (POM) - Proposal](https://docs.google.com/document/d/1Hi64lJ8ZvTXNaoJZeh23_7HjhkRKtlcXrnYZKtQWeWk/edit#heading=h.y7td1yioh1l3). However, in the interim, there are steps we can take to reduce duplication and have clear separations of concerns in our helper files. A few of these can be found below.
-
-### Proposal
-
-- Move functions that control the browser from helpers.js to driver.js
-- Move functions related to mocking or intercepting requests from helpers.js to mock-e2e.js
-- Move util functions from helpers.js to a new file e.g. utils.js
-- Once all the above is complete, move all the remaining functions unrelated to withFixtures to another file e.g. ui.js, at this point, they should all be extension UI specific.
-
-| Method                      | Current File                 | Proposed File                        | Notes                                                                                             |
-| --------------------------- | ---------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| openDapp                    | test/e2e/helpers.js          | test/e2e/webdriver/driver.js         | Should live with the other navigation functions                                                   |
-| mockPhishingDetection       | test/e2e/helpers.js          | test/e2e/mock-e2e.js                 | This method is related to mocking requests. This should live with the other mocking functionality |
-| setupPhishingDetectionMocks | test/e2e/helpers.js          | test/e2e/mock-e2e.js                 | This method is related to mocking requests. This should live with the other mocking functionality |
-| assertAccountBalanceForDOM  | test/e2e/helpers.js          |                                      | the test                                                                                          |
-| roundToXDecimalPlaces       | test/e2e/helpers.js          | New file for utils                   | Should live with utils                                                                            |
-| generateRandNumBetween      | test/e2e/helpers.js          | New file for utils                   | See Repeatable tests section. Alternatively, should live with utils                               |
-| sleepSeconds                | test/e2e/helpers.js          |                                      | See Wait for commands section.                                                                    |
-| terminateServiceWorker      | test/e2e/helpers.js          | New file for Chrome specific actions | Specific to Chrome and MV3. Should live in a new file                                             |
-| switchToNotificationWindow  | test/e2e/helpers.js          | test/e2e/webdriver/driver.js         | Should live with the other window management functions                                            |
-| getEventPayloads            | test/e2e/helpers.js          | test/e2e/mock-e2e.js                 | This method is related to mocking requests                                                        |
-| assertElementNotPresent     | test/e2e/webdriver/driver.js | Inside test                          | See Assesrtions section. Should live inside the test                                              |
