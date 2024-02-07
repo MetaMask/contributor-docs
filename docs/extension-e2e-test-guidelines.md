@@ -141,17 +141,17 @@ await driver.clickElement('footer > button:nth-of-type(2)');
 await driver.clickElement('//*[@data-testid="page-container-footer-next"]')';
 ```
 
-Here are some examples how to improve selectors following above guidekines:
+Here are some examples how to improve selectors following above guidelines:
 
 ```javascript
-// current locator:
+// current element locator:
 .qr-code__wrapper
-// recommanded locator: replace CSS locator with a data-testid
+// recommanded element locator: replace CSS locator with a data-testid
 '[data-testid="account-details-qr-code"]'
 
-// current locator:
+// current element locator:
 '//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery Phrase to keep your wallet and funds secure')]'
-// recommanded locator: replace XPATH with a query
+// recommanded element locator: replace XPATH with a query
 '{ text: Backup your Secret Recovery Phrase to keep your wallet and funds secure, tag: div }'
 ```
 
