@@ -77,8 +77,6 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 
 It's essential to organise your test files. As test suites get bigger, a well-structured organisation makes it easier to search for tests as well as identify logical groups of tests that may be impacted by changes to an area of the extension. When tests are organised based on related features or functionality it becomes easier to identify common helper functions that can be shared across the tests, reducing duplication.
 
-### Proposal
-
 Organise tests into folders based on scenarios and features. This means that each type of scenario has its own folder, and each feature team owns one or more folders.
 
 - This approach provides ownership of E2E testing at the feature team level. Each feature team is aware of the features they own, making it easier for them to understand what tests we currently have and what's missing.
@@ -281,18 +279,7 @@ assert.equal(await completedTx.getText(), 'Send TST');
 // - 'Send TST'
 ```
 
-### Proposal
-
-Provide clear and concise error messages in test assertions making it easier to diagnose and fix issues in the tests.
-
-❌ Current assertion and current error message:
-
-```javascript
-assert.equal(await qrCode.isDisplayed(), true);
-// AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: false !== true
-```
-
-✅ Proposed assertion and error message if we adopt the proposal:
+✅ Assertion which provide clear and concise error messages makes it easier to diagnose and fix issues in tests:
 
 ```javascript
 assert.equal(await qrCode.isDisplayed(), true, ‘The QR code should be displayed’);
@@ -300,6 +287,14 @@ assert.equal(await qrCode.isDisplayed(), true, ‘The QR code should be displaye
 //		-false
 //		+ true
 ```
+
+❌ Assertion with unclear error message:
+
+```javascript
+assert.equal(await qrCode.isDisplayed(), true);
+// AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: false !== true
+```
+
 
 ## Controlling state
 
@@ -361,9 +356,7 @@ Send TST
 Assertion
 ```
 
-### Proposal
-
-Identify opportunities to use the FixtureBuilder to create the state, instead of navigating through the UI. Here are some examples:
+Here are some examples to remove redundant steps following above guidelines:
 
 1.
 
@@ -394,8 +387,9 @@ solution: replace UI steps that build up extension state with the FixtureBuilder
 ```javascript
 // test file: test/e2e/tests/import-flow.spec.js
 scenario: import Account using private key and remove imported account
-solution: Replace UI steps that build up extension state with the FixtureBuilder
+solution: replace UI steps that build up extension state with the FixtureBuilder
 ```
+
 
 ## Enhancing test stability with request mocking
 
@@ -450,21 +444,7 @@ await driver.wait(async () => {
 }, 10000);
 ```
 
-### Proposal
 
-Move mocking functions to a central location.
-
-Current mock code in test:
-
-```javascript
-// test/e2e/helpers.js
-
-setupPhishingDetectionMocks(mockServer, metamaskPhishingConfigResponse);
-
-mockPhishingDetection(mockServer);
-```
-
-Proposed solution: Move both mocking functions to `test/e2e/mock-e2e.js`
 
 ### Guidelines for limiting third-party calls
 
@@ -498,17 +478,15 @@ Type: Dapp
 Url: https://app.uniswap.org/#/swap
 ```
 
-### Proposal
-
-Reduce the dependency on external sites by removing tests or mocking the dependency
-Current external dependency in test:
-
+- ❌ No control for external dependency
 ```javascript
 File: test/e2e/tests/import-flow.spec.js
 Test Name: Connects to a Hardware wallet for Trezor
 ```
 
-Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. We can create a fake version of this website for testing, and update our test build to use the fake version. Investigate phishing detection solution, replacing Github.com with an empty page
+- ✅ Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. We can create a fake version of this website for testing, and update our test build to use the fake version. Investigate phishing detection solution, replacing Github.com with an empty page.
+
+
 
 ## Test Atomicity and Smart Test Coupling
 
