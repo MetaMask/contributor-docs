@@ -50,7 +50,7 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 ❌ Test name should be completely avoided: meaningless `should` prefix, the `and` decreases the readability of the test,making it harder to understand what the test is doing as well as diagnose and fix issues.
 
 ```javascript
-should add Bob to the address book and send 1 TST to Bob
+- should add Bob to the address book and send 1 TST to Bob
 ```
 
 ✅ Recommended readable test names
@@ -67,10 +67,10 @@ should add Bob to the address book and send 1 TST to Bob
 
 ```javascript
 // in file: test/e2e/tests/add-account.spec.js
-should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding
+- should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding
 
 // in file: test/e2e/tests/lockdown.spec.js
-the UI and background environments are locked down
+- the UI and background environments are locked down
 ```
 
 ## Organization of test files
@@ -260,8 +260,6 @@ Assertions should verify expected behaviour and outcomes during test execution. 
 
 ### Guidelines
 
-Please review the following video to get a better understanding of the guidelines below: [Assertions proposal.mov](https://drive.google.com/file/d/1ocwm0mwqXyBYgzuDB17OVYbQ2naHz4mR/view)
-
 ✅ Explicit assertion: clear and concise error message
 
 ```javascript
@@ -276,7 +274,7 @@ assert.equal(
   'Invalid box text content',
 );
 
-// Error message
+// Error message:
 // AssertionError [ERR_ASSERTION]: Expected value to be true:
 // + actual - expected
 // -'Invalid box text content'
@@ -290,7 +288,7 @@ const completedTx = await driver.findElement(
 );
 assert.equal(await completedTx.getText(), 'Send TST');
 
-// Error message
+// Error message:
 // AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
 // + actual - expected
 // + 'Send Token'
