@@ -33,34 +33,34 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 
 ### Guidelines
 
-✅ Recommended test names for readability
+✅ Recommended readable test names
 
 ```javascript
-adds Bob to the address book
-send 1 TST to Bob
+- adds Bob to the address book
+- send 1 TST to Bob
 ```
 
 ⚠️ Test names remains approachable, recommend to avoid using the prefix meaningless 'should'
 
 ```javascript
-should add Bob to the address book
-should send 1 TST to Bob
+- should add Bob to the address book
+- should send 1 TST to Bob
 ```
 
-❌ Test name should be completely avoided
+❌ Test name should be completely avoided: Meaningless `should` prefix. The `and` decreases the readability of the test,making it harder to understand what the test is doing as well as diagnose and fix issues.
 
 ```javascript
 should add Bob to the address book and send 1 TST to Bob
 ```
 
-✅ Recommended test names for readability
+✅ Recommended readable test names
 
 ```javascript
-removes an account imported with a private key
-impossible to remove an account generated from the SRP imported in onboarding
+- removes an account imported with a private key
+- impossible to remove an account generated from the SRP imported in onboarding
 
-the UI environment is locked down
-the background environment is locked
+- the UI environment is locked down
+- the background environment is locked
 ```
 
 ❌ Test name should be completely avoided
@@ -70,7 +70,7 @@ the background environment is locked
 should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding
 
 // in file: test/e2e/tests/lockdown.spec.js
-should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding the UI and background environments are locked down
+the UI and background environments are locked down
 ```
 
 ## Organization of test files
@@ -86,11 +86,30 @@ We propose to reorganise tests into folders based on scenarios and features. Thi
 - We eliminate the need to decide at a low level where to place a test, as it would be straightforward based on the feature or scenario.
 - This approach aligns with our mobile testing strategy. Our mobile team prefers to have feature team tests under the same folder. This could reduce friction when switching context.
 
-| Current Folder | Proposed Folder | Test                                                      | Notes                                                                      |
-| -------------- | --------------- | --------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Tests          | ppom            | test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js | -                                                                          |
-| Tests          | settings        | test/e2e/tests/clear-activity.spec.js                     | -                                                                          |
-| NFT            | import          | test/e2e/tests/nft/import-erc1155.spec.js                 | Consolidate all import tests for different tokens into a single repository |
+Example for organization of test files by features and scenarios:
+
+I. Folder for tests import: consolidate all import tests for different tokens into a single repository
+
+```javascript
+// current test path:
+test/e2e/tests/nft/import-erc1155.spec.js
+
+// recommanded test path:
+test/e2e/tests/tokens/import/import-erc1155.spec.js
+```
+
+II. Folder for settings and ppom
+
+```javascript
+// current test path:
+test/e2e/tests/clear-activity.spec.js
+test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js
+
+// recommanded test path:
+test/e2e/tests/settings/clear-activity.spec.js
+test/e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js
+```
+
 
 ## Element locators
 
