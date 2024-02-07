@@ -379,37 +379,37 @@ Assertion
 
 ### Proposal
 
-Identify opportunities to use the FixtureBuilder to create the state, instead of navigating through the UI.
-| File | Test Name | Proposed solution |
-| --- | --- | --- |
-| test/e2e/tests/multiple-transactions.spec.js | creates multiple queued transactions, then confirms | Ensure tests are different from the tests that line in test/e2e/tests/navigate-transactions.spec.js |
-| test/e2e/tests/multiple-transactions.spec.js | creates multiple queued transactions, then rejects | Create multiple transactions using the fixture builder rather than connecting to the test dapp and creating transactions through the UI |
+Identify opportunities to use the FixtureBuilder to create the state, instead of navigating through the UI. Here are some examples:
 
-1. Scenario - creates multiple queued transactions and then confirms.
+1. 
 
 ```javascript
 // test file: test/e2e/tests/multiple-transactions.spec.js
+scenario: creates multiple queued transactions and then confirms.
 solution: Ensure tests are different from the tests that line in test/e2e/tests/navigate-transactions.spec.js
 ```
 
-2. Scenario - creates multiple queued transactions, then rejects.
+2. 
 
 ```javascript
 // test file: test/e2e/tests/multiple-transactions.spec.js
-solution: Create multiple transactions using the fixture builder rather than connecting to the test dapp and creating transactions through the UI
+scenario: creates multiple queued transactions, then rejects.
+solution: create multiple transactions using the fixture builder rather than connecting to the test dapp and creating transactions through the UI
 ```
 
-3. Scenario - should not affect public address when using secret recovery phrase to recover account with non-zero balance
+3. 
 
 ```javascript
 // test file: test/e2e/tests/add-account.spec.js
-solution: Replace UI steps that build up extension state with the FixtureBuilder
+scenario: should not affect public address when using secret recovery phrase to recover account with non-zero balance
+solution: replace UI steps that build up extension state with the FixtureBuilder
 ```
 
-4. Scenario - import Account using private key and remove imported account
+4. 
 
 ```javascript
 // test file: test/e2e/tests/import-flow.spec.js
+scenario: import Account using private key and remove imported account
 solution: Replace UI steps that build up extension state with the FixtureBuilder
 ```
 
