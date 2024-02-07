@@ -79,12 +79,12 @@ It's essential to organise your test files. As test suites get bigger, a well-st
 
 ### Proposal
 
-We propose to reorganise tests into folders based on scenarios and features. This means that each type of scenario will have its own folder, and each feature team may own one or more folders. The reasons for this proposal are as follows:
+Organise tests into folders based on scenarios and features. This means that each type of scenario has its own folder, and each feature team owns one or more folders.
 
-- This approach provides ownership of end-to-end (E2E) testing at the feature team level. Each feature team is aware of the features they own, making it easier for them to understand what tests we currently have and what's missing.
-- As we scale, we may reach a point where core teams can no longer keep track of each of the necessary test cases for specific team features. This knowledge would be better managed by the specific feature teams.
-- We eliminate the need to decide at a low level where to place a test, as it would be straightforward based on the feature or scenario.
-- This approach aligns with our mobile testing strategy. Our mobile team prefers to have feature team tests under the same folder. This could reduce friction when switching context.
+- This approach provides ownership of E2E testing at the feature team level. Each feature team is aware of the features they own, making it easier for them to understand what tests we currently have and what's missing.
+- In the future, it may be that core teams can no longer keep track of each of the necessary test cases for specific team features. This knowledge would be better managed by the specific feature teams.
+- Using this organizational strategy eliminates the need to decide at a low level where to place a test, as it is straightforward based on the feature or scenario.
+- This approach aligns with the testing strategy for the mobile app. The mobile team prefers to have feature team tests under the same folder. This reduces friction when switching context.
 
 Example for organization of test files by features and scenarios:
 
