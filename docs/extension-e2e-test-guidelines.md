@@ -69,8 +69,8 @@ the background environment is locked
 // in file: test/e2e/tests/add-account.spec.js
 should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding
 
-// in file: should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding
-the UI and background environments are locked down
+// in file: test/e2e/tests/lockdown.spec.js
+should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding the UI and background environments are locked down
 ```
 
 ## Organization of test files
