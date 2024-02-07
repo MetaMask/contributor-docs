@@ -82,7 +82,7 @@ It's essential to organise your test files. As test suites get bigger, a well-st
 Organise tests into folders based on scenarios and features. This means that each type of scenario has its own folder, and each feature team owns one or more folders.
 
 - This approach provides ownership of E2E testing at the feature team level. Each feature team is aware of the features they own, making it easier for them to understand what tests we currently have and what's missing.
-- In the future, it may be that core teams can no longer keep track of each of the necessary test cases for specific team features. This knowledge would be better managed by the specific feature teams.
+- In the future, we aim to have specific feature teams manage the necessary test cases for their features, rather than having the core teams keep track of each one.
 - Using this organizational strategy eliminates the need to decide at a low level where to place a test, as it is straightforward based on the feature or scenario.
 - This approach aligns with the testing strategy for the mobile app. The mobile team prefers to have feature team tests under the same folder. This reduces friction when switching context.
 
@@ -381,7 +381,7 @@ Assertion
 
 Identify opportunities to use the FixtureBuilder to create the state, instead of navigating through the UI. Here are some examples:
 
-1. 
+1.
 
 ```javascript
 // test file: test/e2e/tests/multiple-transactions.spec.js
@@ -389,7 +389,7 @@ scenario: creates multiple queued transactions and then confirms.
 solution: Ensure tests are different from the tests that line in test/e2e/tests/navigate-transactions.spec.js
 ```
 
-2. 
+2.
 
 ```javascript
 // test file: test/e2e/tests/multiple-transactions.spec.js
@@ -397,7 +397,7 @@ scenario: creates multiple queued transactions, then rejects.
 solution: create multiple transactions using the fixture builder rather than connecting to the test dapp and creating transactions through the UI
 ```
 
-3. 
+3.
 
 ```javascript
 // test file: test/e2e/tests/add-account.spec.js
@@ -405,7 +405,7 @@ scenario: should not affect public address when using secret recovery phrase to 
 solution: replace UI steps that build up extension state with the FixtureBuilder
 ```
 
-4. 
+4.
 
 ```javascript
 // test file: test/e2e/tests/import-flow.spec.js
