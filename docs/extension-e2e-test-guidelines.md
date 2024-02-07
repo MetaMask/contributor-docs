@@ -141,32 +141,18 @@ await driver.clickElement('footer > button:nth-of-type(2)');
 await driver.clickElement('//*[@data-testid="page-container-footer-next"]')';
 ```
 
-### Proposal
-
-Replace CSS and XPath selectors with data-testid or query-based locators.
-
-❌ Current locator:
+Here are some examples how to improve selectors following above guidekines:
 
 ```javascript
+// current locator:
 .qr-code__wrapper
-```
+// recommanded locator: replace CSS locator with a data-testid
+'[data-testid="account-details-qr-code"]'
 
-✅ Proposed locator: Replace CSS locator with a data-testid
-
-```javascript
-'[data-testid="account-details-qr-code"]';
-```
-
-❌ Current locator:
-
-```javascript
+// current locator:
 '//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery Phrase to keep your wallet and funds secure')]'
-```
-
-✅ Proposed locator: Replace XPATH with a query.
-
-```javascript
-'{ text: Backup your Secret Recovery Phrase to keep your wallet and funds secure, tag: div }';
+// recommanded locator: replace XPATH with a query
+'{ text: Backup your Secret Recovery Phrase to keep your wallet and funds secure, tag: div }'
 ```
 
 ## Wait for commands
@@ -175,20 +161,20 @@ Some steps in an end-to-end test require a condition to be met before running. I
 
 💡 When do we need to wait?
 
-1. Before Locating the Element:
-   Ensure that the page or relevant components have fully loaded. Use explicit waits to wait for certain conditions, like the visibility of an element or the presence of an element in the DOM.
+- Before Locating the Element:
+  Ensure that the page or relevant components have fully loaded. Use explicit waits to wait for certain conditions, like the visibility of an element or the presence of an element in the DOM.
 
-2. CSS Selector and Element Existence:
-   Ensure that the CSS selector is correct and that the targeted element actually exists in the DOM at the time of the search. It's possible the element is dynamically loaded or changed due to a recent update in the application.
+- CSS Selector and Element Existence:
+  Ensure that the CSS selector is correct and that the targeted element actually exists in the DOM at the time of the search. It's possible the element is dynamically loaded or changed due to a recent update in the application.
 
-3. Context Switching:
-   Consider switching the context to that iframe or modal before attempting to locate the element.
+- Context Switching:
+  Consider switching the context to that iframe or modal before attempting to locate the element.
 
-4. Recent Changes:
-   If the issue started occurring recently, review any changes made to the application that could affect the visibility or availability of the element.
+- Recent Changes:
+  If the issue started occurring recently, review any changes made to the application that could affect the visibility or availability of the element.
 
-5. Timeout Period:
-   If the default timeout is too short for the page or element to load, consider increasing the timeout period. This is especially useful for pages that take longer to load due to network latency or heavy JavaScript use.
+- Timeout Period:
+  If the default timeout is too short for the page or element to load, consider increasing the timeout period. This is especially useful for pages that take longer to load due to network latency or heavy JavaScript use.
 
 ### Guidelines
 
