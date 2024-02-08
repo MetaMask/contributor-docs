@@ -79,8 +79,8 @@ It's essential to keep test files organised. As test suites get bigger, a well-s
 
 Organise tests into folders based on scenarios and features. This means that each type of scenario has its own folder, and each feature team owns one or more folders.
 
-- This approach provides ownership of E2E testing at the feature team level. Each feature team is aware of the features they own, making it easier for them to understand what tests we currently have and what's missing.
-- In the future, we aim to have specific feature teams manage the necessary test cases for their features, rather than having the core teams keep track of each one.
+- This approach assigns ownership of E2E testing at the feature team level. Each feature team, being aware of the features they own, finds it easier to understand the existing tests and identify what's missing.
+- The future goal is for specific feature teams to manage the necessary test cases for their own features, instead of the core teams tracking each one.
 - Using this organizational strategy eliminates the need to decide at a low level where to place a test, as it is straightforward based on the feature or scenario.
 - This approach aligns with the testing strategy for the mobile app. The mobile team prefers to have feature team tests under the same folder. This reduces friction when switching context.
 
@@ -105,7 +105,7 @@ test/e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js
 
 ## Element locators
 
-Crafting resilient locators is crucial for reliable tests. It’s important to write selectors resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated e.g. UI redesigns. As a result, less effort is required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another thing to consider is whether we would want our test to fail if the content of an element changes.
+Crafting resilient locators is crucial for reliable tests. It’s important to write selectors that are resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated, for example, during UI redesigns. This results in less effort required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another consideration is whether a test should fail if the content of an element changes.
 
 ### Guidelines
 
@@ -157,7 +157,7 @@ Here are some examples how to improve selectors following above guidelines:
 
 Some steps in an end-to-end test require a condition to be met before running. It is tempting to use "sleep" calls, which cause the test to pause execution for a fixed period of time. This approach is inefficient: sleeping for too long may unnecessarily lengthen the execution and sleeping for too short may lead to an intermittently failing test. Instead, leverage "wait-for" commands, which still pause but ensure the tests continue as soon as the desired state is reached, making the tests more reliable and performant.
 
-💡 When do we need to wait?
+💡 When is it necessary to wait?
 
 - Before Locating the Element:
   Ensure that the page or relevant components have fully loaded. Use explicit waits to wait for certain conditions, like the visibility of an element or the presence of an element in the DOM.
@@ -482,7 +482,7 @@ File: test/e2e/tests/import-flow.spec.js
 Test Name: Connects to a Hardware wallet for Trezor
 ```
 
-✅ Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. We can create a fake version of this website for testing, and update our test build to use the fake version. Investigate phishing detection solution, replacing Github.com with an empty page.
+✅ Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. A fake version of this website could be created for testing, and the test build could be updated to use this fake version. It's also worth investigating a phishing detection solution, such as replacing Github.com with an empty page.
 
 ## Test Atomicity and Smart Test Coupling
 
@@ -502,4 +502,4 @@ Here are some guidelines to decide when to isolate or combine tests:
 - Combine tests for multiple user flows or cross-functional tests: When testing how different parts of the application work together to perform a more complicated user journey, combining tests can be beneficial. This approach allows you to verify a suite of user flows in a cohesive manner.
 - Adopt a fail-fast philosophy: If an initial step in a test sequence fails, it may not be logical or efficient to proceed with subsequent steps. In such cases, adopting test coupling can be beneficial. However, consider the impact of a failure. If a failure in one part of a combined test makes it impossible to test the rest, but you still need to test the subsequent parts regardless of the outcome of the first part, it might be better to isolate the tests.
 
-Remember, the goal is to create tests that are reliable, easy to understand, and provide valuable feedback about your system. Whether you choose to isolate or combine tests will depend on what you're trying to achieve within your tests. Ideally, we should aim for a large number of unit tests to test individual code pieces and a medium number of E2E tests for user flow testing that cover all the scenarios.
+Remember, the goal is to create tests that are reliable, easy to understand, and provide valuable feedback about the system. Whether you choose to isolate or combine tests will depend on what you're trying to achieve within your tests. Ideally, you should aim for a large number of unit tests to test individual code pieces and a medium number of E2E tests for user flow testing that cover all the scenarios.
