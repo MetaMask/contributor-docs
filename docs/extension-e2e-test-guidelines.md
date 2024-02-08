@@ -445,7 +445,7 @@ await driver.wait(async () => {
 
 ### Guidelines for limiting third-party calls
 
-By reducing reliance on external services and using techniques like response mocking and local simulations, we can control unpredictability and enhance test reliability.
+Reduce reliance on external services and using techniques like response mocking and local simulations in order to control unpredictability and enhance test reliability.
 
 ✅ Full control over the dapp by using versions. No internet connection required.
 
