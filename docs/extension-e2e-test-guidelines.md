@@ -391,8 +391,9 @@ solution: replace UI steps that build up extension state with the FixtureBuilder
 
 ## Enhancing test stability with request mocking
 
-By intercepting network requests and substituting responses with predefined mocks, we can significantly improve the speed and stability of our end-to-end tests by eliminating reliance on external services. This approach not only gives us greater control over APIs, enabling us to test a wide range of scenarios including network errors, but also helps us verify the extension's behaviour under adverse network conditions.
-It's important to note that third-party websites and applications, which are beyond the control of the MetaMask engineering team, may not always behave consistently or be available. Relying on these external services introduces a dependency into our tests, increasing the chance of test failures due to factors outside our control, such as content changes, service issues, or unstable network connections. Therefore, we should aim to minimise such dependencies and be prepared for intermittent access issues.
+Intercepting network requests and substituting responses with predefined mocks significantly improves the speed and stability of the end-to-end tests by eliminating reliance on external services. This approach not only provides greater control over APIs, allowing a wide range of scenarios including network errors to be tested, but also helps to verify the extension's behaviour under adverse network conditions.
+
+It's important to note that third-party websites and applications, which are beyond the control of the MetaMask engineering team, may not always behave consistently or be available. Relying on these external services in tests increases the chance of failures due to unknown factors such as content changes, service issues, or unstable network connections. Therefore, you should aim to minimise such dependencies and be prepared for intermittent access issues.
 
 ### Guidelines for intercepting network requests
 
