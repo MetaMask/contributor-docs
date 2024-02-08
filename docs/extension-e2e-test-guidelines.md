@@ -297,7 +297,7 @@ assert.equal(await qrCode.isDisplayed(), true);
 
 ## Controlling state
 
-To achieve test atomicity and ensure our E2E tests are stable and reliable, we need to control the state of the extension programmatically, rather than relying on the application UI. Setting the state programmatically eliminates unnecessary UI interactions, decreasing the amount of possible breaking points in a test. It improves test stability by minimising issues caused by timing synchronisation or inconsistencies in the UI, reducing the test execution time and allowing the test to provide fast and focused feedback.
+To achieve test atomicity and ensure E2E tests are stable and reliable, it is best to control the state of the extension programmatically rather than relying on the application UI. Doing so eliminates unnecessary UI interactions, decreasing the amount of possible breaking points in a test. It also improves test stability by minimising issues caused by timing synchronisation or inconsistencies in the UI, reducing the test execution time and allowing the test to provide fast and focused feedback.
 
 ### Guidelines
 
