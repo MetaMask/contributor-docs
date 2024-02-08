@@ -75,7 +75,7 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 
 ## Organization of test files
 
-It's essential to organise your test files. As test suites get bigger, a well-structured organisation makes it easier to search for tests as well as identify logical groups of tests that may be impacted by changes to an area of the extension. When tests are organised based on related features or functionality it becomes easier to identify common helper functions that can be shared across the tests, reducing duplication.
+It's essential to keep test files organised. As test suites get bigger, a well-structured organisation makes it easier to search for tests as well as identify logical groups of tests that may be impacted by changes to an area of the extension. When tests are organised based on related features or functionality it becomes easier to identify common helper functions that can be shared across the tests, reducing duplication.
 
 Organise tests into folders based on scenarios and features. This means that each type of scenario has its own folder, and each feature team owns one or more folders.
 
