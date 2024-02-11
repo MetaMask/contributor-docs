@@ -28,6 +28,8 @@ Here are some examples of pull request descriptions that satisfy the criteria ab
 - <https://github.com/MetaMask/metamask-extension/pull/18629>
 - <https://github.com/MetaMask/metamask-mobile/pull/6677>
 - <https://github.com/MetaMask/snaps/pull/1708>
+- <https://github.com/MetaMask/metamask-extension/pull/21370>
+- <https://github.com/MetaMask/metamask-extension/pull/22155>
 
 > [!NOTE]\
 > The same guidelines above apply just as well to Git commit messages as they do to pull request descriptions. In fact, if you create a pull request from a branch with only one commit, GitHub will copy your commit message into the pull request description. This means that if you focus on writing a good commit message _before_ you push up your branch, when you go to create your pull request, you're done — you don't have to spend any extra time filling out the pull request description. As a bonus, your commit will thereafter be visible in Git rather than GitHub, saving future code spelunkers time.
