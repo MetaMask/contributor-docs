@@ -16,7 +16,7 @@ As you are filling out the description, use these questions as a guide:
 
 - **What is the context behind your changes?** Remember that your reviewers might not know everything you know. Set the stage: what sort of domain-specific information can you share with them so that they can evaluate your changes more easily? (Linking to a ticket is better than nothing, but prefer to summarize the context as best you can in order to save your reviewers valuable time.)
 - **What is the purpose of your changes?** What is insufficient about the way things work now? What's the user story?
-- **What is your solution?** How do your changes satisfy the need? Are there any changes in particular whose purpose might not be obvious or whose implementation might be difficult to decipher? How do they work?
+- **What is your solution?** How do your changes satisfy the need? Are there any changes in particular whose purpose might not be obvious or whose implementation might be difficult to decipher? How do they work? If you made UI changes, are there any screenshots or videos you can provide to illustrate the solution?
 
 In the majority of cases, these questions can be answered in as little as one or two paragraphs.
 
@@ -28,6 +28,8 @@ Here are some examples of pull request descriptions that satisfy the criteria ab
 - <https://github.com/MetaMask/metamask-extension/pull/18629>
 - <https://github.com/MetaMask/metamask-mobile/pull/6677>
 - <https://github.com/MetaMask/snaps/pull/1708>
+- <https://github.com/MetaMask/metamask-extension/pull/21370>
+- <https://github.com/MetaMask/metamask-extension/pull/22155>
 
 > [!NOTE]\
 > The same guidelines above apply just as well to Git commit messages as they do to pull request descriptions. In fact, if you create a pull request from a branch with only one commit, GitHub will copy your commit message into the pull request description. This means that if you focus on writing a good commit message _before_ you push up your branch, when you go to create your pull request, you're done — you don't have to spend any extra time filling out the pull request description. As a bonus, your commit will thereafter be visible in Git rather than GitHub, saving future code spelunkers time.
