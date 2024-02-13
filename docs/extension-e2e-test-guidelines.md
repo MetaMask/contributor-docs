@@ -103,6 +103,21 @@ test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js
 test/e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js
 ```
 
+## Managing Test Size and Execution Time
+
+To maintain efficient and effective E2E testing within MetaMask Extension repository, it's crucial to address the execution time of our spec files. Here are key considerations:
+
+- Limiting Tests per Spec File :
+  It's advisable to avoid overcrowding spec files with too many tests. A high number of tests within a single spec file can lead to longer execution times and complicate the process of identifying and isolating failures.
+
+- Optimizing Test Execution Time :
+  Aiming for each spec file's runtime to be under approximately 2 minutes ensures tests are executed swiftly, facilitating quicker feedback loops. This time frame helps in maintaining a balance between comprehensive testing and efficient use of testing resources.
+
+- Rationale
+  The structure of spec files plays a pivotal role in our testing strategy, especially considering the functionality provided by CircleCI. CircleCI treats each spec file as the smallest unit for splitting and retrying tests. Consequently, if a spec file contains 10 tests and one fails, all 10 tests must be retried, impacting the efficiency of our testing process. This approach also applies to the "Rerun failed tests" feature.
+
+While it's theoretically possible to split tests by individual cases on CircleCI, such an approach requires significant effort and is not currently implemented. By optimizing the number of tests per spec file and their execution time, we can enhance the overall efficiency and effectiveness of our E2E testing.
+
 ## Element locators
 
 Crafting resilient locators is crucial for reliable tests. It’s important to write selectors that are resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated, for example, during UI redesigns. This results in less effort required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another consideration is whether a test should fail if the content of an element changes.
