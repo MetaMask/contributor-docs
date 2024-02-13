@@ -16,7 +16,7 @@ As you are filling out the description, use these questions as a guide:
 
 - **What is the context behind your changes?** Remember that your reviewers might not know everything you know. Set the stage: what sort of domain-specific information can you share with them so that they can evaluate your changes more easily? (Linking to a ticket is better than nothing, but prefer to summarize the context as best you can in order to save your reviewers valuable time.)
 - **What is the purpose of your changes?** What is insufficient about the way things work now? What's the user story?
-- **What is your solution?** How do your changes satisfy the need? Are there any changes in particular whose purpose might not be obvious or whose implementation might be difficult to decipher? How do they work?
+- **What is your solution?** How do your changes satisfy the need? Are there any changes in particular whose purpose might not be obvious or whose implementation might be difficult to decipher? How do they work? If you made UI changes, are there any screenshots or videos you can provide to illustrate the solution?
 
 In the majority of cases, these questions can be answered in as little as one or two paragraphs.
 
