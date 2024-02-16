@@ -24,6 +24,7 @@ If certain requirements cannot be met due to time constraints, legacy code, or o
 - Dynamic text length
 - Internationalization (i18n) translations including right-to-left languages
 - Responsive UI/UX (support mobile, fullscreen, and pop-up views)
+- Use of [design tokens](https://github.com/MetaMask/design-tokens) for color and typography to ensure brand consistency and uphold accessibility standards
 
 ### Code Quality
 
