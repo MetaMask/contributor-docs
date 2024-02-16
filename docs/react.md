@@ -6,7 +6,7 @@ This document provides guidelines for contributing new components or updating ex
 
 ## Guidelines for React Components
 
-The following guidelines are not strictly required, but are considered best practices that contribute to higher quality components. Not all guidelines will be applicable depending on the specific React repo's support.
+The following guidelines are not strictly required, but are considered best practices that contribute to higher quality components. Not all guidelines will be applicable depending on the specific React repository's support. Please refer to the respective repository for additional guidelines and further details.
 
 If certain requirements cannot be met due to time constraints, legacy code, or other factors, contributors should use their best judgement on which requirements are most important or feasible to implement. 
 
