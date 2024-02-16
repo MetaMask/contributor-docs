@@ -8,7 +8,7 @@ This document provides guidelines for contributing new components or updating ex
 
 The following guidelines are not strictly required, but are considered best practices that contribute to higher quality components. Not all guidelines will be applicable depending on the specific React repository's support. Please refer to the respective repository for additional guidelines and further details.
 
-If certain requirements cannot be met due to time constraints, legacy code, or other factors, contributors should use their best judgement on which requirements are most important or feasible to implement. 
+If certain requirements cannot be met due to time constraints, legacy code, or other factors, contributors should use their best judgement on which requirements are most important or feasible to implement.
 
 ### Component Structure
 
@@ -36,7 +36,6 @@ If certain requirements cannot be met due to time constraints, legacy code, or o
     - Blog: [5 Ways to Optimize Your Functional React Components
 ](https://javascript.plainenglish.io/5-ways-to-optimize-your-functional-react-components-cb3cf6c7bd68)
     - React Doc: https://react.dev/learn/render-and-commit#optimizing-performance
-
 
 ### Testing
 
