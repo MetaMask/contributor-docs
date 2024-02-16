@@ -34,7 +34,7 @@ If certain requirements cannot be met due to time constraints, legacy code, or o
 - Avoid unnecessary rerenders
   - Examples:
     - Blog: [5 Ways to Optimize Your Functional React Components
-](https://javascript.plainenglish.io/5-ways-to-optimize-your-functional-react-components-cb3cf6c7bd68)
+      ](https://javascript.plainenglish.io/5-ways-to-optimize-your-functional-react-components-cb3cf6c7bd68)
     - React Doc: https://react.dev/learn/render-and-commit#optimizing-performance
 
 ### Testing
