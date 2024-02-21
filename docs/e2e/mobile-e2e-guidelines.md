@@ -19,14 +19,14 @@ Bad: Overusing non-Test ID locators without justification.
 ✅ Good: When locating elements by text, retrieve the corresponding text string from the 'en.json' file in the 'locales/languages' folder. For instance, if you need to interact with "Show Hex Data," access it as follows:
 
 ```javascript
-import en from "../../locales/languages/en.json";
+import en from '../../locales/languages/en.json';
 en.app_settings.show_hex_data;
 ```
 
 ❌ Bad: Hardcoding text strings without retrieving them from the language file, like this:
 
 ```javascript
-const elementText = "Show Hex Data"; // Hardcoded text
+const elementText = 'Show Hex Data'; // Hardcoded text
 ```
 
 ### Locating Elements byLabel
@@ -36,10 +36,10 @@ const elementText = "Show Hex Data"; // Hardcoded text
 ❌ Bad: Unnecessarily relying on non-Test ID locators on all platforms, like this:
 
 ```javascript
-if (device.getPlatform() === "android") {
-  await TestHelpers.waitAndTap("ANDROID-ELEMENT");
+if (device.getPlatform() === 'android') {
+  await TestHelpers.waitAndTap('ANDROID-ELEMENT');
 } else {
-  await TestHelpers.waitAndTap("iOS-ELEMENT");
+  await TestHelpers.waitAndTap('iOS-ELEMENT');
 }
 ```
 
@@ -87,7 +87,7 @@ For instance:
 
 ```javascript
 export const AddCustomTokenViewSelectorsIDs = {
-  TOKEN_SYMBOL: "",
+  TOKEN_SYMBOL: '',
 };
 ```
 
@@ -95,7 +95,7 @@ export const AddCustomTokenViewSelectorsIDs = {
 
 ```javascript
 export const AddCustomTokenViewSelectorsIDs = {
-  tokenSymbol: "",
+  tokenSymbol: '',
 };
 ```
 
@@ -107,7 +107,7 @@ For example:
 
 ```javascript
 export const AddCustomTokenViewSelectorsIDs = {
-  TOKEN_SYMBOL: "token-screen-symbol",
+  TOKEN_SYMBOL: 'token-screen-symbol',
 };
 ```
 
@@ -115,7 +115,7 @@ export const AddCustomTokenViewSelectorsIDs = {
 
 ```javascript
 export const AddCustomTokenViewSelectorsIDs = {
-  TOKEN_SYMBOL: "symbol",
+  TOKEN_SYMBOL: 'symbol',
 };
 ```
 
@@ -124,7 +124,7 @@ export const AddCustomTokenViewSelectorsIDs = {
 ✅ Good:
 
 ```javascript
-import locales from "../../locales/languages/en.json";
+import locales from '../../locales/languages/en.json';
 
 export const AddCustomTokenViewSelectorsText = {
   IMPORT_BUTTON: locales.add_asset.tokens.add_token,
@@ -135,7 +135,7 @@ export const AddCustomTokenViewSelectorsText = {
 
 ```javascript
 export const AddCustomTokenViewSelectorsText = {
-  IMPORT_BUTTON: "add-token",
+  IMPORT_BUTTON: 'add-token',
 };
 ```
 
@@ -143,8 +143,8 @@ In summary: Create Selector objects for locating elements. If your strategy invo
 
 ```javascript
 export const AddCustomTokenViewSelectorsIDs = {
-  CANCEL_BUTTON: "add-custom-asset-cancel-button",
-  CONFIRM_BUTTON: "add-custom-asset-confirm-button",
+  CANCEL_BUTTON: 'add-custom-asset-cancel-button',
+  CONFIRM_BUTTON: 'add-custom-asset-confirm-button',
 };
 ```
 
@@ -160,7 +160,7 @@ export const AddCustomTokenViewSelectorsText = {
 ❌ Bad:
 
 ```javascript
-const DELETE_WALLET_INPUT_BOX_ID = "delete-wallet-input-box";
+const DELETE_WALLET_INPUT_BOX_ID = 'delete-wallet-input-box';
 ```
 
 ## Assertions
