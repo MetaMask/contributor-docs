@@ -1,3 +1,5 @@
+# MetaMask Mobile E2E Test Guidelines
+ 
  Writing Code Like a Well-Written Book 
 
 A well-crafted piece of code is akin to a captivating story; it starts with a brilliant idea and elegantly unfolds to explain that idea in a coherent manner. Just as a well-written book is easy to read, your code should be a pleasure for anyone who peruses it. To ensure the readability of our code, let's delve into some key principles:
