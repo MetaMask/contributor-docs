@@ -17,7 +17,6 @@
 
 ✅ Recommend⚠️ Use with caution, see notes ❌ Avoid
 
-
 ## Managing Test Size and Execution Time
 
 To maintain efficient and effective E2E testing within MetaMask Extension repository, it's crucial to address the execution time of our spec files. Here are key considerations:
@@ -48,19 +47,19 @@ await driver.clickElement('[data-testid="page-container-footer-next"]');
 ✅ Ok to check the expected text as it is part of the user's experience
 
 ```javascript
-await driver.clickElement({ text: 'Next', tag: 'button' });
+await driver.clickElement({ text: "Next", tag: "button" });
 ```
 
 ⚠️ Coupled with styling: changes to how buttons are styled will cause this locator to fail
 
 ```javascript
-await driver.clickElement('.btn-primary');
+await driver.clickElement(".btn-primary");
 ```
 
 ❌ Chaining direct descendants and using indexes: changes to one element position in the chain will cause this locator to fail
 
 ```javascript
-await driver.clickElement('footer > button:nth-of-type(2)');
+await driver.clickElement("footer > button:nth-of-type(2)");
 ```
 
 ❌ Xpath locators tend to be slower and more difficult to understand than CSS
@@ -127,13 +126,13 @@ await driver.wait(async () => {
 ✅ Explicit wait for element to load
 
 ```javascript
-await driver.waitForSelector('.import-srp__actions');
+await driver.waitForSelector(".import-srp__actions");
 ```
 
 ✅ Explicit wait for element no present especially when navigating pages
 
 ```javascript
-await driver.waitForElementNotPresent('.loading-overlay__spinner');
+await driver.waitForElementNotPresent(".loading-overlay__spinner");
 ```
 
 ❌ SetTimeout: the hard-coded wait may be longer than needed, resulting in slower test execution.
@@ -185,7 +184,7 @@ const isExpectedBoxContentPresentAndVisible =
 assert.equal(
   isExpectedBoxContentPresentAndVisible,
   true,
-  'Invalid box text content',
+  "Invalid box text content",
 );
 
 // Error message:
@@ -200,7 +199,7 @@ assert.equal(
 const completedTx = await driver.findElement(
   '[data-testid="transaction-list-item"]',
 );
-assert.equal(await completedTx.getText(), 'Send TST');
+assert.equal(await completedTx.getText(), "Send TST");
 
 // Error message:
 // AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:

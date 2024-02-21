@@ -10,11 +10,10 @@ This document serves as a guideline to approach writing E2E tests so that they p
 
 These guidelines aren't meant to be a strict set of rules, they should be thought of as an approach to writing robust end-to-end tests. Use them where they make sense and adapt them as necessary to complement your tests.
 
-
 We have implemented two separate approaches for structuring tests on extensions and mobile. This document serves as a valuable reference point for establishing a common ground when writing end-to-end (E2E) tests across both clients. To gain a more comprehensive understanding of the specific guidelines for test writing on each platform, you can find detailed information here:
 
-- [Extension](e2e/extension-e2e-guidelines.md) 
-- [Mobile](e2e/mobile-e2e-guidelines.md) 
+- [Extension](e2e/extension-e2e-guidelines.md)
+- [Mobile](e2e/mobile-e2e-guidelines.md)
 
 Below, we present our standardized approach to writing tests that applies universally to both clients
 
@@ -93,7 +92,6 @@ test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js
 // recommanded test path:
 test/e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js
 ```
-
 
 ## Test Atomicity and Smart Test Coupling
 
