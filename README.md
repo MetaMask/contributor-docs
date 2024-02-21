@@ -13,3 +13,4 @@ This is a living repository — nothing is set in stone! If you're member of Met
 - [Secure Coding Guidelines](./docs/secure-coding-guidelines.md)
 - [TypeScript Guidelines](./docs/typescript.md)
 - [Unit Testing Guidelines](./docs/unit-testing.md)
+- [E2E Testing Guidelines](./docs/e2e-testing.md)
