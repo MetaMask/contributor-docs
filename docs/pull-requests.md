@@ -151,6 +151,8 @@ Once you've started receiving comments on a new pull request, avoid amending, re
 
    Typically, this timeline lists conversations and commits in the order that they occurred originally. Rebasing, however, lifts all commits from their surrounding conversations and moves them to the very end. This can cause confusion for reviewers and makes it more difficult for them to locate new commits (as all of them now look new).
 
+   That said, there are some cases where editing the commit history can help reviewers with their task. In such cases, consider rebasing on a previous commit to minimize the range of commits that are affected. Preferably, this commit should come after or close to the last conversation entry in the timeline view. This approach should be much less disruptive compared to rebasing on the base branch and altering the context of the entire timeline history.
+
 2. **It ensures that active conversations aren't marked as outdated.**
 
    Since rebasing re-creates existing commits, it can confuse GitHub into thinking that a commit which is connected to a conversation is now outdated. This is misleading and can cause those conversations to be ignored by all parties involved.
