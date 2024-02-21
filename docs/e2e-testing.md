@@ -14,7 +14,7 @@ These guidelines aren't meant to be a strict set of rules, they should be though
 We have implemented two separate approaches for structuring tests on extensions and mobile. This document serves as a valuable reference point for establishing a common ground when writing end-to-end (E2E) tests across both clients. To gain a more comprehensive understanding of the specific guidelines for test writing on each platform, you can find detailed information here:
 
 - [Extension](e2e/extension-e2e-guidelines.md) 
-- [Mobile](e2e/extension-e2e-guidelines.md) 
+- [Mobile](e2e/mobile-e2e-guidelines.md) 
 
 Below, we present our standardized approach to writing tests that applies universally to both clients
 
