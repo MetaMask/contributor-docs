@@ -65,7 +65,7 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 
 ## Organization of test files
 
-It's essential to keep test files organised. As test suites get bigger, a well-structured organisation makes it easier to search for tests as well as identify logical groups of tests that may be impacted by changes to an area of the extension. When tests are organised based on related features or functionality it becomes easier to identify common helper functions that can be shared across the tests, reducing duplication.
+It's essential to keep test files organised. As test suites get bigger, a well-structured organisation makes it easier to search for tests as well as identify logical groups of tests that may be impacted by changes to an area of the application. When tests are organised based on related features or functionality it becomes easier to identify common helper functions that can be shared across the tests, reducing duplication.
 
 Organise tests into folders based on scenarios and features. This means that each type of scenario has its own folder, and each feature team owns one or more folders.
 
@@ -112,3 +112,97 @@ Here are some guidelines to decide when to isolate or combine tests:
 - Adopt a fail-fast philosophy: If an initial step in a test sequence fails, it may not be logical or efficient to proceed with subsequent steps. In such cases, adopting test coupling can be beneficial. However, consider the impact of a failure. If a failure in one part of a combined test makes it impossible to test the rest, but you still need to test the subsequent parts regardless of the outcome of the first part, it might be better to isolate the tests.
 
 Remember, the goal is to create tests that are reliable, easy to understand, and provide valuable feedback about the system. Whether you choose to isolate or combine tests will depend on what you're trying to achieve within your tests. Ideally, you should aim for a large number of unit tests to test individual code pieces and a medium number of E2E tests for user flow testing that cover all the scenarios.
+
+## Controlling state
+
+To achieve test atomicity and ensure E2E tests are stable and reliable, it is best to control the state of the application programmatically rather than relying on the application UI. Doing so eliminates unnecessary UI interactions, decreasing the amount of possible breaking points in a test. It also improves test stability by minimising issues caused by timing synchronisation or inconsistencies in the UI, reducing the test execution time and allowing the test to provide fast and focused feedback.
+
+### Guidelines
+
+✅ Use fixture to remove multiple redundant steps: Add Contact, Open test dapp, Connect to test dapp, Deploy TST, Add TST to wallet
+
+```javascript
+new FixtureBuilder()
+  .withAddressBookControllerContactBob()
+  .withTokensControllerERC20()
+  .build();
+```
+
+Send TST test steps after setting this fixture:
+
+```javascript
+Login
+Send TST
+Assertion
+```
+
+⚠️ Use fixture to remove single redundant steps: Add Contact
+
+```javascript
+new FixtureBuilder().withAddressBookControllerContactBob().build();
+```
+
+Send TST test steps after setting this fixture:
+
+```javascript
+Login
+Open test dapp
+Connect to test dapp
+Deploy TST
+Add TST to wallet
+Send TST
+Assertion
+```
+
+❌ Use the UI to build state
+
+```javascript
+new FixtureBuilder().build();
+```
+
+Send TST test steps after setting this fixture:
+
+```javascript
+Login
+Add Contact
+Open test dapp
+Connect to test dapp
+Deploy TST
+Add TST to wallet
+Send TST
+Assertion
+```
+
+Here are some examples to remove redundant steps following above guidelines:
+
+1.
+
+```javascript
+// test file: test/e2e/tests/multiple-transactions.spec.js
+scenario: creates multiple queued transactions and then confirms.
+solution: Ensure tests are different from the tests that line in test/e2e/tests/navigate-transactions.spec.js
+```
+
+2.
+
+```javascript
+// test file: test/e2e/tests/multiple-transactions.spec.js
+scenario: creates multiple queued transactions, then rejects.
+solution: create multiple transactions using the fixture builder rather than connecting to the test dapp and creating transactions through the UI
+```
+
+3.
+
+```javascript
+// test file: test/e2e/tests/add-account.spec.js
+scenario: should not affect public address when using secret recovery phrase to recover account with non-zero balance
+solution: replace UI steps that build up the application state with the FixtureBuilder
+```
+
+4.
+
+```javascript
+// test file: test/e2e/tests/import-flow.spec.js
+scenario: import Account using private key and remove imported account
+solution: replace UI steps that build up the application state with the FixtureBuilder
+```

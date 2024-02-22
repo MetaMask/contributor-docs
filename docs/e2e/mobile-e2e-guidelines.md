@@ -1,8 +1,8 @@
 # MetaMask Mobile E2E Test Guidelines
 
-Writing Code Like a Well-Written Book
+Crafting Tests Like a Masterpiece
 
-A well-crafted piece of code is akin to a captivating story; it starts with a brilliant idea and elegantly unfolds to explain that idea in a coherent manner. Just as a well-written book is easy to read, your code should be a pleasure for anyone who peruses it. To ensure the readability of our code, let's delve into some key principles:
+In the realm of software testing, writing test code is akin to composing a compelling narrative. Just as a well-constructed story draws readers in with clarity and coherence, high-quality test code should engage developers with its readability and clarity. To ensure that our tests convey their purpose effectively, let's delve into some foundational principles:
 
 ## 🗺 Locator Strategy
 
@@ -165,21 +165,18 @@ const DELETE_WALLET_INPUT_BOX_ID = 'delete-wallet-input-box';
 
 ## Assertions
 
-✅ Good: Make assertion methods unmistakable by prefixing them with "is." This conveys whether an element or screen is visible. For example,
+To ensure consistency and avoid redundancy in our test scripts, we've implemented an Assertion class. Whenever assertions are needed within tests, it's preferred to utilize methods provided by this class.
+
+✅ Good: Utilize assertion methods from the Assertion class to perform assertions in tests. For instance:
 
 ```javascript
-isCreateWalletButtonVisible();
+await Assertions.checkIfToggleIsOn(SecurityAndPrivacy.metaMetricsToggle);
 ```
 
-❌ Bad: Using unclear or non-standard assertion method names, like this:
+❌ Bad: Refrain from using built-in assertion methods directly within tests, as shown below:
 
 ```javascript
-
-
-checkButtonVisibility() {
-  // Unclear method name
-  // ...
-}
+await expect(element(by.id(Login - button))).toHaveText(login - text);
 ```
 
 _NOTE: Generally speaking, you don’t need to put an assertion before a test action. You can minimize the amount of assertions by using a test action as an implied assertion on the same element._
@@ -224,3 +221,9 @@ tapNoThanksButton() {
 tapButton() {
   // ...
 ```
+
+## Creating Page Objects:
+
+Page objects serve as the building blocks of our test suites, providing a clear and organized representation of the elements and interactions within our application.
+
+When creating page objects, follow these principles to ensure clarity, maintainability, and reusability
