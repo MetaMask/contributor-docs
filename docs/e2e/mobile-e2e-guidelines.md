@@ -50,17 +50,28 @@ const elementText = 'Show Hex Data'; // Hardcoded text
 
 ## 📌 Naming Convention
 
-Good: Descriptive and clear names are the cornerstone of maintainable code.
+Descriptive and clear names are the cornerstone of maintainable code. Vague, cryptic names that leave readers puzzled.
 
-Bad: Vague, cryptic names that leave readers puzzled.
-Variables/Methods
-✅ Good: Name variables and methods with utmost clarity. For an element like the "create wallet" button, the variable should be named "createWalletButton," and the method to interact with it should be named "tapCreateWalletButton."
+### Variables/Methods
+
+✅ Good: Name variables and methods with utmost clarity.
+
+```javascript
+tapCreateWalletButton() {
+}
+```
 
 ❌ Bad: Using abbreviated or unclear names for variables and methods, like this:
 
 ```javascript
 tapNTB() {
-  await TestHelpers.waitAndTap(NTB_ID);
+}
+```
+
+or
+
+```javascript
+tapBtn() {
 }
 ```
 
