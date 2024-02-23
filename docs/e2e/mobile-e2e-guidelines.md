@@ -17,7 +17,7 @@ Store Test IDs in separate `'{PAGE}.selectors.js` files, corresponding to each p
 
 In some instances on Android, elements are not located by TestIDs. The alternative is to locate elements byLabel.
 
-✅ Good: Utilize the ```byLabel()``` element locator on Android when Test IDs aren't detected correctly.
+✅ Good: Utilize the `byLabel()` element locator on Android when Test IDs aren't detected correctly.
 
 ```javascript
 device.getPlatform() === 'android'
@@ -35,7 +35,7 @@ device.getPlatform() === 'android'
 
 ### Locating Elements byText
 
-✅ Good: When locating elements by text, retrieve the corresponding text string from the ```en.json``` file in the ```locales/languages``` folder. For instance, if you need to interact with ```Show Hex Data```, access it as follows:
+✅ Good: When locating elements by text, retrieve the corresponding text string from the `en.json` file in the `locales/languages` folder. For instance, if you need to interact with `Show Hex Data`, access it as follows:
 
 ```javascript
 import en from '../../locales/languages/en.json';
