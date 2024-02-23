@@ -285,7 +285,7 @@ it('should allow you to create a new wallet', async () => {
 });
 ```
 
-### 🏷️ Meaningful Naming:
+### 🏷️ Meaningful Naming
 
 Good:
 
