@@ -536,7 +536,6 @@ import Networks from '../../resources/networks.json';
 
 it('should add Gnosis network', async () => {
   // Tap on Add Network button
-  await TestHelpers.delay(3000);
   await NetworkView.tapAddNetworkButton();
   await NetworkView.switchToCustomNetworks();
   await NetworkView.typeInNetworkName(Networks.Gnosis.providerConfig.nickname);
