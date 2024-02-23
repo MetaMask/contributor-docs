@@ -12,7 +12,28 @@ Bad: Overusing non-Test ID locators without justification.
 
 ### Locating Elements byID
 
-✅ Good: To add Test IDs to a component, consult Detox's guidelines. Store Test IDs in separate '{PAGE}.selectors.js' files, corresponding to each page object. For example, 'PrivacyAndSecurity' should have 'PrivacyAndSecurity.selectors.js.'
+✅ Good: To add Test IDs to a component, consult Detox's [guidelines](https://wix.github.io/Detox/docs/guide/test-id).
+Store Test IDs in separate `'{PAGE}.selectors.js'` files, corresponding to each page object. For example, the page object `PrivacyAndSecurity` should have a testIDs file called ` PrivacyAndSecurity.selectors.js`
+
+### Locating Elements byLabel
+
+In some instances on Android, elements are not located by TestIDs. The alternative is to locate elements byLabel.
+
+✅ Good: Utilize the 'byLabel()' element locator on Android when Test IDs aren't detected correctly.
+
+```javascript
+device.getPlatform() === 'android'
+  ? Matchers.getElementByLabel('ELEMENT-ID')
+  : Matchers.getElementByID('ELEMENT-ID');
+```
+
+❌ Bad: Attempting to create android specific and ios specific locators:
+
+```javascript
+device.getPlatform() === 'android'
+  ? Matchers.getElementByLabel('ANDROID-ELEMENT-ID')
+  : Matchers.getElementByID('iOS-ELEMENT-ID');
+```
 
 ### Locating Elements byText
 
@@ -27,20 +48,6 @@ en.app_settings.show_hex_data;
 
 ```javascript
 const elementText = 'Show Hex Data'; // Hardcoded text
-```
-
-### Locating Elements byLabel
-
-✅ Good: Utilize the 'byLabel()' element locator on Android when Test IDs aren't detected correctly.
-
-❌ Bad: Unnecessarily relying on non-Test ID locators on all platforms, like this:
-
-```javascript
-if (device.getPlatform() === 'android') {
-  await TestHelpers.waitAndTap('ANDROID-ELEMENT');
-} else {
-  await TestHelpers.waitAndTap('iOS-ELEMENT');
-}
 ```
 
 ## 📌 Naming Convention
@@ -64,7 +71,7 @@ tapNTB() {
 When crafting Selector objects, it is crucial to name the object in a way that identifies the specific page where the elements are. The Selector object can be of type ID or string, and it is essential to explicitly specify this distinction. For instance, when creating selectors for the AddCustomToken view, planning to utilize both testIDs and strings as locator strategies, two separate Selector objects should be created.
 
 When naming selector objects follow this pattern:
-{ScreenName}Selectors{Type}. In this case {TYPE} means selector type, i.e. IDs or Strings.
+`{ScreenName}Selectors{Type}`. In this case `{TYPE}` means the selector type, i.e. IDs or Strings.
 
 ✅ Good:
 
@@ -99,7 +106,7 @@ export const AddCustomTokenViewSelectorsIDs = {
 };
 ```
 
-For selector values, craft specific, lowercase strings using the format {screen}-{elementname}.
+For selector values, craft specific, lowercase strings using the format `{screen}-{elementname}`.
 
 For example:
 
@@ -226,4 +233,310 @@ tapButton() {
 
 Page objects serve as the building blocks of our test suites, providing a clear and organized representation of the elements and interactions within our application.
 
-When creating page objects, follow these principles to ensure clarity, maintainability, and reusability
+When creating page objects, follow these principles to ensure clarity, maintainability, and reusability.
+
+### 🔁 Consistency in Structure
+
+Define a clear structure for your page objects, organizing elements and actions in a logical manner. This makes it easier for other engineers to understand and navigate the code.
+
+✅ Good: Define a clear structure for your page objects, organizing elements and actions in a logical manner. This makes it easy to reuse elements and actions across multiple tests. For example:
+
+##### Page object
+
+```javascript
+class SettingsPage {
+  // Element selectors
+  get networksButton() {
+    /*...*/
+  }
+
+  // Actions
+  async tapNetworksButton() {
+    /*...*/
+  }
+}
+```
+
+##### Spec file:
+
+```javascript
+it('should  tap networks button', async () => {
+  await SettingsView.tapNetworks();
+});
+```
+
+❌ Bad: Tests Do Not Adhere to Page Objects. When tests do not adhere to page objects, it leads to code that is difficult to maintain, prone to duplication, and lacks clarity in its structure.
+
+```javascript
+it('should allow you to create a new wallet', async () => {
+  // Check that Start Exploring CTA is visible & tap it
+  await TestHelpers.waitAndTap('start-exploring-button');
+  // Check that we are on the metametrics optIn screen
+  await TestHelpers.checkIfVisible('metaMetrics-OptIn');
+});
+```
+
+### 🏷️ Meaningful Naming:
+
+Good:
+
+✅ Choose descriptive names for page object properties and methods that accurately convey their purpose. For example:
+
+```javascript
+class SettingsPage {}
+```
+
+❌ Bad: Unclear or ambiguous names that make it difficult to understand the purpose of the page object:
+
+```javascript
+class Screen2 {}
+```
+
+### 📦 Encapsulation of Interactions
+
+By encapsulating interaction logic within methods, test code does not need to concern itself with the specifics of how interactions are performed. This allows for easier modification of interaction behavior without impacting test scripts.
+
+✅ Good: Encapsulate interactions with page elements within methods, abstracting away implementation details. For example:
+
+```javascript
+class SettingsPage {
+  async tapNetworksButton() {
+    /*...*/
+  }
+}
+```
+
+❌ Bad: Exposing implementation details and directly interacting with elements in test code:
+
+```javascript
+// Test code
+await TestHelpers.waitAndTap('start-exploring-button');
+```
+
+### ⚙️ Utilization of Utility Functions
+
+Using utility functions is a reliable way to interact with page elements consistently across various tests. By centralizing the interaction logic and removing low-level details, utility functions improve readability and enhance the scalability of tests.
+
+✅ Good: Leverage utility functions to interact with page elements consistently across tests:
+
+```javascript
+import Matchers from '../../utils/Matchers';
+import Gestures from '../../utils/Gestures';
+
+class SettingsPage {
+  get networksButton() {
+    return Matchers.getElementByID('ELEMENT-STRING');
+  }
+
+  async tapNetworksButton() {
+    await Gestures.waitAndTap(this.networksButton);
+  }
+}
+```
+
+_NOTE:_ Matchers and Gestures are fundamental components of our test actions.
+
+Matchers Utility Class: Handles element identification and matching logic, ensuring consistency in element location across tests. This promotes consistency and reduces code duplication.
+
+Gestures Utility Class: Manages user interactions with page elements, such as tapping, swiping, or scrolling. It enhances test readability by providing descriptive methods for common user interactions.
+
+❌ Bad: Implementing interactions directly in test code without using utility functions. For example:
+
+```javascript
+await element(by.id('ELEMENT-STRING')).tap();
+```
+
+### 🗃️ Using Getters for Element Storage
+
+In our page objects, we utilize getters for element storage instead of defining selectors within the constructor. This deliberate choice stems from the behavior of getters, which are evaluated when you access the property, not when you create the object.
+
+✅ Good: By encapsulating element selectors within getters, we ensure that elements are requested immediately before any action is taken on them. This approach promotes a more dynamic and responsive interaction with the page elements, enhancing the reliability and robustness of our tests.
+
+For example:
+
+```javascript
+import { NetworksViewSelectorsIDs } from '../../selectors/Settings/NetworksView.selectors';
+
+class SettingsPage {
+  get networksButton() {
+    return Matchers.getElementByID(SettingsViewSelectorsIDs.NETWORKS);
+  }
+
+  async tapNetworksButton() {
+    await Gestures.waitAndTap(this.networksButton);
+  }
+}
+```
+
+❌ Bad: Defining element selectors as constants and then interacting with them within test actions can lead to potential issues with element staleness and unexpected behavior.
+
+```javascript
+const CONFIRM_BUTTON_ID = 'contract-name-confirm-button';
+
+export default class ContractNickNameView {
+  static async tapConfirmButton() {
+    await TestHelpers.waitAndTap(CONFIRM_BUTTON_ID);
+  }
+}
+```
+
+## Guide for Implementing Page Objects Within Tests
+
+This guide provides a comprehensive overview of implementing the concepts discussed earlier to create a page object for use in a test scenario. By following this guide, you will gain a deeper insight into our approach to writing tests, enabling you to produce test code that is both maintainable and reusable.
+
+#### Step 1: Define Selector Objects for NetworksView
+
+Start by creating selector objects. These objects store identifiers for UI elements, making your tests easier to read and maintain. We'll use two types of selectors: IDs and Text. Let's call this file: `NetworksView.selectors.js`
+
+```javascript
+import enContent from '../../../locales/languages/en.json';
+
+export const NetworksViewSelectorsIDs = {
+  RPC_CONTAINER: 'new-rpc-screen',
+  ADD_NETWORKS_BUTTON: 'add-network-button',
+  NETWORK_NAME_INPUT: 'input-network-name',
+  BLOCK_EXPLORER_INPUT: 'block-explorer',
+  RPC_URL_INPUT: 'input-rpc-url',
+  CHAIN_INPUT: 'input-chain-id',
+  NETWORKS_SYMBOL_INPUT: 'input-network-symbol',
+  RPC_WARNING_BANNER: 'rpc-url-warning',
+  NETWORK_CONTAINER: 'networks-screen',
+  CUSTOM_NETWORK_LIST: 'custom-networks-list',
+};
+
+export const NetworkViewSelectorsText = {
+  BLOCK_EXPLORER: enContent.app_settings.network_block_explorer_label,
+  REMOVE_NETWORK: enContent.app_settings.remove_network,
+  CUSTOM_NETWORK_TAB: enContent.app_settings.custom_network_name,
+  POPULAR_NETWORK_TAB: enContent.app_settings.popular,
+};
+```
+
+#### Step 2: Create the Networks Page Object
+
+The Networks Page Object encapsulates interactions with the NetworksView. It uses the selectors defined in _Step 1_ and utility functions for actions like typing and tapping. Methods within the page object hide the complexity of direct UI interactions, offering a simpler interface for test scripts. Use Matchers for finding elements and Gestures for performing actions, enhancing code reusability.
+
+```javascript
+import {
+  NetworksViewSelectorsIDs,
+  NetworkViewSelectorsText,
+} from '../../selectors/Settings/NetworksView.selectors';
+import Matchers from '../../utils/Matchers';
+import Gestures from '../../utils/Gestures';
+
+class NetworkView {
+  get networkContainer() {
+    return Matchers.getElementByID(NetworksViewSelectorsIDs.NETWORK_CONTAINER);
+  }
+
+  get addNetworkButton() {
+    return device.getPlatform() === 'ios'
+      ? Matchers.getElementByID(NetworksViewSelectorsIDs.ADD_NETWORKS_BUTTON)
+      : Matchers.getElementByLabel(
+          NetworksViewSelectorsIDs.ADD_NETWORKS_BUTTON,
+        );
+  }
+
+  get rpcAddButton() {
+    return device.getPlatform() === 'android'
+      ? Matchers.getElementByLabel(
+          NetworksViewSelectorsIDs.ADD_CUSTOM_NETWORK_BUTTON,
+        )
+      : Matchers.getElementByID(
+          NetworksViewSelectorsIDs.ADD_CUSTOM_NETWORK_BUTTON,
+        );
+  }
+
+  get customNetworkTab() {
+    return Matchers.getElementByText(
+      NetworkViewSelectorsText.CUSTOM_NETWORK_TAB,
+    );
+  }
+
+  get rpcWarningBanner() {
+    return Matchers.getElementByID(NetworksViewSelectorsIDs.RPC_WARNING_BANNER);
+  }
+
+  get rpcURLInput() {
+    return Matchers.getElementByID(NetworksViewSelectorsIDs.RPC_URL_INPUT);
+  }
+
+  get networkNameInput() {
+    return Matchers.getElementByID(NetworksViewSelectorsIDs.NETWORK_NAME_INPUT);
+  }
+
+  get chainIDInput() {
+    return Matchers.getElementByID(NetworksViewSelectorsIDs.CHAIN_INPUT);
+  }
+
+  get networkSymbolInput() {
+    return Matchers.getElementByID(
+      NetworksViewSelectorsIDs.NETWORKS_SYMBOL_INPUT,
+    );
+  }
+
+  async typeInNetworkName(networkName) {
+    await Gestures.typeTextAndHideKeyboard(this.networkNameInput, networkName);
+  }
+
+  async typeInRpcUrl(rPCUrl) {
+    await Gestures.typeTextAndHideKeyboard(this.rpcURLInput, rPCUrl);
+  }
+
+  async clearRpcInputBox() {
+    await Gestures.clearField(this.rpcURLInput);
+  }
+
+  async tapAddNetworkButton() {
+    await Gestures.waitAndTap(this.addNetworkButton);
+  }
+
+  async switchToCustomNetworks() {
+    await Gestures.waitAndTap(this.customNetworkTab);
+  }
+
+  async typeInChainId(chainID) {
+    await Gestures.typeTextAndHideKeyboard(this.chainIDInput, chainID);
+  }
+
+  async typeInNetworkSymbol(networkSymbol) {
+    await Gestures.typeTextAndHideKeyboard(
+      this.networkSymbolInput,
+      networkSymbol,
+    );
+  }
+
+  async tapRpcNetworkAddButton() {
+    await Gestures.waitAndTap(this.rpcAddButton);
+  }
+}
+
+export default new NetworkView();
+```
+
+#### Step 3: Utilize Page Objects in Test Specifications
+
+With the page object in place, writing test specifications becomes more straightforward. The test scripts interact with the application through the page object's interface, improving readability and maintainability.
+
+#### Example Test Case: Adding a Network
+
+```javascript
+import NetworkView from '../../pages/Settings/NetworksView';
+import Assertions from '../../utils/Assertions';
+import Networks from '../../resources/networks.json';
+
+it('should add Gnosis network', async () => {
+  // Tap on Add Network button
+  await TestHelpers.delay(3000);
+  await NetworkView.tapAddNetworkButton();
+  await NetworkView.switchToCustomNetworks();
+  await NetworkView.typeInNetworkName(Networks.Gnosis.providerConfig.nickname);
+  await NetworkView.typeInRpcUrl('abc'); // Negative test. Input incorrect RPC URL
+  await Assertions.checkIfVisible(NetworkView.rpcWarningBanner);
+  await NetworkView.clearRpcInputBox();
+  await NetworkView.typeInRpcUrl(Networks.Gnosis.providerConfig.rpcUrl);
+  await NetworkView.typeInChainId(Networks.Gnosis.providerConfig.chainId);
+  await NetworkView.typeInNetworkSymbol(Networks.Gnosis.providerConfig.ticker);
+  await NetworkView.tapRpcNetworkAddButton();
+});
+```
