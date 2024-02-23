@@ -380,7 +380,7 @@ export default class ContractNickNameView {
 }
 ```
 
-## Guide for Implementing Page Objects Within Tests
+## A Comprehensive Guide on Implementing Page Objects for Test Scenarios
 
 This guide provides a comprehensive overview of implementing the concepts discussed earlier to create a page object for use in a test scenario. By following this guide, you will gain a deeper insight into our approach to writing tests, enabling you to produce test code that is both maintainable and reusable.
 
