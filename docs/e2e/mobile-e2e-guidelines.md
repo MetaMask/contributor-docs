@@ -6,14 +6,12 @@ In the realm of software testing, writing test code is akin to composing a compe
 
 ## 🗺 Locator Strategy
 
-Good: The default strategy for locating elements is using Test IDs. However, in complex scenarios, employ Text or Label-based locators.
-
-Bad: Overusing non-Test ID locators without justification.
+The default strategy for locating elements is using Test IDs. However, in complex scenarios, employ Text or Label-based locators.
 
 ### Locating Elements byID
 
-✅ Good: To add Test IDs to a component, consult Detox's [guidelines](https://wix.github.io/Detox/docs/guide/test-id).
-Store Test IDs in separate `'{PAGE}.selectors.js'` files, corresponding to each page object. For example, the page object `PrivacyAndSecurity` should have a testIDs file called ` PrivacyAndSecurity.selectors.js`
+To add Test IDs to a component, consult Detox's [guidelines](https://wix.github.io/Detox/docs/guide/test-id).
+Store Test IDs in separate `'{PAGE}.selectors.js` files, corresponding to each page object. For example, the page object `PrivacyAndSecurity` should have a testIDs file called `PrivacyAndSecurity.selectors.js`
 
 ### Locating Elements byLabel
 
