@@ -50,7 +50,7 @@ const elementText = 'Show Hex Data'; // Hardcoded text
 
 ## 📌 Naming Convention
 
-Descriptive and clear names are the cornerstone of maintainable code. Vague, cryptic names that leave readers puzzled.
+Descriptive and clear names are the cornerstone of maintainable code. Vague, cryptic names leave readers puzzled.
 
 ### Variables/Methods
 
@@ -246,7 +246,7 @@ When creating page objects, follow these principles to ensure clarity, maintaina
 
 ### 🔁 Consistency in Structure
 
-Define a clear structure for your page objects, organizing elements and actions in a logical manner. This makes it easier for other engineers to understand and navigate the code.
+Establishing a well-defined structure for your page objects is crucial as it facilitates better understanding and code navigation for fellow engineers.
 
 ✅ Good: Define a clear structure for your page objects, organizing elements and actions in a logical manner. This makes it easy to reuse elements and actions across multiple tests. For example:
 
@@ -269,7 +269,7 @@ class SettingsPage {
 ##### Spec file:
 
 ```javascript
-it('should  tap networks button', async () => {
+it('tap networks button', async () => {
   await SettingsView.tapNetworks();
 });
 ```
@@ -277,7 +277,7 @@ it('should  tap networks button', async () => {
 ❌ Bad: Tests Do Not Adhere to Page Objects. When tests do not adhere to page objects, it leads to code that is difficult to maintain, prone to duplication, and lacks clarity in its structure.
 
 ```javascript
-it('should allow you to create a new wallet', async () => {
+it('create a new wallet', async () => {
   // Check that Start Exploring CTA is visible & tap it
   await TestHelpers.waitAndTap('start-exploring-button');
   // Check that we are on the metametrics optIn screen
@@ -534,7 +534,7 @@ import NetworkView from '../../pages/Settings/NetworksView';
 import Assertions from '../../utils/Assertions';
 import Networks from '../../resources/networks.json';
 
-it('should add Gnosis network', async () => {
+it('add Gnosis network', async () => {
   // Tap on Add Network button
   await NetworkView.tapAddNetworkButton();
   await NetworkView.switchToCustomNetworks();

@@ -30,14 +30,14 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 - send 1 TST to Bob
 ```
 
-⚠️ Test names remains approachable, recommend to avoid using the prefix meaningless 'should'
+⚠️ Test names remain approachable, recommend to avoid using the meaningless prefix 'should'
 
 ```javascript
 - should add Bob to the address book
 - should send 1 TST to Bob
 ```
 
-❌ Test name should be completely avoided: meaningless `should` prefix, the `and` decreases the readability of the test,making it harder to understand what the test is doing as well as diagnose and fix issues.
+❌ Test name should be completely avoided: The use of a `should` prefix and the word `and` can decrease the readability of the test,making it harder to understand what the test is doing as well as diagnose and fix issues.
 
 ```javascript
 - should add Bob to the address book and send 1 TST to Bob
@@ -79,17 +79,17 @@ Example for organization of test files by features and scenarios:
 ```javascript
 // current test path:
 test/e2e/tests/nft/import-erc1155.spec.js
-// recommanded test path: (consolidate all import tests for different tokens into a single repository)
+// recommended test path: (consolidate all import tests for different tokens into a single repository)
 test/e2e/tests/tokens/import/import-erc1155.spec.js
 
 // current test path:
 test/e2e/tests/clear-activity.spec.js
-// recommanded test path:
+// recommended test path:
 test/e2e/tests/settings/clear-activity.spec.js
 
 // current test path:
 test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js
-// recommanded test path:
+// recommended test path:
 test/e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js
 ```
 
