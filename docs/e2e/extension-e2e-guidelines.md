@@ -2,16 +2,12 @@
 
 ### TL;DR
 
-- Write test names that explain the behaviour of the test
-- Organization of test files
+- Manage test size and execution time
 - Craft reliable element locators using data-testid
 - Avoid using arbitrary delays, leverage wait commands
-- Only test things that you can control
-- Explicitly state assertions
-- Control the extension state without going through the UI
-- Avoid relying on the completion of another test in order for a test to be successful
 - Write repeatable tests that produce the same result every time
-- Keep testing modules up to date
+- Explicitly state assertions
+- Enhance test stability with request mocking
 
 ### Key
 

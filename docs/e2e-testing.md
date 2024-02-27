@@ -56,10 +56,10 @@ The test name should communicate the purpose and behaviour of the test. A clear 
 ❌ Test name should be completely avoided
 
 ```javascript
-// in file: test/e2e/tests/add-account.spec.js
+// in file: e2e/tests/add-account.spec.js
 - should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding
 
-// in file: test/e2e/tests/lockdown.spec.js
+// in file: e2e/tests/lockdown.spec.js
 - the UI and background environments are locked down
 ```
 
@@ -72,25 +72,25 @@ Organise tests into folders based on scenarios and features. This means that eac
 - This approach assigns ownership of E2E testing at the feature team level. Each feature team, being aware of the features they own, finds it easier to understand the existing tests and identify what's missing.
 - The future goal is for specific feature teams to manage the necessary test cases for their own features, instead of the core teams tracking each one.
 - Using this organizational strategy eliminates the need to decide at a low level where to place a test, as it is straightforward based on the feature or scenario.
-- This approach aligns with the testing strategy for the mobile app. The mobile team prefers to have feature team tests under the same folder. This reduces friction when switching context.
+- The extension and mobile team both adhere to the same method for organizing test files. This consistency reduces friction when switching context.
 
 Example for organization of test files by features and scenarios:
 
 ```javascript
 // current test path:
-test/e2e/tests/nft/import-erc1155.spec.js
+e2e/tests/nft/import-erc1155.spec.js
 // recommended test path: (consolidate all import tests for different tokens into a single repository)
-test/e2e/tests/tokens/import/import-erc1155.spec.js
+e2e/tests/tokens/import/import-erc1155.spec.js
 
 // current test path:
-test/e2e/tests/clear-activity.spec.js
+e2e/tests/clear-activity.spec.js
 // recommended test path:
-test/e2e/tests/settings/clear-activity.spec.js
+e2e/tests/settings/clear-activity.spec.js
 
 // current test path:
-test/e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js
+e2e/tests/ppom-blockaid-alert-erc20-approval.spec.js
 // recommended test path:
-test/e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js
+e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.js
 ```
 
 ## Test Atomicity and Smart Test Coupling
