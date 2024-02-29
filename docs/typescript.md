@@ -1,14 +1,14 @@
-# **Typescript guidelines**
+# Typescript Guidelines
 
 **_Purpose_**: Establish best practices for writing robust, maintainable, and efficient TypeScript code.
 
 **_Audience_**: Internal and external developers using TypeScript in Metamask.
 
-## **Interfaces**
+## **Type**
 
 By defining expected object structures with interfaces, TypeScript promotes developer intent and unlocks powerful IDE features like accurate completion and context-aware navigation.
 
-### **Enumerations**
+### **Enums**
 
 TypeScript offers several tools for crafting clear data definitions, with enumerations and unions standing as popular choices.
 
@@ -16,9 +16,50 @@ TypeScript offers several tools for crafting clear data definitions, with enumer
 
 Inevitably you will want to refer to the values of a union type somewhere (perhaps as the argument to a function). You can of course just use a literal which represents a member of that union — but if you have an enum, then all of the values are special, and any time you use a value then anyone can see where that value comes from.
 
+🚫
+
+```typescript
+type UserRole = 'admin' | 'editor' | 'subscriber';
+```
+
+✅
+
+```typescript
+enum AccountType {
+  Admin = 'admin',
+  User = 'user',
+  Guest = 'guest',
+}
+```
+
 **Don't use numeric enums**
 
 Numeric enums are misleading because it creates a reverse mapping from value to property name, and when using `Object.values` to access member names, it will return the numerical values instead of the member names, potentially causing unexpected behavior.
+🚫
+
+```typescript
+enum Direction {
+  Up = 0,
+  Down = 1,
+  Left = 2,
+  Right = 3,
+}
+
+const directions = Object.values(Direction); // [0, 1, 2, 3]
+```
+
+✅
+
+```typescript
+enum Direction {
+  Up = 'Up',
+  Down = 'Down',
+  Left = 'Left',
+  Right = 'Right',
+}
+
+const directions = Object.values(Direction); // ["Up", "Down", "Left", "Right"]
+```
 
 ## **Types**
 
@@ -28,14 +69,12 @@ It may not be enough just to have a type or a function take another type — you
 
 ```typescript
 // before
-function createExampleMiddleware(
-  exampleParam,
-): JsonRpcMiddleware<JsonRpcParams, Json>;
+function createExampleMiddleware<Params, Result>(exampleParam);
 // after
 function createExampleMiddleware<
-  Params extends JsonRpcParams = JsonRpcParmas,
-  Result extends Json = Json,
->(exampleParam): JsonRpcMiddleware<Params, Result>;
+  Params extends JsonRpcParams,
+  Result extends Json,
+>(exampleParam);
 ```
 
 #### Use `Omit` to reduce requirements
@@ -77,7 +116,7 @@ const cartPayload: singleItemPayload[] = [];
 
 #### Avoid type assertions, or explain their purpose whenever necessary.
 
-Type assertions inform TypeScript about a variable's actual type, using the `as` syntax or the angle bracket `<Type>` syntax.
+Type assertions inform TypeScript about a variable's actual type, using the `as` syntax.
 While type assertions offer flexibility, they can bypass TypeScript's safety net. This means the compiler won't catch potential type mismatches, leaving you responsible for ensuring correctness.
 
 While it's generally recommended to avoid type assertions in TypeScript, here are two common scenarios where they might be necessary:
@@ -109,7 +148,7 @@ console.log(youngestUser); // { name: "...", age: maxAge }
 2. Iterating over Enum Keys:
    When iterating over enum keys using `Object.keys`, the resulting array is of type `string[]`. However, if you want to access enum member values directly, you might need a type assertion.
 
-```typescript=
+```typescript
 enum Direction {
   Up,
   Down,
@@ -119,8 +158,8 @@ enum Direction {
 
 const directions: Direction[] = [Direction.Up, Direction.Down];
 
-for (const key in directions) {
-  const direction = directions[key] as Direction; // Assert to access enum values.
+for (const key of directions) {
+  const direction = directions[key];
   console.log(direction); // Output: Direction.Up, Direction.Down
 }
 ```
