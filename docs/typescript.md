@@ -222,13 +222,24 @@ const handler:
 
 #### Fixes for `any`
 
-##### Try `unknown` instead
+##### Try `unknown` and `never` instead
 
-`unknown` is the universal supertype i.e. the widest possible type.
+###### `unknown`
 
-- When typing the assignee, `any` and `unknown` are interchangeable (every type is assignable to both).
-- However, when typing the assigned, `unknown` can't be used to replace `any`, as `unknown` is only assignable to `unknown`. In this case, try `never`, which is assignable to all types.
-<!-- TODO: Add example -->
+- `unknown` is the universal supertype i.e. the widest possible type.
+- Every type is assignable to `unknown`, but `unknown` is only assignable to `unknown`.
+- When typing the _assignee_, `any` and `unknown` are completely interchangeable since every type is assignable to both.
+- `any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
+
+##### `never`
+
+- `never` is the universal subtype i.e. the narrowest possible type.
+- `never` is assignable to every type, but the only type that is assignable to `never` is `never`.
+- When typing the _assigned_:
+  - `unknown` is unable to replace `any`, as `unknown` is only assignable to `unknown`.
+  - The type of the _assigned_ must be a subtype of the _assignee_.
+  - `never` is worth trying, as it is the universal subtype and assignable to all types.
+  <!-- TODO: Add example -->
 
 ##### Don't allow generic types to use `any` as a default argument
 
