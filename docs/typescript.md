@@ -258,8 +258,6 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 // Target signature provides too few arguments. Expected 2 or more, but got 1.ts(2345)
 ```
 
-#### Fixes for `any`
-
 ##### Try `unknown` and `never` instead
 
 ###### `unknown`
