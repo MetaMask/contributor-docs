@@ -6,11 +6,11 @@ These guidelines specifically apply to TypeScript.
 
 ### Type Inference
 
-TypeScript is very good at inferring types. A well-maintained codebase can provide strict type safety with explicit type annotations being the exception rather than the rule.
+TypeScript is very good at inferring types. It is capable of providing strict type safety while ensuring that explicit type annotations are the exception rather than the rule.
 
-When writing TypeScript, function and class signatures, and types that express the domain model of the codebase will require explicit definitions and annotations.
+Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities, and types that express the domain model of the codebase.
 
-However, for other types and values that are derived from those fundamentals, type inferences should generally be preferred over type declarations and assertions.
+However, for the remaining majority of types and values, **type inference should generally be preferred over type annotations and assertions**.
 
 There are several reasons for this:
 
