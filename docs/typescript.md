@@ -45,6 +45,53 @@ const BUILT_IN_NETWORKS = {
 } as const; // Type { readonly mainnet: '0x1'; readonly goerli: '0x5'; }
 ```
 
+#### Example: To annotate or not to annotate
+
+```ts
+type TransactionMeta = TransactionBase &
+  (
+    | {
+        status: Exclude<TransactionStatus, TransactionStatus.failed>;
+      }
+    | {
+        status: TransactionStatus.failed;
+        error: TransactionError;
+      }
+  );
+
+const updatedTransactionMeta = {
+  ...transactionMeta,
+  status: TransactionStatus.rejected,
+};
+
+this.messagingSystem.publish(
+  `${controllerName}:transactionFinished`,
+  updatedTransactionMeta, // Expected type: 'TransactionMeta'
+);
+// Property 'error' is missing in type 'typeof updatedTransactionMeta' but required in type '{ status: TransactionStatus.failed; error: TransactionError; }'.ts(2345)
+```
+
+🚫 Add type annotation
+
+```ts
+// Type 'TransactionMeta'
+const updatedTransactionMeta: TransactionMeta = {
+  ...transactionMeta,
+  status: TransactionStatus.rejected,
+}; // resolves error
+```
+
+✅ Add `as const` and leave to inference
+
+```ts
+// Type narrower than 'TransactionMeta': { status: TransactionStatus.rejected; ... }
+// (doesn't include 'error' property)
+const updatedTransactionMeta = {
+  ...transactionMeta,
+  status: TransactionStatus.rejected as const,
+}; // resolves error
+```
+
 ### Type Narrowing
 
 There is a clear exception to the above: if an explicit type annotation or assertion can narrow an inferred type further, thereby improving its accuracy, it should be applied.
