@@ -45,7 +45,7 @@ const BUILT_IN_NETWORKS = {
 } as const; // Type { readonly mainnet: '0x1'; readonly goerli: '0x5'; }
 ```
 
-#### Example: To annotate or not to annotate
+##### Annotations can cause inaccurate typing and incorrectly resolved errors
 
 ```typescript
 type TransactionMeta = TransactionBase &
