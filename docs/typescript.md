@@ -162,6 +162,12 @@ function f(x: SomeInterface | SomeOtherInterface) {
 
 `as` assertions are unsafe. They overwrite type-checked and inferred types with user-supplied types that suppress compiler errors.
 
+##### Document safe or necessary use of type assertions
+
+When a type assertion is absolutely necessary due to constraints or is even safe due to runtime checks, we should document the reason for doing so.
+
+<!-- TODO: Add example -->
+
 #### Avoid `as`
 
 Type assertions make the code brittle against changes.
