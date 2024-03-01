@@ -25,7 +25,7 @@ There are several reasons for this:
 
 🚫 Type declarations
 
-```ts
+```typescript
 const name: string = 'METAMASK'; // Type 'string'
 
 const BUILT_IN_NETWORKS = new Map<string, `0x${string}`>([
@@ -36,7 +36,7 @@ const BUILT_IN_NETWORKS = new Map<string, `0x${string}`>([
 
 ✅ Type inferences
 
-```ts
+```typescript
 const name = 'METAMASK'; // Type 'METAMASK'
 
 const BUILT_IN_NETWORKS = {
@@ -47,7 +47,7 @@ const BUILT_IN_NETWORKS = {
 
 #### Example: To annotate or not to annotate
 
-```ts
+```typescript
 type TransactionMeta = TransactionBase &
   (
     | {
@@ -73,7 +73,7 @@ this.messagingSystem.publish(
 
 🚫 Add type annotation
 
-```ts
+```typescript
 // Type 'TransactionMeta'
 const updatedTransactionMeta: TransactionMeta = {
   ...transactionMeta,
@@ -83,7 +83,7 @@ const updatedTransactionMeta: TransactionMeta = {
 
 ✅ Add `as const` and leave to inference
 
-```ts
+```typescript
 // Type narrower than 'TransactionMeta': { status: TransactionStatus.rejected; ... }
 // (doesn't include 'error' property)
 const updatedTransactionMeta = {
@@ -104,7 +104,7 @@ There is a clear exception to the above: if an explicit type annotation or asser
 
 🚫
 
-```ts
+```typescript
 const chainId: string = this.messagingSystem(
   'NetworkController:getProviderConfig',
 ).chainId; // Type 'string'
@@ -112,7 +112,7 @@ const chainId: string = this.messagingSystem(
 
 ✅
 
-```ts
+```typescript
 const chainId = this.messagingSystem(
   'NetworkController:getProviderConfig',
 ).chainId; // Type '`0x${string}`'
@@ -124,14 +124,14 @@ This is one case where type inference is unable to reach a useful conclusion wit
 
 🚫
 
-```ts
+```typescript
 const tokens = []; // Type 'any[]'
 const tokensMap = new Map(); // Type 'Map<any, any>'
 ```
 
 ✅
 
-```ts
+```typescript
 const tokens: string[] = []; // Type 'string[]'
 const tokensMap = new Map<string, Token>(); // Type 'Map<string, Token>'
 ```
@@ -140,7 +140,7 @@ const tokensMap = new Map<string, Token>(); // Type 'Map<string, Token>'
 
 <!-- TODO: Add explanation and examples -->
 
-```ts
+```typescript
 function isSomeInterface(x: unknown): x is SomeInterface {
   return (
     'name' in x &&
@@ -211,7 +211,7 @@ Otherwise, only mocking the properties needed in the test improves readability b
 
 <!-- TODO: Add examples -->
 
-```ts
+```typescript
 const handler:
   | ((payload_0: ComposableControllerState, payload_1: Patch[]) => void)
   | ((payload_0: any, payload_1: Patch[]) => void); // Type of 'payload_0': 'any'
@@ -236,7 +236,7 @@ Some generic types use `any` as a default generic argument. This can silently in
 
 🚫
 
-```ts
+```typescript
 const NETWORKS = new Map({
   mainnet: '0x1',
   goerli: '0x5',
@@ -251,7 +251,7 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 
 ✅
 
-```ts
+```typescript
 const NETWORKS = new Map<string, `0x${string}`>({
   mainnet: '0x1',
   goerli: '0x5',
@@ -276,7 +276,7 @@ In most type errors involving property access or runtime property assignment, `a
 
 🚫
 
-```ts
+```typescript
 for (const key of getKnownPropertyNames(this.internalConfig)) {
   (this as any)[key] = this.internalConfig[key];
 }
@@ -288,7 +288,7 @@ delete addressBook[chainId as any];
 
 ✅
 
-```ts
+```typescript
 for (const key of getKnownPropertyNames(this.config)) {
   (this as unknown as typeof this.config)[key] = this.config[key];
 }
@@ -300,20 +300,20 @@ However, when assigning to a generic type, using `as any` is the only solution.
 
 🚫
 
-```ts
+```typescript
 (state as RateLimitState<RateLimitedApis>).requests[api][origin] = previous + 1;
 // is generic and can only be indexed for reading.ts(2862)
 ```
 
 ✅
 
-```ts
+```typescript
 (state as any).requests[api][origin] = previous + 1;
 ```
 
 Even in this case, however, `any` usage might be avoidable by using `Object.assign` or spread operator syntax instead of assignment.
 
-```ts
+```typescript
 Object.assign(state, {
   requests: {
     ...state.requests,
@@ -334,7 +334,7 @@ Object.assign(state, {
 
 ✅
 
-```ts
+```typescript
 class BaseController<
   ...,
   messenger extends RestrictedControllerMessenger<N, any, any, string, string>
@@ -362,7 +362,7 @@ Although TypeScript is capable of inferring return types, adding them explicitly
 
 🚫
 
-```ts
+```typescript
 async function removeAccount(address: Hex) {
   const keyring = await this.getKeyringForAccount(address);
 
@@ -379,7 +379,7 @@ async function removeAccount(address: Hex) {
 
 ✅
 
-```ts
+```typescript
 async function removeAccount(address: Hex): Promise<KeyringControllerState> {
   const keyring = await this.getKeyringForAccount(address);
 
