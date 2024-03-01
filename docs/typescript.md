@@ -1,4 +1,4 @@
-# Typescript Guidelines
+# TypeScript Guidelines
 
 **_Purpose_**: Establish best practices for writing robust, maintainable, and efficient TypeScript code.
 
@@ -267,4 +267,4 @@ async function removeAccount(address: Hex): Promise<KeyringControllerState> {
 
 ## Further reading
 
-- [Official Typescript documents of Do's and Don'ts](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
+- [Official TypeScript documents of Do's and Don'ts](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
