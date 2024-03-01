@@ -164,7 +164,42 @@ function f(x: SomeInterface | SomeOtherInterface) {
 
 #### Avoid `as`
 
-Type assertions make the code brittle against changes. While TypeScript will throw type errors against some unsafe or structurally unsound type assertions, it will generally accept the user-supplied type without type-checking. This can cause silent failures where errors are suppressed, even though the type's relationship to the rest of the code, or the type itself, has been altered so that the type assertion is no longer valid.
+Type assertions make the code brittle against changes.
+
+While TypeScript will throw type errors against some unsafe, structurally unsound, or redundant type assertions, it will generally accept the user-supplied type without type-checking.
+
+This can cause silent failures where errors are suppressed, even though the type's relationship to the rest of the code, or the type itself, may have been altered so that the type assertion is no longer valid.
+
+##### Redundant or unnecessary `as` assertions are not flagged for removal
+
+```ts
+import { getKnownPropertyNames } from '@metamask/utils';
+
+enum Direction {
+  Up = 'up',
+  Down = 'down',
+  Left = 'left',
+  Right = 'right',
+}
+const directions = Object.values(Direction);
+
+// Element implicitly has an 'any' type because index expression is not of type 'number'.(7015)
+for (const key of Object.keys(directions)) {
+  const direction = directions[key];
+}
+// Fix 1: use `as` assertion
+for (const key of Object.keys(directions)) {
+  const direction = directions[key as keyof typeof directions];
+}
+// Fix 2: use `getKnownPropertyNames`
+for (const key of getKnownPropertyNames(directions)) {
+  const direction = directions[key];
+}
+// Redundant `as` assertion does not trigger any warning
+for (const key of getKnownPropertyNames(directions)) {
+  const direction = directions[key as keyof typeof directions];
+}
+```
 
 #### Acceptable usages of `as`
 
