@@ -6,11 +6,12 @@
 
 ### Implements
 
-**`implements` keyword**
+#### `implements` keyword
 
 The `implements` keyword enables us to define and enforce interfaces, i.e. strict contracts consisting of expected object and class properties and abstract method signatures.
 Writing an interface to establish the specifications of a class that external code can interact while without being aware of internal implementation details is encouraged as sound OOP development practice.
 Here's an abbreviated example from `@metamask/polling-controller` of an interface being used to define one of our most important constructs.
+
 ```typescript
 export type IPollingController = {
 ...
@@ -29,12 +30,13 @@ export function AbstractPollingControllerBaseMixin<TBase extends Constructor>(
 
 The concept of the interface as discussed in this section is not to be confused with interface syntax as opposed to type alias syntax. Note that in the above example, the `IPollingController` interface is defined as a type alias, not using the `interface` keyword.
 
-**Always prefer type aliases over `interface` keyword**
+#### Always prefer type aliases over `interface` keyword
 
 We enforce consistent and exclusive usage of type aliases over the `interface` keyword to declare types for several reasons:
+
 - The capabilities of type aliases is a strict superset of those of interfaces.
-    - Crucially, `extends`, `implements` are also supported by type aliases.
-    - Declaration merging is the only exception, but we have no use case for this feature that cannot be substituted by using type intersections.
+  - Crucially, `extends`, `implements` are also supported by type aliases.
+  - Declaration merging is the only exception, but we have no use case for this feature that cannot be substituted by using type intersections.
 - Unlike interfaces, type aliases extend `Record` and have an index signature of `string` by default, which makes them compatible with our Json-serializable types (most notably `Record<string, Json>`).
 - Interfaces do not support multiple inheritance, while type aliases can be freely merged using the intersection (`&`) operator.
 
@@ -42,7 +44,7 @@ We enforce consistent and exclusive usage of type aliases over the `interface` k
 
 TypeScript offers several tools for crafting clear data definitions, with enumerations and unions standing as popular choices.
 
-####Consider using enums over union types for situations with a fixed set of known values.
+#### Consider using enums over union types for situations with a fixed set of known values.
 
 Inevitably you will want to refer to the values of a union type somewhere (perhaps as the argument to a function). You can of course just use a literal which represents a member of that union — but if you have an enum, then all of the values are special, and any time you use a value then anyone can see where that value comes from.
 
@@ -62,7 +64,7 @@ enum AccountType {
 }
 ```
 
-####Don't use numeric enums
+#### Don't use numeric enums
 
 Numeric enums are misleading because it creates a reverse mapping from value to property name, and when using `Object.values` to access member names, it will return the numerical values instead of the member names, potentially causing unexpected behavior.
 🚫
@@ -179,18 +181,16 @@ console.log(youngestUser); // { name: "...", age: maxAge }
    When iterating over enum keys using `Object.keys`, the resulting array is of type `string[]`. However, if you want to access enum member values directly, you might need a type assertion.
 
 ```typescript
-import { getKnownPropertyNames } from '@metamask/utils';
-
-enum Direction { 
-    Up = 'up', 
-    Down = 'down', 
-    Left = 'left', 
-    Right = 'right', 
-} 
-const directions: Direction[] = [Direction.Up, Direction.Down]; 
-for (const key of getKnonwPropertyNames(direction)) {
-    const direction = directions[key as keyof typeof directions];
-    console.log(direction); // Output: Direction.Up, Direction.Down }
+enum Direction {
+  Up = 'up',
+  Down = 'down',
+  Left = 'left',
+  Right = 'right',
+}
+const directions: Direction[] = [Direction.Up, Direction.Down];
+for (const key of Object.keys(directions)) {
+  const direction = directions[key as keyof typeof directions];
+  console.log(direction); // Output: Direction.Up, Direction.Down }
 }
 ```
 
