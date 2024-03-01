@@ -269,7 +269,7 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 - When typing the _assignee_, `any` and `unknown` are completely interchangeable since every type is assignable to both.
 - `any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
 
-##### `never`
+###### `never`
 
 - `never` is the universal subtype i.e. the narrowest possible type.
 - `never` is assignable to every type, but the only type that is assignable to `never` is `never`.
@@ -278,8 +278,7 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
   - The type of the _assigned_ must be a subtype of the _assignee_.
   - `never` is worth trying, as it is the universal subtype and assignable to all types.
 
-  <!-- TODO: Add examples -->
-
+<!-- TODO: Add examples -->
 
 #### Acceptable usages of `any`
 
