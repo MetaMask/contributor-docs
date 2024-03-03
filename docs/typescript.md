@@ -8,20 +8,20 @@ These guidelines specifically apply to TypeScript.
 
 TypeScript is very good at inferring types. It is capable of providing strict type safety while ensuring that explicit type annotations are the exception rather than the rule.
 
-Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities, and types that express the domain model of the codebase.
+Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities or data types, and types that express the domain model of the codebase.
 
 However, for the remaining majority of types and values, **type inference should generally be preferred over type annotations and assertions**.
 
 There are several reasons for this:
 
-#### Advantages
+##### Type inference should be preferred over explicit annotations and assertions
 
 - Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent inference-based narrowing of the user-supplied types.
-  - The compiler errs on the side of trusting user input, which prevents it from providing additional, and sometimes crucial, type information that it could otherwise infer.
-  <!-- TODO: Expand into entry. Add example. -->
-  - In TypeScript v4.9+ the `satisfies` operator can be used to assign type constraints that are narrowable through type inference.
+  - The compiler errs on the side of trusting user input, which prevents it from providing additional type information that it could infer.
+  - In TypeScript v4.9+, the `satisfies` operator can be used to assign type constraints that are narrowable through type inference.
+    <!-- TODO: Add examples -->
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
-- The `as const` operator can be used to further narrow an inferred abstract type into a specific literal type.
+- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type.
 
 🚫 Type declarations
 
@@ -30,7 +30,7 @@ const name: string = 'METAMASK'; // Type 'string'
 
 const BUILT_IN_NETWORKS = new Map<string, `0x${string}`>([
   ['mainnet', '0x1'],
-  ['goerli', '0x5'],
+  ['sepolia', '0xaa36a7'],
 ]); // Type 'Map<string, `0x${string}`>'
 ```
 
@@ -41,11 +41,11 @@ const name = 'METAMASK'; // Type 'METAMASK'
 
 const BUILT_IN_NETWORKS = {
   mainnet: '0x1',
-  goerli: '0x5',
-} as const; // Type { readonly mainnet: '0x1'; readonly goerli: '0x5'; }
+  sepolia: '0xaa36a7',
+} as const; // Type { readonly mainnet: '0x1'; readonly sepolia: '0xaa36a7'; }
 ```
 
-##### Annotations can cause inaccurate typing and incorrectly resolved errors
+##### Type annotations prevent inference-based narrowing of user-supplied types
 
 ```typescript
 type TransactionMeta = TransactionBase &
@@ -85,7 +85,7 @@ const updatedTransactionMeta: TransactionMeta = {
 
 ```typescript
 // Type narrower than 'TransactionMeta': { status: TransactionStatus.rejected; ... }
-// (doesn't include 'error' property)
+// Doesn't include 'error' property. Correctly narrowed between `TransactionMeta` discriminated union
 const updatedTransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected as const,
@@ -94,13 +94,13 @@ const updatedTransactionMeta = {
 
 ### Type Narrowing
 
-There is a clear exception to the above: if an explicit type annotation or assertion can narrow an inferred type further, thereby improving its accuracy, it should be applied.
+An explicit type annotation or assertion should not be avoided if they can further narrow an inferred type.
 
-##### Avoid widening a type with a type annotation
+##### Avoid unintentionally widening a type with a type annotation
 
 > **Warning**<br />
-> Double-check that a declared type is narrower than the inferred type.<br />
-> Enforcing an even wider type defeats the purpose of adding an explicit type annotation, as it _loses_ type information instead of adding it.
+> Enforcing an even wider type defeats the purpose of adding an explicit type annotation, as it _loses_ type information instead of adding it.<br />
+> Double-check that the declared type is narrower than the inferred type.
 
 🚫
 
@@ -120,7 +120,7 @@ const chainId = this.messagingSystem(
 
 ##### When instantiating an empty container type, provide a type annotation
 
-This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type with an explicit type annotation.
+This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type by adding an explicit annotation.
 
 🚫
 
@@ -162,9 +162,11 @@ function f(x: SomeInterface | SomeOtherInterface) {
 
 `as` assertions are unsafe. They overwrite type-checked and inferred types with user-supplied types that suppress compiler errors.
 
+They should only be introduced into the code if the accurate type is unreachable through other means.
+
 ##### Document safe or necessary use of type assertions
 
-When a type assertion is absolutely necessary due to constraints or is even safe due to runtime checks, we should document the reason for doing so.
+When a type assertion is absolutely necessary due to constraints or is even safe due to runtime checks, we should document the reasoning behind its usage in the form of a comment.
 
 <!-- TODO: Add example -->
 
@@ -172,15 +174,15 @@ When a type assertion is absolutely necessary due to constraints or is even safe
 
 Type assertions make the code brittle against changes.
 
-While TypeScript will throw type errors against some unsafe, structurally unsound, or redundant type assertions, it will generally accept the user-supplied type without type-checking.
+While TypeScript and ESLint will flag some unsafe, structurally unsound, or redundant type assertions, they will generally accept user-supplied types without further type-checking.
 
-This can cause silent failures where errors are suppressed, even though the type's relationship to the rest of the code, or the type itself, may have been altered so that the type assertion is no longer valid.
+This can cause silent failures or false negatives where errors are suppressed. This is especially damaging as the codebase accumulates changes over time. Type assertions may continue to silence errors, even though the type itself, or the type's relationship to the rest of the code may have been altered so that the asserted type is no longer valid.
 
 ##### Redundant or unnecessary `as` assertions are not flagged for removal
 
-```ts
-import { getKnownPropertyNames } from '@metamask/utils';
+Type assertions can also cause false positives, because they assertions are independent expressions, untied to the type errors they were intended to fix. Thus, even if code drift fixes or removes a particular type error, the type assertions that were put in place to fix that error will provide no indication that they are no longer necessary and now should be removed.
 
+```ts
 enum Direction {
   Up = 'up',
   Down = 'down',
@@ -189,20 +191,9 @@ enum Direction {
 }
 const directions = Object.values(Direction);
 
-// Element implicitly has an 'any' type because index expression is not of type 'number'.(7015)
-for (const key of Object.keys(directions)) {
-  const direction = directions[key];
-}
-// Fix 1: use `as` assertion
-for (const key of Object.keys(directions)) {
-  const direction = directions[key as keyof typeof directions];
-}
-// Fix 2: use `getKnownPropertyNames`
-for (const key of getKnownPropertyNames(directions)) {
-  const direction = directions[key];
-}
-// Redundant `as` assertion does not trigger any warning
-for (const key of getKnownPropertyNames(directions)) {
+// Error: Element implicitly has an 'any' type because index expression is not of type 'number'.(7015)
+// Only one of the two `as` assertions necessary to fix error, but neither are flagged as redundant.
+for (const key of Object.keys(directions) as keyof directions[]) {
   const direction = directions[key as keyof typeof directions];
 }
 ```
@@ -213,17 +204,31 @@ for (const key of getKnownPropertyNames(directions)) {
 
 Unsafe as type assertions may be, they are still categorically preferable to using `any`.
 
-- With type assertions, we still get working intellisense, autocomplete, and other IDE features.
-- Type assertions also provide an indication of the expected type as intended by the author.
+- With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
+- Type assertions also provide an indication of what the expected type is as intended by the author.
 - For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
 
-##### To define user-defined type guards
+##### For TypeScript syntax other than type assertion
 
-`as` syntax is often required to write type guards. See https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates.
+- Writing type guards often reqiures using the `as` keyword.
 
-##### To type data objects whose shape and contents are determined at runtime
+```ts
+function isFish(pet: Fish | Bird): pet is Fish {
+  return (pet as Fish).swim !== undefined;
+}
+```
 
-Preferably, this typing should be accompanied by schema validation performed with type guards and unit tests.
+- Key remapping in mapped types uses the `as` keyword.
+
+```ts
+type MappedTypeWithNewProperties<Type> = {
+  [Properties in keyof Type as NewKeyType]: Type[Properties];
+};
+```
+
+##### To type data objects whose shape and contents are determined at runtime, externally, or through deserialization
+
+Preferably, this typing should be accompanied by runtime schema validation performed with type guards and unit tests.
 
 - e.g. The output of `JSON.parse()` or `await response.json()` for a known JSON input.
 - e.g. The type of a JSON file.
@@ -250,18 +255,39 @@ Otherwise, only mocking the properties needed in the test improves readability b
 - `any` suppresses all error messages about its assignee. This includes errors that are changed or newly introduced by alterations to the code. This makes `any` the cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning.
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value is erased and becomes an `any` type itself.
 
-<!-- TODO: Add examples -->
-
 ```typescript
+// Type of 'payload_0': 'any'
 const handler:
   | ((payload_0: ComposableControllerState, payload_1: Patch[]) => void)
-  | ((payload_0: any, payload_1: Patch[]) => void); // Type of 'payload_0': 'any'
+  | ((payload_0: any, payload_1: Patch[]) => void);
 ```
+
+<!-- TODO: Add more examples -->
 
 - `any` pollutes all surrounding and downstream code.
 <!-- TODO: Add examples -->
 
-##### Don't allow generic types to use `any` as a default argument
+##### Try `unknown` and `never` instead
+
+###### `unknown`
+
+- `unknown` is the universal supertype i.e. the widest possible type, equivalent to the universal set(U).
+- Every type is assignable to `unknown`, but `unknown` is only assignable to `unknown`.
+- When typing the _assignee_, `any` and `unknown` are completely interchangeable since every type is assignable to both.
+- `any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
+
+###### `never`
+
+- `never` is the universal subtype i.e. the narrowest possible type, equivalent to the null set(∅).
+- `never` is assignable to every type, but the only type that is assignable to `never` is `never`.
+- When typing the _assigned_:
+  - `unknown` is unable to replace `any`, as `unknown` is only assignable to `unknown`.
+  - The type of the _assigned_ must be a subtype of the _assignee_.
+  - `never` is worth trying, as it is the universal subtype and assignable to all types.
+
+<!-- TODO: Add examples -->
+
+##### Don't allow `any` to be used as a generic default argument
 
 Some generic types use `any` as a default generic argument. This can silently introduce an `any` type into the code, causing unexpected behavior and suppressing useful errors.
 
@@ -299,26 +325,6 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 // Target signature provides too few arguments. Expected 2 or more, but got 1.ts(2345)
 ```
 
-##### Try `unknown` and `never` instead
-
-###### `unknown`
-
-- `unknown` is the universal supertype i.e. the widest possible type.
-- Every type is assignable to `unknown`, but `unknown` is only assignable to `unknown`.
-- When typing the _assignee_, `any` and `unknown` are completely interchangeable since every type is assignable to both.
-- `any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
-
-###### `never`
-
-- `never` is the universal subtype i.e. the narrowest possible type.
-- `never` is assignable to every type, but the only type that is assignable to `never` is `never`.
-- When typing the _assigned_:
-  - `unknown` is unable to replace `any`, as `unknown` is only assignable to `unknown`.
-  - The type of the _assigned_ must be a subtype of the _assignee_.
-  - `never` is worth trying, as it is the universal subtype and assignable to all types.
-
-<!-- TODO: Add examples -->
-
 #### Acceptable usages of `any`
 
 ##### Assigning new properties to a generic type at runtime
@@ -340,8 +346,9 @@ delete addressBook[chainId as any];
 ✅
 
 ```typescript
-for (const key of getKnownPropertyNames(this.config)) {
-  (this as unknown as typeof this.config)[key] = this.config[key];
+for (const key of getKnownPropertyNames(this.internalConfig)) {
+  (this as unknown as typeof this.internalConfig)[key] =
+    this.internalConfig[key];
 }
 
 delete addressBook[chainId as unknown as `0x${string}`];
