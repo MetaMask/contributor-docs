@@ -23,28 +23,6 @@ There are several reasons for this:
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
 - The `as const` operator can be used to narrow an inferred abstract type into a specific literal type.
 
-🚫 Type declarations
-
-```typescript
-const name: string = 'METAMASK'; // Type 'string'
-
-const BUILT_IN_NETWORKS = new Map<string, `0x${string}`>([
-  ['mainnet', '0x1'],
-  ['sepolia', '0xaa36a7'],
-]); // Type 'Map<string, `0x${string}`>'
-```
-
-✅ Type inferences
-
-```typescript
-const name = 'METAMASK'; // Type 'METAMASK'
-
-const BUILT_IN_NETWORKS = {
-  mainnet: '0x1',
-  sepolia: '0xaa36a7',
-} as const; // Type { readonly mainnet: '0x1'; readonly sepolia: '0xaa36a7'; }
-```
-
 ##### Type annotations prevent inference-based narrowing of user-supplied types
 
 ```typescript
@@ -92,49 +70,43 @@ const updatedTransactionMeta = {
 }; // resolves error
 ```
 
-### Type Narrowing
+##### Avoid unintentionally widening an inferred type with an explicit type declaration
 
-An explicit type annotation or assertion should not be avoided if they can further narrow an inferred type.
+Enforcing a wider type defeats the purpose of adding an explicit type declaration, as it _loses_ type information instead of adding it. Double-check that the declared type is narrower than the inferred type.
 
-##### Avoid unintentionally widening a type with a type annotation
-
-> **Warning**<br />
-> Enforcing an even wider type defeats the purpose of adding an explicit type annotation, as it _loses_ type information instead of adding it.<br />
-> Double-check that the declared type is narrower than the inferred type.
-
-🚫
+🚫 Type declarations
 
 ```typescript
+const name: string = 'METAMASK'; // Type 'string'
+
 const chainId: string = this.messagingSystem(
   'NetworkController:getProviderConfig',
 ).chainId; // Type 'string'
+
+const BUILT_IN_NETWORKS = new Map<string, `0x${string}`>([
+  ['mainnet', '0x1'],
+  ['sepolia', '0xaa36a7'],
+]); // Type 'Map<string, `0x${string}`>'
 ```
 
-✅
+✅ Type inferences
 
 ```typescript
+const name = 'METAMASK'; // Type 'METAMASK'
+
 const chainId = this.messagingSystem(
   'NetworkController:getProviderConfig',
 ).chainId; // Type '`0x${string}`'
+
+const BUILT_IN_NETWORKS = {
+  mainnet: '0x1',
+  sepolia: '0xaa36a7',
+} as const; // Type { readonly mainnet: '0x1'; readonly sepolia: '0xaa36a7'; }
 ```
 
-##### When instantiating an empty container type, provide a type annotation
+### Type Narrowing
 
-This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type by adding an explicit annotation.
-
-🚫
-
-```typescript
-const tokens = []; // Type 'any[]'
-const tokensMap = new Map(); // Type 'Map<any, any>'
-```
-
-✅
-
-```typescript
-const tokens: string[] = []; // Type 'string[]'
-const tokensMap = new Map<string, Token>(); // Type 'Map<string, Token>'
-```
+An explicit type annotation or assertion should be used if and only if they can further narrow an inferred type.
 
 ##### Type guards and null checks can be used to improve type inference
 
@@ -156,6 +128,24 @@ function f(x: SomeInterface | SomeOtherInterface) {
     console.log(x.name); // Type of x: 'SomeInterface'. Type of x.name: 'string'.
   }
 }`
+```
+
+##### When instantiating an empty container type, provide a type annotation
+
+This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type by adding an explicit annotation.
+
+🚫
+
+```typescript
+const tokens = []; // Type 'any[]'
+const tokensMap = new Map(); // Type 'Map<any, any>'
+```
+
+✅
+
+```typescript
+const tokens: string[] = []; // Type 'string[]'
+const tokensMap = new Map<string, Token>(); // Type 'Map<string, Token>'
 ```
 
 ### Type Assertions
