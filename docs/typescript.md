@@ -104,7 +104,10 @@ const BUILT_IN_NETWORKS = {
 
 ### Type Narrowing
 
-An explicit type annotation or assertion should only be used if it can further narrow an inferred type.
+An explicit type annotation or assertion should only be used if...
+
+1) It can further narrow an inferred type, thus adding type information that the compiler cannot supply.
+2) It is the most accurate _and_ specific type assignable, in which case any code drift that changes the type of the assignee will trigger a useful type error.
 
 ##### Type guards and null checks can be used to improve type inference
 
