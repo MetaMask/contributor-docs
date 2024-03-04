@@ -237,6 +237,25 @@ Unsafe as type assertions may be, they are still categorically preferable to usi
 - With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
 - Type assertions also provide an indication of what the expected type is as intended by the author.
 - For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
+- Often, the compiler will tell us exactly what the target type for an assertion needs to be, enabling us to avoid `as any`.
+
+```typescript
+// Error: Argument of type '"getNftInformation"' is not assignable to parameter of type 'keyof NftController'.ts(2345)
+// 'getNftInformation' is a private method of class 'NftController'
+sinon.stub(nftController, 'getNftInformation')
+```
+
+🚫 `as any`
+
+```typescript
+sinon.stub(nftController, 'getNftInformation' as any)
+```
+
+✅ Compiler specifies that the target type should be `keyof NftController`
+
+```typescript
+sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController)
+```
 
 ##### For TypeScript syntax other than type assertion
 
