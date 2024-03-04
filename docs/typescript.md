@@ -106,11 +106,9 @@ const BUILT_IN_NETWORKS = {
 
 ### Type Narrowing
 
-An explicit type annotation or assertion should be used if and only if they can further narrow an inferred type.
+An explicit type annotation or assertion should only be used if it can further narrow an inferred type.
 
 ##### Type guards and null checks can be used to improve type inference
-
-<!-- TODO: Add explanation and examples -->
 
 ```typescript
 function isSomeInterface(x: unknown): x is SomeInterface {
@@ -128,6 +126,48 @@ function f(x: SomeInterface | SomeOtherInterface) {
     console.log(x.name); // Type of x: 'SomeInterface'. Type of x.name: 'string'.
   }
 }`
+```
+
+```typescript
+const nftMetadataResults = await Promise.allSettled(...);
+
+nftMetadataResults
+  .filter((promise) => promise.status === 'fulfilled')
+  .forEach((elm) =>
+    this.updateNft(
+      elm.value.nft, // Property 'value' does not exist on type 'PromiseRejectedResult'.ts(2339)
+      ...
+    ),
+  );
+```
+
+🚫 Type assertion
+
+```typescript
+nftMetadataResults.filter(
+    (promise) => promise.status === 'fulfilled',
+  ) as { status: 'fulfilled'; value: NftUpdate }[])
+  .forEach((elm) =>
+    this.updateNft(
+      elm.value.nft,
+      ...
+    ),
+  );
+```
+
+✅ Use a type guard as the predicate for the filter operation, enabling TypeScript to narrow the filtered results to `PromiseFulfilledResult` at the type level
+
+```typescript
+nftMetadataResults.filter(
+    (result): result is PromiseFulfilledResult<NftUpdate> =>
+      result.status === 'fulfilled',
+  )
+  .forEach((elm) =>
+    this.updateNft(
+      elm.value.nft,
+      ...
+    ),
+  );
 ```
 
 ##### When instantiating an empty container type, provide a type annotation
