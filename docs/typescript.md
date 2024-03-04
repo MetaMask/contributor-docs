@@ -303,6 +303,7 @@ Otherwise, only mocking the properties needed in the test improves readability b
 - `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
 - `any` suppresses all error messages about its assignee. This includes errors that are changed or newly introduced by alterations to the code. This makes `any` the cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning.
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value is erased and becomes an `any` type itself.
+  - This also means that `any` infects all surrounding and downstream code with its directive to suppress errors, expanding the surface area of code regarding which the TypeScript compiler can make no guarantees regarding type safety or runtime behavior.
 
 ```typescript
 // Type of 'payload_0': 'any'
@@ -310,11 +311,9 @@ const handler:
   | ((payload_0: ComposableControllerState, payload_1: Patch[]) => void)
   | ((payload_0: any, payload_1: Patch[]) => void);
 ```
+<!-- TODO: Add more examples: For instance, if you have a function that is declared to return any which actually returns an object, all properties of that object will be any. -->
 
-<!-- TODO: Add more examples -->
-
-- `any` pollutes all surrounding and downstream code.
-<!-- TODO: Add examples -->
+- From this follows the most dangerous characteristic of `any`: it infects all surrounding and downstream code with its directive to suppress errors, expanding the surface area of code for which the TypeScript compiler can make no guarantees regarding type safety or runtime behavior.
 
 ##### Try `unknown` and `never` instead
 
