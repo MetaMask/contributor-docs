@@ -6,19 +6,17 @@ These guidelines specifically apply to TypeScript.
 
 ### Type Inference
 
-TypeScript is very good at inferring types. It is capable of providing strict type safety while ensuring that explicit type annotations are the exception rather than the rule.
+TypeScript is very good at inferring types. Explicit type annotations and assertions are the exception rather than the rule in a well-managed TypeScript codebase with strong type safety guarantees.
 
 Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities or data types, and types that express the domain model of the codebase.
 
 However, for the remaining majority of types and values, **type inference should generally be preferred over type annotations and assertions**.
 
-There are several reasons for this:
-
 ##### Type inference should be preferred over explicit annotations and assertions
 
-- Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent inference-based narrowing of the user-supplied types.
-  - The compiler errs on the side of trusting user input, which prevents it from providing additional type information that it could infer.
-  - In TypeScript v4.9+, the `satisfies` operator can be used to assign type constraints that are narrowable through type inference.
+- Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent further inference-based narrowing of the user-supplied types.
+  - The compiler errs on the side of trusting user input, which prevents it from providing additional type information that it is able to infer.
+  - To resolve this limitation, the `satisfies` operator was introduced in TypeScript v4.9, which can be used to assign type constraints that are narrowable through type inference.
     <!-- TODO: Add examples -->
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
 - The `as const` operator can be used to narrow an inferred abstract type into a specific literal type.
@@ -261,7 +259,7 @@ sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController)
 
 - Writing type guards often reqiures using the `as` keyword.
 
-```ts
+```typescript
 function isFish(pet: Fish | Bird): pet is Fish {
   return (pet as Fish).swim !== undefined;
 }
@@ -269,7 +267,7 @@ function isFish(pet: Fish | Bird): pet is Fish {
 
 - Key remapping in mapped types uses the `as` keyword.
 
-```ts
+```typescript
 type MappedTypeWithNewProperties<Type> = {
   [Properties in keyof Type as NewKeyType]: Type[Properties];
 };
@@ -290,7 +288,7 @@ Preferably, this typing should be accompanied by runtime schema validation perfo
 
 It's recommended to provide accurate typing if there's any chance that omitting properties affects the accuracy of the test.
 
-Otherwise, only mocking the properties needed in the test improves readability by making the intention and scope of the mocking clear, not to mention being convenient to write.
+If that is not the case, however, mocking only the properties needed in the test improves readability. It makes the intention and scope of the mock clear, and is much more convenient to write.
 
 ### Compiler Directives
 
@@ -303,7 +301,6 @@ Otherwise, only mocking the properties needed in the test improves readability b
 - `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
 - `any` suppresses all error messages about its assignee. This includes errors that are changed or newly introduced by alterations to the code. This makes `any` the cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning.
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value is erased and becomes an `any` type itself.
-  - This also means that `any` infects all surrounding and downstream code with its directive to suppress errors, expanding the surface area of code regarding which the TypeScript compiler can make no guarantees regarding type safety or runtime behavior.
 
 ```typescript
 // Type of 'payload_0': 'any'
@@ -458,7 +455,7 @@ class BaseController<
 
 ##### In tests, for mocking or to intentionally break features
 
-<!-- TODO: Add examples -->
+<!-- TODO: Add examples. Should be clear why type assertions couldn't be used instead -->
 
 ## Functions
 
