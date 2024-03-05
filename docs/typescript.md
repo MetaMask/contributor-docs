@@ -11,7 +11,7 @@ TypeScript provides a range of syntax with which to communicate type information
 - The user can perform **type assertions** (`as`, `!`) to force the compiler to adhere to the user-supplied type even if it contradicts the compiler's inferences.
 - There are even **compiler directives** for disabling type checking (`any`, `@ts-expect-error`) for a limited scope of code.
 
-The general order of preference for using these language features coincides with the order in which they were just presented.
+fThe general order of preference for using these language features coincides with the order in which they were just presented.
 
 ### Type Inference
 
@@ -128,66 +128,6 @@ When the compiler is in doubt, an annotation will nudge it towards relying on ty
 
 <!-- TODO: Add example -->
 
-```typescript
-function isSomeInterface(x: unknown): x is SomeInterface {
-  return (
-    'name' in x &&
-    typeof x.name === 'string' &&
-    'length' in x &&
-    typeof x.length === 'number'
-  );
-}
-
-function f(x: SomeInterface | SomeOtherInterface) {
-  if (isSomeInterface(x)) {
-    // Type of x: 'SomeInterface | SomeOtherInterface'
-    console.log(x.name); // Type of x: 'SomeInterface'. Type of x.name: 'string'.
-  }
-}`
-```
-
-```typescript
-const nftMetadataResults = await Promise.allSettled(...);
-
-nftMetadataResults
-  .filter((promise) => promise.status === 'fulfilled')
-  .forEach((elm) =>
-    this.updateNft(
-      elm.value.nft, // Property 'value' does not exist on type 'PromiseRejectedResult'.ts(2339)
-      ...
-    ),
-  );
-```
-
-🚫 Type assertion
-
-```typescript
-nftMetadataResults.filter(
-    (promise) => promise.status === 'fulfilled',
-  ) as { status: 'fulfilled'; value: NftUpdate }[])
-  .forEach((elm) =>
-    this.updateNft(
-      elm.value.nft,
-      ...
-    ),
-  );
-```
-
-✅ Use a type guard as the predicate for the filter operation, enabling TypeScript to narrow the filtered results to `PromiseFulfilledResult` at the type level
-
-```typescript
-nftMetadataResults.filter(
-    (result): result is PromiseFulfilledResult<NftUpdate> =>
-      result.status === 'fulfilled',
-  )
-  .forEach((elm) =>
-    this.updateNft(
-      elm.value.nft,
-      ...
-    ),
-  );
-```
-
 ##### When instantiating an empty container type, provide a type annotation
 
 This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type by adding an explicit annotation.
@@ -230,7 +170,7 @@ This can cause silent failures or false negatives where errors are suppressed. T
 
 Type assertions can also cause false positives, because they assertions are independent expressions, untied to the type errors they were intended to fix. Thus, even if code drift fixes or removes a particular type error, the type assertions that were put in place to fix that error will provide no indication that they are no longer necessary and now should be removed.
 
-```ts
+```typescript
 enum Direction {
   Up = 'up',
   Down = 'down',
@@ -244,6 +184,80 @@ const directions = Object.values(Direction);
 for (const key of Object.keys(directions) as keyof directions[]) {
   const direction = directions[key as keyof typeof directions];
 }
+```
+
+##### Type guards can be used to improve type inference
+
+```typescript
+function isSomeInterface(x: unknown): x is SomeInterface {
+  return (
+    'name' in x &&
+    typeof x.name === 'string' &&
+    'length' in x &&
+    typeof x.length === 'number'
+  );
+}
+```
+
+🚫 Type assertion
+
+```typescript
+function f(x: SomeInterface | SomeOtherInterface) {
+  console.log((x as SomeInterface).name);
+}
+```
+
+✅ Narrowing with type guard
+
+```typescript
+function f(x: SomeInterface | SomeOtherInterface) {
+  if (isSomeInterface(x)) {
+    // Type of x: 'SomeInterface | SomeOtherInterface'
+    console.log(x.name); // Type of x: 'SomeInterface'. Type of x.name: 'string'.
+  }
+}
+```
+
+```typescript
+const nftMetadataResults = await Promise.allSettled(...);
+
+nftMetadataResults
+  .filter((promise) => promise.status === 'fulfilled')
+  .forEach((elm) =>
+    this.updateNft(
+      elm.value.nft, // Property 'value' does not exist on type 'PromiseRejectedResult'.ts(2339)
+      ...
+    ),
+  );
+```
+
+🚫 Type assertion
+
+```typescript
+(nftMetadataResults.filter(
+    (promise) => promise.status === 'fulfilled',
+  ) as { status: 'fulfilled'; value: NftUpdate }[])
+  .forEach((elm) =>
+    this.updateNft(
+      elm.value.nft,
+      ...
+    ),
+  );
+```
+
+✅ Use a type guard as the predicate for the filter operation, enabling TypeScript to narrow the filtered results to `PromiseFulfilledResult` at the type level
+
+```typescript
+nftMetadataResults.filter(
+    (result): result is PromiseFulfilledResult<NftUpdate> =>
+      result.status === 'fulfilled',
+  )
+  .forEach((elm) =>
+    this.updateNft(
+      elm.value.nft,
+      ...
+    ),
+  );
 ```
 
 #### Acceptable usages of `as`
