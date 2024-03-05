@@ -113,12 +113,20 @@ const BUILT_IN_NETWORKS = {
 
 ### Type Narrowing
 
-An explicit type annotation or assertion should only be used if...
+An explicit type annotation is acceptable to use for overriding an inferred type if...
 
-1) It can further narrow an inferred type, thus adding type information that the compiler cannot supply.
-2) It is the most accurate _and_ specific type assignable, in which case any code drift that changes the type of the assignee will trigger a useful type error.
+1) It can further narrow an inferred type, thus supplying type information that the compiler cannot infer or access.
+2) It is determined to be the most accurate _and_ specific type assignable.
 
-##### Type guards and null checks can be used to improve type inference
+#### Acceptable usages of `:` annotations
+
+##### To prevent or fix type assertions
+
+Type annotations are more responsive to code drift than assertions. If the assignee's type becomes incompatible with the assigned type annotation, the compiler will raise a type error, whereas in most cases a type assertion will still suppress the error.
+
+When the compiler is in doubt, an annotation will nudge it towards relying on type inference, while an assertion will force it to accept the user-supplied type.
+
+<!-- TODO: Add example -->
 
 ```typescript
 function isSomeInterface(x: unknown): x is SomeInterface {
