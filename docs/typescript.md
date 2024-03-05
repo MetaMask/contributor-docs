@@ -6,16 +6,16 @@ These guidelines specifically apply to TypeScript.
 
 TypeScript provides a range of syntax with which to communicate type information with the compiler.
 
-- The compiler performs **type inference** on all types and values in the code, which forms the baseline for strong, static typing.
+- The compiler performs **type inference** on all types and values in the code.
 - The user can assign **type annotations** (`:`) to override some of the inferred types.
-- The user can perform **type assertions** (`as`, `!`) to force the compiler to adhere to the user-supplied type even if it contradicts the compiler's inferences.
-- There are even **compiler directives** for disabling type checking (`any`, `@ts-expect-error`) for a limited scope of code.
+- The user can also add **type assertions** (`as`, `!`) to force the compiler to adhere to the user-supplied type even if it contradicts the compiler's inferences.
+- Finally, there are **compiler directives** for disabling type checking (`any`, `@ts-expect-error`) for a limited scope of code.
 
-fThe general order of preference for using these language features coincides with the order in which they were just presented.
+The general order of preference for using these features coincides with the order in which they were just presented.
 
 ### Type Inference
 
-TypeScript is very good at inferring types. Explicit type annotations and assertions are the exception rather than the rule in a well-managed TypeScript codebase with strong type safety guarantees.
+TypeScript is very good at inferring types. Explicit type annotations and assertions are the exception rather than the rule in a well-managed TypeScript codebase even with strong type safety guarantees.
 
 Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities or data types, and types that express the domain model of the codebase.
 
