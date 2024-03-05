@@ -19,9 +19,9 @@ TypeScript is very good at inferring types. Explicit type annotations and assert
 
 Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities or data types, and types that express the domain model of the codebase.
 
-However, for the remaining majority of types and values, **type inference should be preferred over type annotations and assertions**.
+However, for the remaining majority of types and values, type inference should be preferred over type annotations and assertions.
 
-##### Type inference should be preferred over explicit annotations and assertions
+##### Prefer type inference over annotations and assertions
 
 - Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent further inference-based narrowing of the user-supplied types.
   - The compiler errs on the side of trusting user input, which prevents it from providing additional type information that it is able to infer.
@@ -111,7 +111,7 @@ const BUILT_IN_NETWORKS = {
 } as const; // Type { readonly mainnet: '0x1'; readonly sepolia: '0xaa36a7'; }
 ```
 
-### Type Narrowing
+### Type Annotations
 
 An explicit type annotation is acceptable to use for overriding an inferred type if...
 
