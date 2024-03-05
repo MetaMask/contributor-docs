@@ -344,7 +344,7 @@ const handler:
 ```
 <!-- TODO: Add more examples: For instance, if you have a function that is declared to return any which actually returns an object, all properties of that object will be any. -->
 
-- From this follows the most dangerous characteristic of `any`: it infects all surrounding and downstream code with its directive to suppress errors, expanding the surface area of code for which the TypeScript compiler can make no guarantees regarding type safety or runtime behavior.
+- Because of this, `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it expands the surface area of unchecked code for which the TypeScript compiler can make no guarantees regarding type safety or runtime behavior.
 
 ##### Try `unknown` and `never` instead
 
