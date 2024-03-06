@@ -25,8 +25,6 @@ However, for the remaining majority of types and values, type inference should b
 
 - Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent further inference-based narrowing of the user-supplied types.
   - The compiler errs on the side of trusting user input, which prevents it from providing additional type information that it is able to infer.
-  - To resolve this limitation, the `satisfies` operator was introduced in TypeScript v4.9, which can be used to assign type constraints that are narrowable through type inference.
-    <!-- TODO: Add examples -->
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
 - The `as const` operator can be used to narrow an inferred abstract type into a specific literal type.
 
@@ -117,6 +115,18 @@ An explicit type annotation is acceptable to use for overriding an inferred type
 
 1) It can further narrow an inferred type, thus supplying type information that the compiler cannot infer or access.
 2) It is determined to be the most accurate _and_ specific type assignable.
+
+##### Use the `satisfies` operator to enforce a type constraint or to validate the assigned type
+
+These requirements can be confusing because it is possible to use type annotations in two different ways: to assign a type definition, or to enforce a type constraint.
+
+In the second case, an abstract, "narrowest supertype" is used to constrain or validate a type. Since v4.9, TypeScript provides the `satisfies` operator for this use case. It is able to both enforce a type constraint and further narrow the assigned type through inference.
+
+<!-- TODO: Add examples -->
+
+However, for mature, well-maintained codebases with minimal usage of `any`, it is also worth considering whether a type validation at the source of the type declaration is necessary, when the assigned type will be subject to a type check downstream wherever it ends up being called or used.
+
+Therefore, `satisfies` should only be used when the user-supplied abstract type provides more type information and useful context than the most specific type definition.
 
 #### Acceptable usages of `:` annotations
 
