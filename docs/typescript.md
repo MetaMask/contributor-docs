@@ -15,20 +15,52 @@ The general order of preference for using these features coincides with the orde
 
 ### Type Inference
 
-TypeScript is very good at inferring types. Explicit type annotations and assertions are the exception rather than the rule in a well-managed TypeScript codebase even with strong type safety guarantees.
+TypeScript is very good at inferring types. Explicit type annotations and assertions are the exception rather than the norm in a well-managed TypeScript codebase.
 
 Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities or data types, and types that express the domain model of the codebase.
 
-However, for the remaining majority of types and values, type inference should be preferred over type annotations and assertions.
+However, for the remaining majority of types and values, inference should be preferred over annotations and assertions.
 
 ##### Prefer type inference over annotations and assertions
 
 - Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent further inference-based narrowing of the user-supplied types.
-  - The compiler errs on the side of trusting user input, which prevents it from providing additional type information that it is able to infer.
+  - The compiler errs on the side of trusting user input, which prevents it from utilizing additional type information that it is able to infer.
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
-- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type.
+- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type. It can also be used on arrays and objects to achieve the same effect on their properties.
 
-##### Type annotations prevent inference-based narrowing of user-supplied types
+##### Avoid unintentionally widening an inferred type with a type annotation
+
+Enforcing a wider type defeats the purpose of adding an explicit type declaration, as it _loses_ type information instead of adding it. Double-check that the declared type is narrower than the inferred type.
+
+🚫 Type declarations
+
+```typescript
+const name: string = 'METAMASK'; // Type 'string'
+
+const chainId: string = this.messagingSystem(
+  'NetworkController:getProviderConfig',
+).chainId; // Type 'string'
+
+const BUILT_IN_NETWORKS = new Map<string, `0x${string}`>([
+  ['mainnet', '0x1'],
+  ['sepolia', '0xaa36a7'],
+]); // Type 'Map<string, `0x${string}`>'
+```
+
+✅ Type inferences
+
+```typescript
+const name = 'METAMASK'; // Type 'METAMASK'
+
+const chainId = this.messagingSystem(
+  'NetworkController:getProviderConfig',
+).chainId; // Type '`0x${string}`'
+
+const BUILT_IN_NETWORKS = {
+  mainnet: '0x1',
+  sepolia: '0xaa36a7',
+} as const; // Type { readonly mainnet: '0x1'; readonly sepolia: '0xaa36a7'; }
+```
 
 ```typescript
 type TransactionMeta = TransactionBase &
@@ -73,40 +105,6 @@ const updatedTransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected as const,
 }; // resolves error
-```
-
-##### Avoid unintentionally widening an inferred type with an explicit type declaration
-
-Enforcing a wider type defeats the purpose of adding an explicit type declaration, as it _loses_ type information instead of adding it. Double-check that the declared type is narrower than the inferred type.
-
-🚫 Type declarations
-
-```typescript
-const name: string = 'METAMASK'; // Type 'string'
-
-const chainId: string = this.messagingSystem(
-  'NetworkController:getProviderConfig',
-).chainId; // Type 'string'
-
-const BUILT_IN_NETWORKS = new Map<string, `0x${string}`>([
-  ['mainnet', '0x1'],
-  ['sepolia', '0xaa36a7'],
-]); // Type 'Map<string, `0x${string}`>'
-```
-
-✅ Type inferences
-
-```typescript
-const name = 'METAMASK'; // Type 'METAMASK'
-
-const chainId = this.messagingSystem(
-  'NetworkController:getProviderConfig',
-).chainId; // Type '`0x${string}`'
-
-const BUILT_IN_NETWORKS = {
-  mainnet: '0x1',
-  sepolia: '0xaa36a7',
-} as const; // Type { readonly mainnet: '0x1'; readonly sepolia: '0xaa36a7'; }
 ```
 
 ### Type Annotations
