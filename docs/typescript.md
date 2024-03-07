@@ -396,7 +396,8 @@ All of this makes `any` a prominent cause of dangerous **silent failures**, wher
 - When typing the _assigned_:
   - `unknown` is unable to replace `any`, as `unknown` is only assignable to `unknown`.
   - The type of the _assigned_ must be a subtype of the _assignee_.
-  - `never` is worth trying, as it is the universal subtype and assignable to all types.
+  - `never` is worth trying as a starting point, as it is the universal subtype and assignable to all types.
+  - If the assigned type simultaneously needs to be the assignee for another type, `never` will not work, as no type is assignable to `never`.
 
 <!-- TODO: Add examples -->
 
