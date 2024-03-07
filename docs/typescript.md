@@ -4,14 +4,14 @@ These guidelines specifically apply to TypeScript.
 
 ## Types
 
-TypeScript provides a range of syntax with which to communicate type information with the compiler.
+TypeScript provides a range of syntax for communicating type information with the compiler.
 
 - The compiler performs **type inference** on all types and values in the code.
-- The user can assign **type annotations** (`:`) to override some of the inferred types.
-- The user can also add **type assertions** (`as`, `!`) to force the compiler to adhere to the user-supplied type even if it contradicts the compiler's inferences.
-- Finally, there are **compiler directives** for disabling type checking (`any`, `@ts-expect-error`) for a limited scope of code.
+- The user can assign **type annotations** (`:`) to override inferred types or add type constraints.
+- The user can add **type assertions** (`as`, `!`) to force the compiler to accept user-supplied types even if they contradicts the inferred types.
+- Finally, there are **compiler directives** that let type checking be disabled (`any`, `@ts-expect-error`) for a limited scope of code.
 
-The general order of preference for using these features coincides with the order in which they were just presented.
+The order of this list represents the general order of preference for using these features.
 
 ### Type Inference
 
@@ -19,14 +19,14 @@ TypeScript is very good at inferring types. Explicit type annotations and assert
 
 Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities or data types, and types that express the domain model of the codebase.
 
-However, for the remaining majority of types and values, inference should be preferred over annotations and assertions.
+However, for most types, inference should be preferred over annotations and assertions.
 
 ##### Prefer type inference over annotations and assertions
 
-- Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent further inference-based narrowing of the user-supplied types.
+- Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent inference-based narrowing of the user-supplied types.
   - The compiler errs on the side of trusting user input, which prevents it from utilizing additional type information that it is able to infer.
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
-- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type. It can also be used on arrays and objects to achieve the same effect on their properties.
+- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type. It can also be used on arrays and objects to achieve the same effect on their elements.
 
 ##### Avoid unintentionally widening an inferred type with a type annotation
 
@@ -118,7 +118,7 @@ An explicit type annotation is acceptable for overriding an inferred type if...
 
 It is possible to use type annotations in two different ways: to assign a type definition, or to enforce a type constraint.
 
-In the second case, an abstract, "narrowest supertype" is used to constrain or validate a type. Since v4.9, TypeScript provides the `satisfies` operator for this use case. It is able to both enforce a type constraint and further narrow the assigned type through inference.
+In the second case, an abstract, "narrowest supertype" is used to constrain or validate a type. TypeScript provides the `satisfies` operator for this use case. It is able to both enforce a type constraint and further narrow the assigned type through inference.
 
 🚫 Use a type annotation for type validation
 
@@ -192,7 +192,7 @@ This can cause silent failures or false negatives where errors are suppressed. T
 
 ##### Redundant or unnecessary `as` assertions are not flagged for removal
 
-Type assertions can also cause false positives, because they assertions are independent expressions, untied to the type errors they were intended to fix. Thus, even if code drift fixes or removes a particular type error, the type assertions that were put in place to fix that error will provide no indication that they are no longer necessary and now should be removed.
+Type assertions can also cause false positives, because assertions are independent expressions, untied to the type errors they were intended to fix. Even if code drift fixes or removes a particular type error, the type assertions that were put in place to fix that error will provide no indication that they are no longer necessary and now should be removed.
 
 ```typescript
 enum Direction {
@@ -288,13 +288,13 @@ nftMetadataResults.filter(
 
 ##### `as` is acceptable to use for preventing or fixing `any` usage
 
-Unsafe as type assertions may be, they are still categorically preferable to using `any`.
+Unsafe as type assertions may be, they should always be preferred to introducing `any` into the code.
 
 - With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
-- Type assertions also provide an indication of what the expected type is as intended by the author.
-- For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
+- Type assertions also provide an indication of what the author intends or expects the type to be.
 - Often, the compiler will tell us exactly what the target type for an assertion needs to be, enabling us to avoid `as any`.
-- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the complete radio silence enforced by `any`.
+- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the dangerous radio silence enforced by `any`.
+- For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
 
 ```typescript
 // Error: Argument of type '"getNftInformation"' is not assignable to parameter of type 'keyof NftController'.ts(2345)
@@ -347,7 +347,7 @@ Preferably, this typing should be accompanied by runtime schema validation perfo
 
 It's recommended to provide accurate typing if there's any chance that omitting properties affects the accuracy of the test.
 
-If that is not the case, however, mocking only the properties needed in the test improves readability. It makes the intention and scope of the mock clear, and is much more convenient to write.
+If that is not the case, however, mocking only the properties needed in the test improves readability. It makes the intention and scope of the mock clear, and is more convenient to write, which can encourage test writing and improve test coverage.
 
 ### Compiler Directives
 
@@ -357,10 +357,10 @@ If that is not the case, however, mocking only the properties needed in the test
 
 `any` is the most dangerous form of explicit type declaration, and should be completely avoided.
 
-The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, only now it's impossible to assess and counteract their destructive influence.
+The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, only now it's impossible to assess and counteract their influence.
 
 - `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
-- `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code is changed enough to alter, remove, or add new type errors.
+- `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code has changed enough to alter, remove, or add new type errors.
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value becomes an `any` type itself. This represents an unmitigated loss of type information.
 
 ```typescript
@@ -376,9 +376,9 @@ function returnsAny(): any {
 const { a, b, c } = returnsAny();
 ```
 
-- `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unchecked code for which the TypeScript compiler can make no guarantees regarding type safety or runtime behavior.
+- `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unsafe code, for which the TypeScript compiler can make no guarantees on type safety or runtime behavior.
 
-All of this makes `any` a prominent cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning, defeating the purpose of using a statically-typed language.
+All of this makes `any` a prominent cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
 
 ##### When `any` , try `unknown` and `never` instead
 
