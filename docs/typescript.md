@@ -128,7 +128,7 @@ const updatedTransactionMeta: TransactionMeta = {
   status: TransactionStatus.rejected,
 };
 
-updatedTransactionMeta.error; // Type 'TransactionError'
+updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.approved | TransactionStatus.cancelled | TransactionStatus.confirmed | TransactionStatus.dropped | TransactionStatus.rejected | TransactionStatus.signed | TransactionStatus.submitted | TransactionStatus.unapproved; ... }'.(2339)
 ```
 
 ✅ Use the `satisfies` operator for type validation
@@ -139,7 +139,7 @@ const updatedTransactionMeta = {
   status: TransactionStatus.rejected as const,
 } satisfies TransactionMeta;
 
-updatedTransactionMeta.error; // Type 'undefined'
+updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.rejected; ... }'.(2339)
 ```
 
 #### Acceptable usages of `:` annotations
