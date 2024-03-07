@@ -144,7 +144,7 @@ updatedTransactionMeta.error; // Type 'undefined'
 
 #### Acceptable usages of `:` annotations
 
-##### To prevent or fix type assertions
+##### Use type annotations if it will prevent or remove type assertions
 
 Type annotations are more responsive to code drift than assertions. If the assignee's type becomes incompatible with the assigned type annotation, the compiler will raise a type error, whereas in most cases a type assertion will still suppress the error.
 
@@ -210,7 +210,7 @@ for (const key of Object.keys(directions) as keyof directions[]) {
 }
 ```
 
-##### Type guards can be used to improve type inference
+##### Type guards can be used to improve type inference and avoid type assertion
 
 ```typescript
 function isSomeInterface(x: unknown): x is SomeInterface {
@@ -286,7 +286,7 @@ nftMetadataResults.filter(
 
 #### Acceptable usages of `as`
 
-##### To prevent or fix `any` usage
+##### `as` is acceptable to use for preventing or fixing `any` usage
 
 Unsafe as type assertions may be, they are still categorically preferable to using `any`.
 
@@ -314,7 +314,7 @@ sinon.stub(nftController, 'getNftInformation' as any);
 sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 ```
 
-##### For TypeScript syntax other than type assertion
+##### `as` is acceptable to use for TypeScript syntax other than type assertion
 
 - Writing type guards often reqiures using the `as` keyword.
 
@@ -332,7 +332,7 @@ type MappedTypeWithNewProperties<Type> = {
 };
 ```
 
-##### To type data objects whose shape and contents are determined at runtime, externally, or through deserialization
+##### `as` is acceptable to use for typing data objects whose shape and contents are determined at runtime, externally, or through deserialization
 
 Preferably, this typing should be accompanied by runtime schema validation performed with type guards and unit tests.
 
@@ -341,7 +341,7 @@ Preferably, this typing should be accompanied by runtime schema validation perfo
 
 <!-- TODO: Add example -->
 
-##### In tests, for mocking or to exclude irrelevant but required properties from an input object
+##### `as` may be acceptable to use in tests, for mocking or to exclude irrelevant but required properties from an input object
 
 <!-- TODO: Add examples -->
 
@@ -380,7 +380,7 @@ const { a, b, c } = returnsAny();
 
 All of this makes `any` a prominent cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning, defeating the purpose of using a statically-typed language.
 
-##### Try `unknown` and `never` instead
+##### When `any` , try `unknown` and `never` instead
 
 ###### `unknown`
 
@@ -441,7 +441,7 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 
 #### Acceptable usages of `any`
 
-##### Assigning new properties to a generic type at runtime
+##### `any` may be necessary when assigning new properties to or deleting properties from a generic type at runtime
 
 In most type errors involving property access or runtime property assignment, `any` usage can be avoided by substituting with `as unknown as`.
 
@@ -502,7 +502,7 @@ Object.assign(state, {
 };
 ```
 
-##### Within generic constraints
+##### `any` may be acceptable to use within generic constraints
 
 ✅
 
@@ -516,13 +516,13 @@ class BaseController<
 - In general, using `any` in this context is not harmful in the same way that it is in other contexts, as the `any` types only are not directly assigned to any specific variable, and only function as constraints.
 - That said, more specific constraints provide better type safety and intellisense, and should be preferred wherever possible.
 
-##### Catching errors
+##### `any` may be acceptable to use to type the error property in a catch block
 
 - `catch` only accepts `any` and `unknown` as the error type.
 - Recommended: Use `unknown` with type guards like `isJsonRpcError`.
 - Avoid typing an error object with `any` if it is passed on to be used elsewhere instead of just being thrown, as the `any` type will infect the downstream code.
 
-##### In tests, for mocking or to intentionally break features
+##### `any` may be acceptable to use in tests, to intentionally break features
 
 <!-- TODO: Add examples. Should be clear why type assertions couldn't be used instead -->
 
