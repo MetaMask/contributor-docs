@@ -111,22 +111,38 @@ const BUILT_IN_NETWORKS = {
 
 ### Type Annotations
 
-An explicit type annotation is acceptable to use for overriding an inferred type if...
+An explicit type annotation is acceptable for overriding an inferred type if...
 
-1) It can further narrow an inferred type, thus supplying type information that the compiler cannot infer or access.
-2) It is determined to be the most accurate _and_ specific type assignable.
+1. It can further narrow an inferred type, thus supplying type information that the compiler cannot infer or access.
+2. It is determined to be the most accurate _and_ specific type assignable.
 
 ##### Use the `satisfies` operator to enforce a type constraint or to validate the assigned type
 
-These requirements can be confusing because it is possible to use type annotations in two different ways: to assign a type definition, or to enforce a type constraint.
+It is possible to use type annotations in two different ways: to assign a type definition, or to enforce a type constraint.
 
 In the second case, an abstract, "narrowest supertype" is used to constrain or validate a type. Since v4.9, TypeScript provides the `satisfies` operator for this use case. It is able to both enforce a type constraint and further narrow the assigned type through inference.
 
-<!-- TODO: Add examples -->
+🚫 Use a type annotation for type validation
 
-However, for mature, well-maintained codebases with minimal usage of `any`, it is also worth considering whether a type validation at the source of the type declaration is necessary, when the assigned type will be subject to a type check downstream wherever it ends up being called or used.
+```typescript
+const updatedTransactionMeta: TransactionMeta = {
+  ...transactionMeta,
+  status: TransactionStatus.rejected,
+};
 
-Therefore, `satisfies` should only be used when the user-supplied abstract type provides more type information and useful context than the most specific type definition.
+updatedTransactionMeta.error; // Type 'TransactionError'
+```
+
+✅ Use the `satisfies` operator for type validation
+
+```typescript
+const updatedTransactionMeta = {
+  ...transactionMeta,
+  status: TransactionStatus.rejected as const,
+} satisfies TransactionMeta;
+
+updatedTransactionMeta.error; // Type 'undefined'
+```
 
 #### Acceptable usages of `:` annotations
 
