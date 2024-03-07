@@ -355,21 +355,30 @@ If that is not the case, however, mocking only the properties needed in the test
 
 #### Avoid `any`
 
-`any` is the most dangerous form of explicit type declaration, and should be completely avoided if possible.
+`any` is the most dangerous form of explicit type declaration, and should be completely avoided.
+
+The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, only now it's impossible to assess and counteract their destructive influence.
 
 - `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
-- `any` suppresses all error messages about its assignee. This includes errors that are changed or newly introduced by alterations to the code. This makes `any` the cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning.
-- `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value is erased and becomes an `any` type itself.
+- `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code is changed enough to alter, remove, or add new type errors.
+- `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value becomes an `any` type itself. This represents an unmitigated loss of type information.
 
 ```typescript
 // Type of 'payload_0': 'any'
 const handler:
   | ((payload_0: ComposableControllerState, payload_1: Patch[]) => void)
   | ((payload_0: any, payload_1: Patch[]) => void);
-```
-<!-- TODO: Add more examples: For instance, if you have a function that is declared to return any which actually returns an object, all properties of that object will be any. -->
 
-- Because of this, `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it expands the surface area of unchecked code for which the TypeScript compiler can make no guarantees regarding type safety or runtime behavior.
+function returnsAny(): any {
+  return { a: 1, b: true, c: 'c' };
+}
+// Types of a, b, c are all `any`
+const { a, b, c } = returnsAny();
+```
+
+- `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unchecked code for which the TypeScript compiler can make no guarantees regarding type safety or runtime behavior.
+
+All of this makes `any` a prominent cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning, defeating the purpose of using a statically-typed language.
 
 ##### Try `unknown` and `never` instead
 
