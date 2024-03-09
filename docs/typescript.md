@@ -351,13 +351,17 @@ If that is not the case, however, mocking only the properties needed in the test
 
 ### Compiler Directives
 
+`any` is the most dangerous form of explicit type declaration, and should be completely avoided.
+
+Unfortunately, `any` is also such a tempting escape hatch from the TypeScript type system that there's a strong incentive to use it whenever a nontrivial typing issue is encountered. Entire teams can easily be enticed into "unblocking" feature development by temporarily using `any` with the intention of fixing it later. This is a major source of tech debt, and its destructive influence on the type safety of a codebase cannot be understated.
+
+Therefore, to prevent new `any` instances from being introduced into our codebase, we cannot rely on the `@typescript-eslint/no-explicit-any` ESLint rule. It's also necessary for all contributors to understand exactly why `any` is dangerous, and how it can be avoided.
+
 <!-- TODO: Add section for `@ts-expect-error` -->
 
 #### Avoid `any`
 
-`any` is the most dangerous form of explicit type declaration, and should be completely avoided.
-
-The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, only now it's impossible to assess and counteract their influence.
+The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
 
 - `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
 - `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code has changed enough to alter, remove, or add new type errors.
