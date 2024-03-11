@@ -296,6 +296,8 @@ nftMetadataResults.filter(
 
 #### Acceptable usages of `as`
 
+Although `as` is dangerous and discouraged from usage, the following is not an exhaustive list of its valid use cases.
+
 ##### `as` is acceptable to use for preventing or fixing `any` usage
 
 Unsafe as type assertions may be, they should always be preferred to introducing `any` into the code.
@@ -492,6 +494,8 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 ```
 
 #### Acceptable usages of `any`
+
+`any` is only acceptable for very specific usages. The following should be considered an exhaustive list of its valid use cases.
 
 ##### `any` may be necessary when assigning new properties to or deleting properties from a generic type at runtime
 
