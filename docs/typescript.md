@@ -1,6 +1,16 @@
 # TypeScript Guidelines
 
-These guidelines specifically apply to TypeScript.
+The purpose of this article is to:
+
+- Present best practices and preferred conventions for contributing type-safe and maintainable TypeScript to MetaMask repos.
+- Cultivate a shared understanding of advanced concepts to prevent recurring issues that cannot be addressed with blind compliance alone.
+- Serve as a reference during code review to lend weight to preferred approaches, minimize redundant discussion, and educate contributors about established practices.
+
+This article does not aim to:
+
+- Serve as a comprehensive resource covering all major aspects of syntax and style.
+- Redundantly list or explain conventions that are enforceable through linters or static rulesets.
+- Endorse its contents as being appropriate or useful for any TypeScript codebase outside of our own.
 
 ## Types
 
@@ -11,7 +21,7 @@ TypeScript provides a range of syntax for communicating type information with th
 - The user can add **type assertions** (`as`, `!`) to force the compiler to accept user-supplied types even if they contradicts the inferred types.
 - Finally, there are **compiler directives** that let type checking be disabled (`any`, `@ts-expect-error`) for a limited scope of code.
 
-The order of this list represents the general order of preference for using these features.
+The order of this list represents the general order of preference for these features.
 
 ### Type Inference
 
@@ -353,9 +363,9 @@ If that is not the case, however, mocking only the properties needed in the test
 
 `any` is the most dangerous form of explicit type declaration, and should be completely avoided.
 
-Unfortunately, `any` is also such a tempting escape hatch from the TypeScript type system that there's a strong incentive to use it whenever a nontrivial typing issue is encountered. Entire teams can easily be enticed into "unblocking" feature development by temporarily using `any` with the intention of fixing it later. This is a major source of tech debt, and its destructive influence on the type safety of a codebase cannot be understated.
+Unfortunately, `any` is also such a tempting escape hatch from the TypeScript type system that there's a strong incentive to use it whenever a nontrivial typing issue is encountered. Entire teams can easily be enticed into "unblocking" feature development by temporarily using `any` with the intention of fixing it later. This is a major source of tech debt, and its destructive effect on the type safety of a codebase cannot be understated.
 
-Therefore, to prevent new `any` instances from being introduced into our codebase, we cannot rely on the `@typescript-eslint/no-explicit-any` ESLint rule. It's also necessary for all contributors to understand exactly why `any` is dangerous, and how it can be avoided.
+Therefore, to prevent new `any` instances from being introduced into our codebase, we cannot rely only on the `@typescript-eslint/no-explicit-any` ESLint rule. It's also necessary for all contributors to understand exactly why `any` is dangerous, and how it can be avoided.
 
 <!-- TODO: Add section for `@ts-expect-error` -->
 
