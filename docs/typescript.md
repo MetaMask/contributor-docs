@@ -361,15 +361,53 @@ If that is not the case, however, mocking only the properties needed in the test
 
 ### Compiler Directives
 
-`any` is the most dangerous form of explicit type declaration, and should be completely avoided.
+TypeScript provides several directive comments that can be used to suppress TypeScript compiler errors. Using these to avoid resolving typing issues is dangeorus and reduces the effectiveness of TypeScript overall.
 
-Unfortunately, `any` is also such a tempting escape hatch from the TypeScript type system that there's a strong incentive to use it whenever a nontrivial typing issue is encountered. Entire teams can easily be enticed into "unblocking" feature development by temporarily using `any` with the intention of fixing it later. This is a major source of tech debt, and its destructive effect on the type safety of a codebase cannot be understated.
+The `@typescript-eslint/ban-ts-comment` rule is enabled by default in `@metamask/eslint-config-typescript`, banning `@ts-ignore`, `@ts-nocheck` usage and enforcing that `@ts-expect-error` instances include a description. Outside of rare exceptions like converting a file to TypeScript, this rule should never be disabled or overriden.
 
-Therefore, to prevent new `any` instances from being introduced into our codebase, we cannot rely only on the `@typescript-eslint/no-explicit-any` ESLint rule. It's also necessary for all contributors to understand exactly why `any` is dangerous, and how it can be avoided.
+#### Acceptable usages of `@ts-expect-error`
 
-<!-- TODO: Add section for `@ts-expect-error` -->
+##### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
+
+Sometimes, there is a need to force a branch to execute at runtime for security or testing purposes, when that branch has correctly been inferred as being inaccessible by the TypeScript compiler.
+
+Suppressing compiler errors to avoid typing issues is usually dangerous because it results in a loss of information and safety. However, consciously using `@ts-expect-error` to add runtime checks represents an improvement in these aspects, and therefore isn't discouraged.
+
+✅
+
+> **Error:** This comparison appears to be unintentional because the types '`0x${string}`' and '"__proto__"' have no overlap.ts(2367)
+
+```typescript
+exampleFunction(chainId: `0x${string}`) {
+    // @ts-expect-error Suppressing to perform runtime check
+    if (chainId === '__proto__') {
+      return;
+    }
+    ...
+}
+```
+
+##### `@ts-expect-error` may be acceptable to use in tests, to intentionally break features
+
+✅
+
+```typescript
+// @ts-expect-error Suppressing to test runtime error handling
+
+// @ts-expect-error Intentionally testing invalid state
+
+// @ts-expect-error We are intentionally passing bad input.
+```
+
+##### If accompanied by a TODO comment, `@ts-expect-error` is acceptable to use for marking errors that have clear plans of being resolved
 
 #### Avoid `any`
+
+`any` is the most dangerous form of explicit type declaration, and should be completely avoided.
+
+Unfortunately, `any` is also such a tempting escape hatch from the TypeScript type system that there's a strong incentive to use it whenever a nontrivial typing issue is encountered. Entire teams can easily be enticed into a pattern of "unblocking" feature development by introducing `any` with the intention of fixing it later. This is a major source of tech debt, and its destructive effect on the type safety of a codebase cannot be understated.
+
+Therefore, to prevent new `any` instances from being introduced into our codebase, it is not enough to rely on the `@typescript-eslint/no-explicit-any` ESLint rule. It's also necessary for all contributors to understand exactly why `any` is dangerous, and how it can be avoided.
 
 The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
 
