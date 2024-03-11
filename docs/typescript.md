@@ -300,13 +300,11 @@ Although `as` is dangerous and discouraged from usage, the following is not an e
 
 ##### `as` is acceptable to use for preventing or fixing `any` usage
 
-Unsafe as type assertions may be, they should always be preferred to introducing `any` into the code.
+Type assertions are unsafe, but they are still always preferred to introducing `any` into the code.
 
 - With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
 - Type assertions also provide an indication of what the author intends or expects the type to be.
 - Often, the compiler will tell us exactly what the target type for an assertion needs to be, enabling us to avoid `as any`.
-- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the dangerous radio silence enforced by `any`.
-- For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
 
 ```typescript
 // Error: Argument of type '"getNftInformation"' is not assignable to parameter of type 'keyof NftController'.ts(2345)
@@ -325,6 +323,9 @@ sinon.stub(nftController, 'getNftInformation' as any);
 ```typescript
 sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 ```
+
+- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the dangerous radio silence enforced by `any`.
+- For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
 
 ##### `as` is acceptable to use for TypeScript syntax other than type assertion
 
@@ -414,7 +415,7 @@ Therefore, to prevent new `any` instances from being introduced into our codebas
 The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
 
 - `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
-- `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code has changed enough to alter, remove, or add new type errors.
+- `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code has changed enough to alter or remove the error, or even add new type errors.
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value becomes an `any` type itself. This represents an unmitigated loss of type information.
 
 ```typescript
@@ -430,27 +431,29 @@ function returnsAny(): any {
 const { a, b, c } = returnsAny();
 ```
 
-- `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unsafe code, for which the TypeScript compiler can make no guarantees on type safety or runtime behavior.
+- `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unsafe code with no guarantees about type safety or runtime behavior.
 
-All of this makes `any` a prominent cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
+All of this makes `any` a prominent cause of dangerous **silent failures** (false negatives), where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
 
-##### When `any` , try `unknown` and `never` instead
+##### When tempted to use `any`, try `unknown` and `never` instead
 
 ###### `unknown`
+
+`any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
 
 - `unknown` is the universal supertype i.e. the widest possible type, equivalent to the universal set(U).
 - Every type is assignable to `unknown`, but `unknown` is only assignable to `unknown`.
 - When typing the _assignee_, `any` and `unknown` are completely interchangeable since every type is assignable to both.
-- `any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
 
 ###### `never`
+
+`never` is worth trying as a starting point for narrowing down the type, as it is the universal subtype and assignable to all types.
 
 - `never` is the universal subtype i.e. the narrowest possible type, equivalent to the null set(∅).
 - `never` is assignable to every type, but the only type that is assignable to `never` is `never`.
 - When typing the _assigned_:
   - `unknown` is unable to replace `any`, as `unknown` is only assignable to `unknown`.
   - The type of the _assigned_ must be a subtype of the _assignee_.
-  - `never` is worth trying as a starting point, as it is the universal subtype and assignable to all types.
   - If the assigned type simultaneously needs to be the assignee for another type, `never` will not work, as no type is assignable to `never`.
 
 <!-- TODO: Add examples -->
