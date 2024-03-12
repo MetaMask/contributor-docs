@@ -2,13 +2,13 @@
 
 The purpose of this article is to:
 
-- Present best practices and preferred conventions for contributing type-safe and maintainable TypeScript to MetaMask repos.
-- Cultivate a shared understanding of advanced concepts to prevent recurring issues that cannot be addressed with blind compliance alone.
-- Serve as a reference during code review to lend weight to preferred approaches, minimize redundant discussion, and educate contributors about established practices.
+- Present best practices and preferred conventions for contributing type-safe and maintainable TypeScript code to MetaMask repos.
+- Explain concepts that can help resolve recurring issues that aren't preventable with compliance alone.
+- Serve as a reference during code review to encourage preferred approaches, minimize redundant discussion, and educate contributors about established practices.
 
 This article does not aim to:
 
-- Serve as a comprehensive resource covering all major aspects of syntax and style.
+- Be a comprehensive resource covering all major aspects of syntax and style.
 - Redundantly list or explain conventions that are enforceable through linters or static rulesets.
 - Endorse its contents as being appropriate or useful for any TypeScript codebase outside of our own.
 
@@ -19,13 +19,13 @@ TypeScript provides a range of syntax for communicating type information with th
 - The compiler performs **type inference** on all types and values in the code.
 - The user can assign **type annotations** (`:`) to override inferred types or add type constraints.
 - The user can add **type assertions** (`as`, `!`) to force the compiler to accept user-supplied types even if they contradicts the inferred types.
-- Finally, there are **compiler directives** that let type checking be disabled (`any`, `@ts-expect-error`) for a limited scope of code.
+- Finally, there are **compiler directives** that let type checking be disabled (`any`, `@ts-expect-error`) for a certain scope of code.
 
-The order of this list represents the general order of preference for these features.
+The order of this list represents the general order of preference for using these features.
 
 ### Type Inference
 
-TypeScript is very good at inferring types. Explicit type annotations and assertions are the exception rather than the norm in a well-managed TypeScript codebase.
+TypeScript is very good at inferring types. Explicit type annotations and assertions are the exception rather than the rule in a well-managed TypeScript codebase.
 
 Some fundamental type information must always be supplied by the user, such as function and class signatures, interfaces for interacting with external entities or data types, and types that express the domain model of the codebase.
 
@@ -36,7 +36,7 @@ However, for most types, inference should be preferred over annotations and asse
 - Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent inference-based narrowing of the user-supplied types.
   - The compiler errs on the side of trusting user input, which prevents it from utilizing additional type information that it is able to infer.
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
-- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type. It can also be used on arrays and objects to achieve the same effect on their elements.
+- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type, or do the same for the elements of an array or object.
 
 ##### Avoid unintentionally widening an inferred type with a type annotation
 
@@ -122,11 +122,9 @@ const updatedTransactionMeta = {
 An explicit type annotation is acceptable for overriding an inferred type if...
 
 1. It can further narrow an inferred type, thus supplying type information that the compiler cannot infer or access.
-2. It is determined to be the most accurate _and_ specific type assignable.
+2. It is being used to enforce a type constraint rather than assign a type definition.
 
 ##### Use the `satisfies` operator to enforce a type constraint or to validate the assigned type
-
-It is possible to use type annotations in two different ways: to assign a type definition, or to enforce a type constraint.
 
 In the second case, an abstract, "narrowest supertype" is used to constrain or validate a type. TypeScript provides the `satisfies` operator for this use case. It is able to both enforce a type constraint and further narrow the assigned type through inference.
 
@@ -182,7 +180,7 @@ const tokensMap = new Map<string, Token>(); // Type 'Map<string, Token>'
 
 ### Type Assertions
 
-`as` assertions are unsafe. They overwrite type-checked and inferred types with user-supplied types that suppress compiler errors.
+`as` assertions are inherently unsafe. They overwrite type-checked and inferred types with user-supplied types that suppress compiler errors.
 
 They should only be introduced into the code if the accurate type is unreachable through other means.
 
@@ -296,7 +294,7 @@ nftMetadataResults.filter(
 
 #### Acceptable usages of `as`
 
-Although `as` is dangerous and discouraged from usage, the following is not an exhaustive list of its valid use cases.
+Although `as` is dangerous and discouraged from being used, the following is not intended as an exhaustive list of its valid use cases.
 
 ##### `as` is acceptable to use for preventing or fixing `any` usage
 
@@ -327,9 +325,9 @@ sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 - Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the dangerous radio silence enforced by `any`.
 - For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
 
-##### `as` is acceptable to use for TypeScript syntax other than type assertion
+##### `as` is always acceptable to use for TypeScript syntax other than type assertion
 
-- Writing type guards often reqiures using the `as` keyword.
+- Writing type guards often requires using the `as` keyword.
 
 ```typescript
 function isFish(pet: Fish | Bird): pet is Fish {
@@ -356,17 +354,15 @@ Preferably, this typing should be accompanied by runtime schema validation perfo
 
 ##### `as` may be acceptable to use in tests, for mocking or to exclude irrelevant but required properties from an input object
 
-<!-- TODO: Add examples -->
-
 It's recommended to provide accurate typing if there's any chance that omitting properties affects the accuracy of the test.
 
 If that is not the case, however, mocking only the properties needed in the test improves readability. It makes the intention and scope of the mock clear, and is more convenient to write, which can encourage test writing and improve test coverage.
 
+<!-- TODO: Add examples -->
+
 ### Compiler Directives
 
-TypeScript provides several directive comments that can be used to suppress TypeScript compiler errors. Using these to avoid resolving typing issues is dangeorus and reduces the effectiveness of TypeScript overall.
-
-The `@typescript-eslint/ban-ts-comment` rule is enabled by default in `@metamask/eslint-config-typescript`, banning `@ts-ignore`, `@ts-nocheck` usage and enforcing that `@ts-expect-error` instances include a description. Outside of rare exceptions like converting a file to TypeScript, this rule should never be disabled or overriden.
+TypeScript provides several directive comments that can be used to suppress TypeScript compiler errors. Using these to ignore typing issues is dangerous and reduces the overall effectiveness of TypeScript.
 
 #### Acceptable usages of `@ts-expect-error`
 
@@ -374,7 +370,7 @@ The `@typescript-eslint/ban-ts-comment` rule is enabled by default in `@metamask
 
 Sometimes, there is a need to force a branch to execute at runtime for security or testing purposes, when that branch has correctly been inferred as being inaccessible by the TypeScript compiler.
 
-Suppressing compiler errors to avoid typing issues is usually dangerous because it results in a loss of information and safety. However, consciously using `@ts-expect-error` to add runtime checks represents an improvement in these aspects, and therefore isn't discouraged.
+Suppressing compiler errors to avoid typing issues is usually dangerous because it results in a loss of information and safety. However, consciously using `@ts-expect-error` to add runtime checks represents an improvement in these aspects, and therefore is not discouraged.
 
 ✅
 
@@ -404,15 +400,17 @@ exampleFunction(chainId: `0x${string}`) {
 
 ##### If accompanied by a TODO comment, `@ts-expect-error` is acceptable to use for marking errors that have clear plans of being resolved
 
+<!-- TODO: Add example -->
+
 #### Avoid `any`
 
 `any` is the most dangerous form of explicit type declaration, and should be completely avoided.
 
-Unfortunately, `any` is also such a tempting escape hatch from the TypeScript type system that there's a strong incentive to use it whenever a nontrivial typing issue is encountered. Entire teams can easily be enticed into a pattern of "unblocking" feature development by introducing `any` with the intention of fixing it later. This is a major source of tech debt, and its destructive effect on the type safety of a codebase cannot be understated.
+Unfortunately, `any` is also such a tempting escape hatch from the TypeScript type system that there's a strong incentive to use it whenever a nontrivial typing issue is encountered. Entire teams can easily be enticed into a pattern of unblocking feature development by introducing `any` with the intention of fixing it later. This is a major source of tech debt, and its destructive influence on the type safety of a codebase cannot be understated.
 
 Therefore, to prevent new `any` instances from being introduced into our codebase, it is not enough to rely on the `@typescript-eslint/no-explicit-any` ESLint rule. It's also necessary for all contributors to understand exactly why `any` is dangerous, and how it can be avoided.
 
-The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
+The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, while `any` makes it impossible to assess and counteract their influence.
 
 - `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
 - `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code has changed enough to alter or remove the error, or even add new type errors.
