@@ -126,7 +126,7 @@ An explicit type annotation is acceptable for overriding an inferred type if...
 
 ##### Use the `satisfies` operator to enforce a type constraint or to validate the assigned type
 
-In the second case, an abstract, "narrowest supertype" is used to constrain or validate a type. TypeScript provides the `satisfies` operator for this use case. It is able to both enforce a type constraint and further narrow the assigned type through inference.
+TypeScript provides the `satisfies` operator for constraining or validating a type. It is able to both enforce a type constraint and further narrow the assigned type through inference.
 
 🚫 Use a type annotation for type validation
 
@@ -213,7 +213,7 @@ const directions = Object.values(Direction);
 
 // Error: Element implicitly has an 'any' type because index expression is not of type 'number'.(7015)
 // Only one of the two `as` assertions necessary to fix error, but neither are flagged as redundant.
-for (const key of Object.keys(directions) as keyof directions[]) {
+for (const key of Object.keys(directions) as (keyof typeof directions)[]) {
   const direction = directions[key as keyof typeof directions];
 }
 ```
@@ -235,7 +235,11 @@ function isSomeInterface(x: unknown): x is SomeInterface {
 
 ```typescript
 function f(x: SomeInterface | SomeOtherInterface) {
-  console.log((x as SomeInterface).name);
+  if (x.name) {
+    // We know that `x` is `SomeInterface` because `x` has a `name` but `SomeOtherInterface` does not
+    console.log((x as SomeInterface).name);
+  }
+
 }
 ```
 
@@ -244,7 +248,6 @@ function f(x: SomeInterface | SomeOtherInterface) {
 ```typescript
 function f(x: SomeInterface | SomeOtherInterface) {
   if (isSomeInterface(x)) {
-    // Type of x: 'SomeInterface | SomeOtherInterface'
     console.log(x.name); // Type of x: 'SomeInterface'. Type of x.name: 'string'.
   }
 }
@@ -370,7 +373,6 @@ TypeScript provides several directive comments that can be used to suppress Type
 
 Sometimes, there is a need to force a branch to execute at runtime for security or testing purposes, when that branch has correctly been inferred as being inaccessible by the TypeScript compiler.
 
-Suppressing compiler errors to avoid typing issues is usually dangerous because it results in a loss of information and safety. However, consciously using `@ts-expect-error` to add runtime checks represents an improvement in these aspects, and therefore is not discouraged.
 
 ✅
 
@@ -573,15 +575,6 @@ class BaseController<
 - In general, using `any` in this context is not harmful in the same way that it is in other contexts, as the `any` types only are not directly assigned to any specific variable, and only function as constraints.
 - That said, more specific constraints provide better type safety and intellisense, and should be preferred wherever possible.
 
-##### `any` may be acceptable to use to type the error property in a catch block
-
-- `catch` only accepts `any` and `unknown` as the error type.
-- Recommended: Use `unknown` with type guards like `isJsonRpcError`.
-- Avoid typing an error object with `any` if it is passed on to be used elsewhere instead of just being thrown, as the `any` type will infect the downstream code.
-
-##### `any` may be acceptable to use in tests, to intentionally break features
-
-<!-- TODO: Add examples. Should be clear why type assertions couldn't be used instead -->
 
 ## Functions
 
