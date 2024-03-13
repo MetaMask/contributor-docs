@@ -394,6 +394,10 @@ If that is not the case, however, mocking only the properties needed in the test
 
 TypeScript provides several directive comments that can be used to suppress TypeScript compiler errors. Using these to ignore typing issues is dangerous and reduces the overall effectiveness of TypeScript.
 
+Of these, we will discuss the use cases and pitfalls of `@ts-expect-error` and `any`.
+
+`@ts-ignore`, `@ts-nocheck`, `@ts-check` are disabled by ESLint rules.
+
 #### Acceptable usages of `@ts-expect-error`
 
 ##### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
