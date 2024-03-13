@@ -9,6 +9,7 @@ This is a living repository — nothing is set in stone! If you're member of Met
 - [Engineering Principles](./docs/engineering-principles.md)
 - [Guide to Pull Requests](./docs/pull-requests.md)
 - [JavaScript Guidelines](./docs/javascript.md)
+- [Migrations Best Practices](./docs/migrations.md)
 - [Secure Development Lifecycle Policy](./docs/sdlc.md)
 - [Secure Coding Guidelines](./docs/secure-coding-guidelines.md)
 - [TypeScript Guidelines](./docs/typescript.md)
