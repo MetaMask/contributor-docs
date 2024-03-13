@@ -1,16 +1,24 @@
 # TypeScript Guidelines
 
-The purpose of this article is to:
+## Introduction
 
-- Present best practices and preferred conventions for contributing type-safe and maintainable TypeScript code to MetaMask repos.
-- Explain concepts that can help resolve recurring issues that aren't preventable with compliance alone.
-- Serve as a reference during code review to encourage preferred approaches, minimize redundant discussion, and educate contributors about established practices.
+These guidelines apply to TypeScript code in MetaMask repos.
 
-This article does not aim to:
+### Purpose
 
-- Be a comprehensive resource covering all major aspects of syntax and style.
-- Redundantly list or explain conventions that are enforceable through linters or static rulesets.
-- Endorse its contents as being appropriate or useful for any TypeScript codebase outside of our own.
+The _purpose_ of this document is to:
+
+- Present best practices and preferred conventions for contributing type-safe, maintainable TypeScript code.
+- Explain underlying concepts for issues that are not effectively resolved or prevented with blind compliance.
+- Serve as a **reference** during code review to encourage preferred approaches, minimize redundant discussion, and educate contributors about established practices.
+
+### Scope
+
+The intended _scope_ of this document does **not** include:
+
+- Becoming a comprehensive resource that covers all major aspects of syntax and style.
+- Redundantly listing or explaining conventions that are enforceable with linters or rulesets.
+- Endorsing practices for TypeScript code in external repos.
 
 ## Types
 
