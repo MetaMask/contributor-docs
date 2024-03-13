@@ -400,6 +400,12 @@ Of these, we will discuss the use cases and pitfalls of `@ts-expect-error` and `
 
 #### Acceptable usages of `@ts-expect-error`
 
+##### Prefer `@ts-expect-error` over `any`
+
+`@ts-expect-error` is a better alternative to `any` or `as`, because if the error it was suppressing has been resolved by changes in the code, it will alert users with the following message:
+
+> **Error:** Unused '@ts-expect-error' directive.
+
 ##### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
 
 Sometimes, there is a need to force a branch to execute at runtime for security or testing purposes, when that branch has correctly been inferred as being inaccessible by the TypeScript compiler.
