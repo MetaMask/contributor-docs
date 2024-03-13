@@ -108,25 +108,27 @@ this.messagingSystem.publish(
 // Property 'error' is missing in type 'typeof updatedTransactionMeta' but required in type '{ status: TransactionStatus.failed; error: TransactionError; }'.ts(2345)
 ```
 
-🚫 Add type annotation
+🚫
+
+Adding a type annotation _does_ prevent the error above from being produced:
 
 ```typescript
 // Type 'TransactionMeta'
 const updatedTransactionMeta: TransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected,
-}; // resolves error
+};
 ```
 
-✅ Add `as const` and leave to inference
+✅
 
-```typescript
-// Type narrower than 'TransactionMeta': { status: TransactionStatus.rejected; ... }
-// Doesn't include 'error' property. Correctly narrowed between `TransactionMeta` discriminated union
+However, `TransactionMeta` is a [discriminated union](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions) of two separate types — "not failed" and "failed" — and the property that acts as the discriminator is `status`. Instead of using `TransactionMeta`, which specifies that a `error` property _could_ be present, it would be better to get TypeScript to infer the first of the two types ("not failed"), which guarantees that `error` is not present. We can do this by adding `as const` after `TransactionStatus.rejected`:
+
+``` typescript
 const updatedTransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected as const,
-}; // resolves error
+};
 ```
 
 ### Type Annotations
@@ -138,7 +140,7 @@ An explicit type annotation is acceptable for overriding an inferred type if...
 
 ##### Use the `satisfies` operator to enforce a type constraint or to validate the assigned type
 
-TypeScript provides the `satisfies` operator for constraining or validating a type. It is able to both enforce a type constraint and further narrow the assigned type through inference.
+Introduced in [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/), the `satisfies` operator can be used to enforce a type constraint and further narrow the assigned type through inference.
 
 ###### Example (21ed5949-8d34-4754-b806-412de1696f46)
 
@@ -174,7 +176,7 @@ When the compiler is in doubt, an annotation will nudge it towards relying on ty
 
 <!-- TODO: Add example -->
 
-##### When instantiating an empty container type, provide a type annotation
+##### When instantiating an empty composite data-type value, provide a type annotation 
 
 This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type by adding an explicit annotation.
 
@@ -350,6 +352,7 @@ sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 
 - Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the dangerous radio silence enforced by `any`.
 - For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
+<!-- TODO: Add example -->
 
 ##### `as` is always acceptable to use for TypeScript syntax other than type assertion
 
@@ -509,11 +512,6 @@ Some generic types use `any` as a default generic argument. This can silently in
 🚫
 
 ```typescript
-const NETWORKS = new Map({
-  mainnet: '0x1',
-  goerli: '0x5',
-}); // Type 'Map<any, any>'
-
 const mockGetNetworkConfigurationByNetworkClientId = jest.fn(); // Type 'jest.Mock<any, any>'
 mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
   (origin, type) => {},
@@ -524,11 +522,6 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 ✅
 
 ```typescript
-const NETWORKS = new Map<string, `0x${string}`>({
-  mainnet: '0x1',
-  goerli: '0x5',
-}); // Type 'Map<string, `0x${string}`>'
-
 const mockGetNetworkConfigurationByNetworkClientId = jest.fn<
   ReturnType<NetworkController['getNetworkConfigurationByNetworkClientId']>,
   Parameters<NetworkController['getNetworkConfigurationByNetworkClientId']>
