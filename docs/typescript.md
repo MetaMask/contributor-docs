@@ -50,6 +50,8 @@ However, for most types, inference should be preferred over annotations and asse
 
 Enforcing a wider type defeats the purpose of adding an explicit type declaration, as it _loses_ type information instead of adding it. Double-check that the declared type is narrower than the inferred type.
 
+###### Example (aba42b65-1cb9-4df0-881e-c2e0e79db0bd)
+
 🚫 Type declarations
 
 ```typescript
@@ -79,6 +81,8 @@ const BUILT_IN_NETWORKS = {
   sepolia: '0xaa36a7',
 } as const; // Type { readonly mainnet: '0x1'; readonly sepolia: '0xaa36a7'; }
 ```
+
+###### Example (e9b0d703-032d-428b-a232-f5aa56a94470)
 
 ```typescript
 type TransactionMeta = TransactionBase &
@@ -136,6 +140,8 @@ An explicit type annotation is acceptable for overriding an inferred type if...
 
 TypeScript provides the `satisfies` operator for constraining or validating a type. It is able to both enforce a type constraint and further narrow the assigned type through inference.
 
+###### Example (21ed5949-8d34-4754-b806-412de1696f46)
+
 🚫 Use a type annotation for type validation
 
 ```typescript
@@ -171,6 +177,8 @@ When the compiler is in doubt, an annotation will nudge it towards relying on ty
 ##### When instantiating an empty container type, provide a type annotation
 
 This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type by adding an explicit annotation.
+
+###### Example (b5a1175c-919f-4822-b92b-53a3d9dcd2e7)
 
 🚫
 
@@ -210,6 +218,8 @@ This can cause silent failures or false negatives where errors are suppressed. T
 
 Type assertions can also cause false positives, because assertions are independent expressions, untied to the type errors they were intended to fix. Even if code drift fixes or removes a particular type error, the type assertions that were put in place to fix that error will provide no indication that they are no longer necessary and now should be removed.
 
+###### Example (3675ab71-bcd6-4325-ac18-8ba4dd8ec03c)
+
 ```typescript
 enum Direction {
   Up = 'up',
@@ -227,6 +237,8 @@ for (const key of Object.keys(directions) as (keyof typeof directions)[]) {
 ```
 
 ##### Type guards can be used to improve type inference and avoid type assertion
+
+###### Example (50c3fbc9-c2d7-4140-9f75-be5f0a56d541)
 
 ```typescript
 function isSomeInterface(x: unknown): x is SomeInterface {
@@ -247,7 +259,6 @@ function f(x: SomeInterface | SomeOtherInterface) {
     // We know that `x` is `SomeInterface` because `x` has a `name` but `SomeOtherInterface` does not
     console.log((x as SomeInterface).name);
   }
-
 }
 ```
 
@@ -260,6 +271,8 @@ function f(x: SomeInterface | SomeOtherInterface) {
   }
 }
 ```
+
+###### Example (f7ff4b0d-e5e9-4568-b916-5153ddd2095b)
 
 ```typescript
 const nftMetadataResults = await Promise.allSettled(...);
@@ -315,6 +328,8 @@ Type assertions are unsafe, but they are still always preferred to introducing `
 - Type assertions also provide an indication of what the author intends or expects the type to be.
 - Often, the compiler will tell us exactly what the target type for an assertion needs to be, enabling us to avoid `as any`.
 
+###### Example (2ee8f56a-e3be-417b-a2c0-260c1319b755)
+
 ```typescript
 // Error: Argument of type '"getNftInformation"' is not assignable to parameter of type 'keyof NftController'.ts(2345)
 // 'getNftInformation' is a private method of class 'NftController'
@@ -340,6 +355,8 @@ sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 
 - Writing type guards often requires using the `as` keyword.
 
+###### Example (f16df571-266e-4030-b002-49554558ccd7)
+
 ```typescript
 function isFish(pet: Fish | Bird): pet is Fish {
   return (pet as Fish).swim !== undefined;
@@ -347,6 +364,8 @@ function isFish(pet: Fish | Bird): pet is Fish {
 ```
 
 - Key remapping in mapped types uses the `as` keyword.
+
+###### Example (6ffd8c99-4768-42e1-8cb7-5710d14f8552)
 
 ```typescript
 type MappedTypeWithNewProperties<Type> = {
@@ -381,10 +400,11 @@ TypeScript provides several directive comments that can be used to suppress Type
 
 Sometimes, there is a need to force a branch to execute at runtime for security or testing purposes, when that branch has correctly been inferred as being inaccessible by the TypeScript compiler.
 
+###### Example (76b145a7-89bf-4f19-914b-d1c02e2db185)
 
 ✅
 
-> **Error:** This comparison appears to be unintentional because the types '`0x${string}`' and '"__proto__"' have no overlap.ts(2367)
+> **Error:** This comparison appears to be unintentional because the types '`0x${string}`' and '"**proto**"' have no overlap.ts(2367)
 
 ```typescript
 exampleFunction(chainId: `0x${string}`) {
@@ -397,6 +417,8 @@ exampleFunction(chainId: `0x${string}`) {
 ```
 
 ##### `@ts-expect-error` may be acceptable to use in tests, to intentionally break features
+
+###### Example (e299e95d-1c41-4251-85b6-f8064b22f577)
 
 ✅
 
@@ -425,6 +447,8 @@ The key thing to remember about `any` is that it does not resolve errors, but on
 - `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
 - `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code has changed enough to alter or remove the error, or even add new type errors.
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value becomes an `any` type itself. This represents an unmitigated loss of type information.
+
+###### Example (1fb5b0ad-61a9-4ad8-9d84-e29b78d88325)
 
 ```typescript
 // Type of 'payload_0': 'any'
@@ -470,6 +494,8 @@ All of this makes `any` a prominent cause of dangerous **silent failures** (fals
 
 Some generic types use `any` as a default generic argument. This can silently introduce an `any` type into the code, causing unexpected behavior and suppressing useful errors.
 
+###### Example (c64ed0da-01f1-4b61-a28a-ff8e8ab3c8b5)
+
 🚫
 
 ```typescript
@@ -512,6 +538,8 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 
 In most type errors involving property access or runtime property assignment, `any` usage can be avoided by substituting with `as unknown as`.
 
+###### Example (03d4fc8b-73a3-478a-a986-df89c9b80775)
+
 🚫
 
 ```typescript
@@ -537,16 +565,20 @@ delete addressBook[chainId as unknown as `0x${string}`];
 
 However, when assigning to a generic type, using `as any` is the only solution.
 
+###### Example (c67854d8-9f1e-4345-9b63-4484a6e8681e)
+
 🚫
+
+> **Error:** Type 'RateLimitedRequests<RateLimitedApis>[keyof RateLimitedApis]' is generic and can only be indexed for reading.ts(2862)
 
 ```typescript
 (state as RateLimitState<RateLimitedApis>).requests[api][origin] = previous + 1;
-// is generic and can only be indexed for reading.ts(2862)
 ```
 
 ✅
 
 ```typescript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (state as any).requests[api][origin] = previous + 1;
 ```
 
@@ -571,11 +603,14 @@ Object.assign(state, {
 
 ##### `any` may be acceptable to use within generic constraints
 
+###### Example (706045b1-1f01-4e24-ae02-d9a3a8e81615)
+
 ✅
 
 ```typescript
 class BaseController<
   ...,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messenger extends RestrictedControllerMessenger<N, any, any, string, string>
 > ...
 ```
@@ -583,12 +618,13 @@ class BaseController<
 - In general, using `any` in this context is not harmful in the same way that it is in other contexts, as the `any` types only are not directly assigned to any specific variable, and only function as constraints.
 - That said, more specific constraints provide better type safety and intellisense, and should be preferred wherever possible.
 
-
 ## Functions
 
 ##### For functions and methods, provide explicit return types
 
 Although TypeScript is capable of inferring return types, adding them explicitly makes it much easier for the reader to see the API from the code alone and prevents unexpected changes to the API from emerging.
+
+###### Example (a88b18ef-b066-4aa7-8106-bc244298f9e6)
 
 🚫
 
