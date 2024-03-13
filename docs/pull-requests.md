@@ -14,7 +14,7 @@ A well-written description:
 
 As you are filling out the description, use these questions as a guide:
 
-- **What is the context behind your changes?** Remember that your reviewers might not know everything you know. Set the stage: what sort of domain-specific information can you share with them so that they can evaluate your changes more easily? (Linking to a ticket is better than nothing, but prefer to summarize the context as best you can in order to save your reviewers valuable time.)
+- **What is the context behind your changes?** Remember that your reviewers might not know everything you know. Set the stage: what sort of domain-specific information can you share with them so that they can evaluate your changes more easily? (Linking to an issue is better than nothing, but prefer to summarize the context as best you can in order to save your reviewers valuable time.)
 - **What is the purpose of your changes?** What is insufficient about the way things work now? What's the user story?
 - **What is your solution?** How do your changes satisfy the need? Are there any changes in particular whose purpose might not be obvious or whose implementation might be difficult to decipher? How do they work? If you made UI changes, are there any screenshots or videos you can provide to illustrate the solution?
 
@@ -52,7 +52,7 @@ If there are specific changes within your pull request that you'd like to call y
 
 Large pull requests are extremely painful to review. They also need to be kept up to date more frequently since they have a higher chance of creating conflicts that need to be resolved.
 
-Ideally, a ticket should be broken down into small pieces ahead of time so to prevent so many changes from appearing in a single pull request. If, despite this effort, a pull request grows in size, then it should be broken down into logical stages.
+Ideally, an issue should be broken down into small pieces ahead of time to prevent so many changes from appearing in a single pull request. If, despite this effort, a pull request grows in size, then it should be broken down into logical stages.
 
 ## On reviewing pull requests
 
