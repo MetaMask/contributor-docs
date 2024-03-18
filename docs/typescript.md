@@ -27,7 +27,7 @@ TypeScript provides a range of syntax for communicating type information with th
 - The compiler performs **type inference** on all types and values in the code.
 - The user can assign **type annotations** (`:`) to override inferred types or add type constraints.
 - The user can add **type assertions** (`as`, `!`) to force the compiler to accept user-supplied types even if they contradicts the inferred types.
-- Finally, there are **compiler directives** that let type checking be disabled (`any`, `@ts-expect-error`) for a certain scope of code.
+- Finally, there are **escape hatches** that let type checking be disabled (`any`, `@ts-expect-error`) for a certain scope of code.
 
 The order of this list represents the general order of preference for using these features.
 
@@ -393,21 +393,32 @@ If that is not the case, however, mocking only the properties needed in the test
 
 <!-- TODO: Add examples -->
 
-### Compiler Directives
+### Escape Hatches
 
-TypeScript provides several directive comments that can be used to suppress TypeScript compiler errors. Using these to ignore typing issues is dangerous and reduces the overall effectiveness of TypeScript.
+TypeScript provides several escape hatches that disable compiler type checks altogether and suppress compiler errors. Using these to ignore typing issues is dangerous and reduces the effectiveness of TypeScript.
 
-Of these, we will discuss the use cases and pitfalls of `@ts-expect-error` and `any`.
+- `@ts-expect-error`
+  - Applies to a single line, which may contain multiple variables and errors.
+  - Is allowed by the ESLint rule `@typescript-eslint/ban-ts-comment`, but is required to be accompanied by an explanation comment.
+  - **It alerts users if an error it was suppressing has been resolved by changes in the code**:
+    > **Error:** Unused '@ts-expect-error' directive.
+  
+- `as any`
+  - Applies to a single instance of a single variable.
+  - Is banned by the ESLint rule `@typescript-eslint/no-explicit-any.
 
-`@ts-ignore`, `@ts-nocheck`, `@ts-check` are disabled by ESLint rules.
+- `@ts-ignore`
+  - Applies to a line or block of code, which may contain multiple variables and errors.
+  - Is banned by the ESLint rule `@typescript-eslint/ban-ts-comment`.
+
+- `any`:
+  - Applies to all instances of the target variable or type throughout the entire codebase, and in downstream code as well.
+  - Is banned by the ESLint rule `@typescript-eslint/no-explicit-any.
+  - Has the same effect as applying `@ts-ignore` to every single instance of the target variable or type.
 
 #### Acceptable usages of `@ts-expect-error`
 
-##### Prefer `@ts-expect-error` over `any`
-
-`@ts-expect-error` is a better alternative to `any` or `as`, because if the error it was suppressing has been resolved by changes in the code, it will alert users with the following message:
-
-> **Error:** Unused '@ts-expect-error' directive.
+In general, `@ts-expect-error` usage should be reserved to situations where an error is the intended or expected result of an operation, not to silence errors when the correct typing solution couldn't be found.
 
 ##### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
 
