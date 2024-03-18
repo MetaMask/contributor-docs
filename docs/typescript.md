@@ -2,8 +2,6 @@
 
 ## Introduction
 
-These guidelines apply to TypeScript code in MetaMask repos.
-
 ### Purpose
 
 The _purpose_ of this document is to:
