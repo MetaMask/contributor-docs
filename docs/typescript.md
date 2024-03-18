@@ -387,28 +387,6 @@ sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 - For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
 <!-- TODO: Add example -->
 
-##### `as` is always acceptable to use for TypeScript syntax other than type assertion
-
-- Writing type guards often requires using the `as` keyword.
-
-###### Example (f16df571-266e-4030-b002-49554558ccd7)
-
-```typescript
-function isFish(pet: Fish | Bird): pet is Fish {
-  return (pet as Fish).swim !== undefined;
-}
-```
-
-- Key remapping in mapped types uses the `as` keyword.
-
-###### Example (6ffd8c99-4768-42e1-8cb7-5710d14f8552)
-
-```typescript
-type MappedTypeWithNewProperties<Type> = {
-  [Properties in keyof Type as NewKeyType]: Type[Properties];
-};
-```
-
 ##### `as` is acceptable to use for typing data objects whose shape and contents are determined at runtime, externally, or through deserialization
 
 Preferably, this typing should be accompanied by runtime schema validation performed with type guards and unit tests.
@@ -425,6 +403,20 @@ It's recommended to provide accurate typing if there's any chance that omitting 
 If that is not the case, however, mocking only the properties needed in the test improves readability. It makes the intention and scope of the mock clear, and is more convenient to write, which can encourage test writing and improve test coverage.
 
 <!-- TODO: Add examples -->
+
+#### `as` is always acceptable to use in the context of TypeScript syntax that does not involve type assertions
+
+- `as const` assertions.
+
+- Key remapping in mapped types uses the `as` keyword.
+
+###### Example (6ffd8c99-4768-42e1-8cb7-5710d14f8552)
+
+```typescript
+type MappedTypeWithNewProperties<Type> = {
+  [Properties in keyof Type as NewKeyType]: Type[Properties];
+};
+```
 
 ### Escape Hatches
 
