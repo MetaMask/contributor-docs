@@ -609,7 +609,17 @@ class BaseController<
 ```
 
 - In general, using `any` in this context is not harmful in the same way that it is in other contexts, as the `any` types only are not directly assigned to any specific variable, and only function as constraints.
-- That said, more specific constraints provide better type safety and intellisense, and should be preferred wherever possible.
+- More specific constraints provide better type safety and intellisense, and should be preferred wherever possible.
+- This only applies to generic _constraints_. It does not apply to passing in `any` as a generic _argument_.
+
+###### Example (7b9781b4-0f33-4619-ba50-a90b2594e23f)
+
+🚫
+
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const controllerMessenger = ControllerMessenger<any, any>;
+```
 
 ## Functions
 
