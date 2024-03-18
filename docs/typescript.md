@@ -25,7 +25,7 @@ The intended _scope_ of this document does **not** include:
 TypeScript provides a range of syntax for communicating type information with the compiler.
 
 - The compiler performs **type inference** on all types and values in the code.
-- The user can assign **type annotations** (`:`) to override inferred types or add type constraints.
+- The user can assign **type annotations** (`:`, `satisfies`) to override inferred types or add type constraints.
 - The user can add **type assertions** (`as`, `!`) to force the compiler to accept user-supplied types even if they contradicts the inferred types.
 - Finally, there are **escape hatches** that let type checking be disabled (`any`, `@ts-expect-error`) for a certain scope of code.
 
@@ -43,6 +43,7 @@ However, for most types, inference should be preferred over annotations and asse
 
 - Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent inference-based narrowing of the user-supplied types.
   - The compiler errs on the side of trusting user input, which prevents it from utilizing additional type information that it is able to infer.
+  - The `satisfies` operator is an exception to this rule.
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
 - The `as const` operator can be used to narrow an inferred abstract type into a specific literal type, or do the same for the elements of an array or object.
 
@@ -133,14 +134,16 @@ const updatedTransactionMeta = {
 
 ### Type Annotations
 
-An explicit type annotation is acceptable for overriding an inferred type if...
+An explicit type annotation is acceptable for overriding an inferred type if:
 
-1. It can further narrow an inferred type, thus supplying type information that the compiler cannot infer or access.
-2. It is being used to enforce a type constraint rather than assign a type definition.
+1. It can further narrow an inferred type, supplying type information that the compiler cannot infer or access otherwise.
+2. It is being used to enforce a type constraint, not assign a type definition. For this use case, `satisfies` is preferred over `:`.
 
-##### Use the `satisfies` operator to enforce a type constraint or to validate the assigned type
+Compared to type assertions, type annotations are more responsive to code drift. If the assignee's type becomes incompatible with the assigned type annotation, the compiler will raise a type error, whereas in most cases a type assertion will still suppress the error.
 
-Introduced in [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/), the `satisfies` operator can be used to enforce a type constraint and further narrow the assigned type through inference.
+##### Prefer the `satisfies` operator over the `:` operator for enforcing type constraints
+
+Introduced in [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/), the `satisfies` operator can be used to enforce a type constraint, while also allowing the compiler to fully narrow the assigned type through inference.
 
 ###### Example (21ed5949-8d34-4754-b806-412de1696f46)
 
