@@ -166,17 +166,7 @@ const updatedTransactionMeta = {
 updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.rejected; ... }'.(2339)
 ```
 
-#### Acceptable usages of `:` annotations
-
-##### Use type annotations if it will prevent or remove type assertions
-
-Type annotations are more responsive to code drift than assertions. If the assignee's type becomes incompatible with the assigned type annotation, the compiler will raise a type error, whereas in most cases a type assertion will still suppress the error.
-
-When the compiler is in doubt, an annotation will nudge it towards relying on type inference, while an assertion will force it to accept the user-supplied type.
-
-<!-- TODO: Add example -->
-
-##### When instantiating an empty composite data-type value, provide a type annotation 
+##### When instantiating an empty composite data-type value, provide a type annotation
 
 This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type by adding an explicit annotation.
 
