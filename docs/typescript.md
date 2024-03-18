@@ -491,9 +491,7 @@ const { a, b, c } = returnsAny();
 
 All of this makes `any` a prominent cause of dangerous **silent failures** (false negatives), where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
 
-##### When tempted to use `any`, try `unknown` and `never` instead
-
-###### `unknown`
+##### If `any` is being used as the _assignee_ type, use `unknown` instead
 
 `any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
 
@@ -501,18 +499,39 @@ All of this makes `any` a prominent cause of dangerous **silent failures** (fals
 - Every type is assignable to `unknown`, but `unknown` is only assignable to `unknown`.
 - When typing the _assignee_, `any` and `unknown` are completely interchangeable since every type is assignable to both.
 
-###### `never`
+##### If `any` is being used as the _assigned_ type, find an appropriate subtype of the _assignee_ type
 
-`never` is worth trying as a starting point for narrowing down the type, as it is the universal subtype and assignable to all types.
+Unfortunately, when typing the _assigned_ type, `unknown` cannot substitute `any` in most cases, because:
 
-- `never` is the universal subtype i.e. the narrowest possible type, equivalent to the null set(∅).
-- `never` is assignable to every type, but the only type that is assignable to `never` is `never`.
-- When typing the _assigned_:
-  - `unknown` is unable to replace `any`, as `unknown` is only assignable to `unknown`.
-  - The type of the _assigned_ must be a subtype of the _assignee_.
-  - If the assigned type simultaneously needs to be the assignee for another type, `never` will not work, as no type is assignable to `never`.
+- `unknown` is only assignable to `unknown`.
+- The type of the _assigned_ must be a subtype of the _assignee_, but `unknown` can only be a subtype of `unknown`.
 
-<!-- TODO: Add examples -->
+###### Example (56165606-17db-479d-a2f7-cc95250f2129)
+
+```typescript
+function f1(arg1: string) { ... }
+function f2(arg2: any) {
+  f1(arg2) // `arg1` is the assignee type, and `arg2` is the assigned type.
+}
+```
+
+🚫 `unknown`
+
+```typescript
+function f1(arg1: string) { ... }
+function f2(arg2: unknown) {
+  f1(arg2) // Error: Argument of type 'unknown' is not assignable to parameter of type 'string'.(2345)
+}
+```
+
+✅ Subtype of `string`, the assignee type
+
+```typescript
+function f1(arg1: string) { ... }
+function f2(arg2: `0x${string}`) {
+  f1(arg2) 
+}
+```
 
 ##### Don't allow `any` to be used as a generic default argument
 
