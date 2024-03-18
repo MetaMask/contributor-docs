@@ -169,7 +169,11 @@ updatedTransactionMeta.error; // Property 'error' does not exist on type '{ stat
 
 ##### When instantiating an empty composite data-type value, provide a type annotation
 
-This is one case where type inference is unable to reach a useful conclusion without user-provided information. Since the compiler cannot arbitrarily restrict the range of types that could be inserted into the container, it has to assume the widest type, which is often `any`. It's up to the user to narrow that into the intended type by adding an explicit annotation.
+This is a special case where type inference cannot be expected to reach a useful conclusion without user-provided information.
+
+The compiler doesn't have any values to use for inferring a type, and it cannot arbitrarily restrict the range of types that could be inserted into the collection. Given these restrictions, it has to assume the widest type, which is often `any`.
+
+It's up to the user to appropriately narrow down this type by adding an explicit annotation that provides information about the user's intentions.
 
 ###### Example (b5a1175c-919f-4822-b92b-53a3d9dcd2e7)
 
@@ -185,6 +189,42 @@ const tokensMap = new Map(); // Type 'Map<any, any>'
 ```typescript
 const tokens: string[] = []; // Type 'string[]'
 const tokensMap = new Map<string, Token>(); // Type 'Map<string, Token>'
+```
+
+##### When typing an extensible data type, use a type annotation
+
+The reason type inference and the `satisfies` operator are generally preferred over type annotations is that they provide us with the narrowest applicable type signature.
+
+When typing an extensible data type, however, this becomes a liability, because the narrowest type signature by definition doesn't include any newly assigned properties or elements. Therefore, when declaring or instantiating an object, array, or class, explicitly assign a type annotation, unless it is intended to be immutable.
+
+###### Example (a5fc6e57-2609-41c2-8315-558824bfffed)
+
+🚫 Type inference, `satisfies` operator
+
+```typescript
+// const SUPPORTED_CHAIN_IDS: ("0x1" | "0x38" | "0xa" | "0x2105" | "0x89" | "0xa86a" | "0xa4b1" | "0xaa36a7" | "0xe708")[]
+export const SUPPORTED_CHAIN_IDS = [ // inference
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.AVALANCHE,
+  ...
+  CHAIN_IDS.SEPOLIA,
+];
+export const SUPPORTED_CHAIN_IDS = [ // `satisfies` operator
+  ...
+] satisfies `0x${string}`[];
+
+const { chainId } = networkController.state.providerConfig // Type of 'chainId': '`0x${string}`';
+SUPPORTED_CHAIN_IDS.includes(chainId) // Argument of type '`0x${string}`' is not assignable to parameter of type '"0x1" | "0x38" | "0xa" | "0x2105" | "0x89" | "0xa86a" | "0xa4b1" | "0xaa36a7" | "0xe708"'.ts(2345)
+```
+
+✅ Type annotation
+
+```typescript
+export const SUPPORTED_CHAIN_IDS: `0x${string}`[] = [ // type annotation
+  ...
+];
+const { chainId } = networkController.state.providerConfig // Type of 'chainId': '`0x${string}`';
+SUPPORTED_CHAIN_IDS.includes(chainId) // No error
 ```
 
 ### Type Assertions
