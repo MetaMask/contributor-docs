@@ -349,6 +349,8 @@ nftMetadataResults.filter(
   );
 ```
 
+> Note: The [`is` assertion is unnecessary](https://github.com/microsoft/TypeScript/pull/57465) as of TypeScript v5.5.
+
 #### Acceptable usages of `as`
 
 Although `as` is dangerous and discouraged from being used, the following is not intended as an exhaustive list of its valid use cases.
