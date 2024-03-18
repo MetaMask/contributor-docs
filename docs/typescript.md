@@ -563,11 +563,7 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 // Target signature provides too few arguments. Expected 2 or more, but got 1.ts(2345)
 ```
 
-#### Acceptable usages of `any`
-
-`any` is only acceptable for very specific usages. The following should be considered an exhaustive list of its valid use cases.
-
-##### `any` may be necessary when assigning new properties to or deleting properties from a generic type at runtime
+##### Prefer `as unknown as` over `as any`
 
 In most type errors involving property access or runtime property assignment, `any` usage can be avoided by substituting with `as unknown as`.
 
@@ -596,43 +592,7 @@ for (const key of getKnownPropertyNames(this.internalConfig)) {
 delete addressBook[chainId as unknown as `0x${string}`];
 ```
 
-However, when assigning to a generic type, using `as any` is the only solution.
-
-###### Example (c67854d8-9f1e-4345-9b63-4484a6e8681e)
-
-🚫
-
-> **Error:** Type 'RateLimitedRequests<RateLimitedApis>[keyof RateLimitedApis]' is generic and can only be indexed for reading.ts(2862)
-
-```typescript
-(state as RateLimitState<RateLimitedApis>).requests[api][origin] = previous + 1;
-```
-
-✅
-
-```typescript
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(state as any).requests[api][origin] = previous + 1;
-```
-
-Even in this case, however, `any` usage might be avoidable by using `Object.assign` or spread operator syntax instead of assignment.
-
-```typescript
-Object.assign(state, {
-  requests: {
-    ...state.requests,
-    [api]: { [origin] },
-  },
-});
-
-{
-  ...state,
-  requests: {
-    ...state.requests,
-    [api]: { [origin] },
-  },
-};
-```
+#### Acceptable usages of `any`
 
 ##### `any` may be acceptable to use within generic constraints
 
