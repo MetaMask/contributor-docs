@@ -123,7 +123,7 @@ const updatedTransactionMeta: TransactionMeta = {
 
 However, `TransactionMeta` is a [discriminated union](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions) of two separate types — "not failed" and "failed" — and the property that acts as the discriminator is `status`. Instead of using `TransactionMeta`, which specifies that a `error` property _could_ be present, it would be better to get TypeScript to infer the first of the two types ("not failed"), which guarantees that `error` is not present. We can do this by adding `as const` after `TransactionStatus.rejected`:
 
-``` typescript
+```typescript
 const updatedTransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected as const,
@@ -435,12 +435,13 @@ TypeScript provides several escape hatches that disable compiler type checks alt
   - Is allowed by the ESLint rule `@typescript-eslint/ban-ts-comment`, but is required to be accompanied by an explanation comment.
   - **It alerts users if an error it was suppressing has been resolved by changes in the code**:
     > **Error:** Unused '@ts-expect-error' directive.
-  
 - `as any`
+
   - Applies to a single instance of a single variable.
   - Is banned by the ESLint rule `@typescript-eslint/no-explicit-any.
 
 - `@ts-ignore`
+
   - Applies to a line or block of code, which may contain multiple variables and errors.
   - Is banned by the ESLint rule `@typescript-eslint/ban-ts-comment`.
 
@@ -562,7 +563,7 @@ function f2(arg2: unknown) {
 ```typescript
 function f1(arg1: string) { ... }
 function f2(arg2: `0x${string}`) {
-  f1(arg2) 
+  f1(arg2)
 }
 ```
 
