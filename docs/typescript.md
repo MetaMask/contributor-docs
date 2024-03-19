@@ -167,7 +167,7 @@ const updatedTransactionMeta = {
 updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.rejected; ... }'.(2339)
 ```
 
-##### When instantiating an empty composite data-type value, provide a type annotation
+##### Provide a type annotation When instantiating an empty composite data-type value
 
 This is a special case where type inference cannot be expected to reach a useful conclusion without user-provided information.
 
