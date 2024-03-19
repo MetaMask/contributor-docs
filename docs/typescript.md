@@ -545,9 +545,9 @@ function f2(arg2: `0x${string}`) {
 }
 ```
 
-##### Don't allow `any` to be used as a generic default argument
+##### Don't allow generic type parameters to resolve to a default type of `any`
 
-Some generic types use `any` as a default generic argument. This can silently introduce an `any` type into the code, causing unexpected behavior and suppressing useful errors.
+Some generic types use `any` as a generic parameter default. If not consciously avoided, this can silently introduce an `any` type into the code, causing unexpected behavior and suppressing useful errors.
 
 ###### Example (c64ed0da-01f1-4b61-a28a-ff8e8ab3c8b5)
 
