@@ -229,7 +229,7 @@ SUPPORTED_CHAIN_IDS.includes(chainId) // No error
 
 ### Type Assertions
 
-`as` assertions are inherently unsafe. They overwrite type-checked and inferred types with user-supplied types that suppress compiler errors.
+`as` assertions are inherently unsafe. They overwrite type-checked and inferred types with user-supplied types, and suppress the resulting compiler errors.
 
 They should only be introduced into the code if the accurate type is unreachable through other means.
 
@@ -353,15 +353,16 @@ nftMetadataResults.filter(
 
 #### Acceptable usages of `as`
 
-Although `as` is dangerous and discouraged from being used, the following is not intended as an exhaustive list of its valid use cases.
-
-##### `as` is acceptable to use for preventing or fixing `any` usage
-
 Type assertions are unsafe, but they are still always preferred to introducing `any` into the code.
 
 - With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
 - Type assertions also provide an indication of what the author intends or expects the type to be.
-- Often, the compiler will tell us exactly what the target type for an assertion needs to be, enabling us to avoid `as any`.
+
+- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the dangerous radio silence enforced by `any`.
+
+##### Prefer type assertions over `as any`
+
+Often, the compiler will tell us exactly what the target type for an assertion needs to be, enabling us to avoid `as any`.
 
 ###### Example (2ee8f56a-e3be-417b-a2c0-260c1319b755)
 
@@ -383,26 +384,11 @@ sinon.stub(nftController, 'getNftInformation' as any);
 sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 ```
 
-- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the dangerous radio silence enforced by `any`.
-- For type assertions to an incompatible shape, use `as unknown as` as a last resort rather than `any` or `as any`.
-<!-- TODO: Add example -->
+##### `as` is acceptable to use for typing data objects whose structure and contents are determined at runtime
 
-##### `as` is acceptable to use for typing data objects whose shape and contents are determined at runtime, externally, or through deserialization
-
-Preferably, this typing should be accompanied by runtime schema validation performed with type guards and unit tests.
-
-- e.g. The output of `JSON.parse()` or `await response.json()` for a known JSON input.
-- e.g. The type of a JSON file.
+This typing should be accompanied by schema validation or deserialization performed with type guards and unit tests.
 
 <!-- TODO: Add example -->
-
-##### `as` may be acceptable to use in tests, for mocking or to exclude irrelevant but required properties from an input object
-
-It's recommended to provide accurate typing if there's any chance that omitting properties affects the accuracy of the test.
-
-If that is not the case, however, mocking only the properties needed in the test improves readability. It makes the intention and scope of the mock clear, and is more convenient to write, which can encourage test writing and improve test coverage.
-
-<!-- TODO: Add examples -->
 
 #### `as` is always acceptable to use in the context of TypeScript syntax that does not involve type assertions
 
