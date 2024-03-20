@@ -2,21 +2,13 @@
 
 ## Introduction
 
-### Purpose
+This is a collection of TypeScript best practices and preferred conventions for contributors to the _MetaMask_ project.
 
-The _purpose_ of this document is to:
+This document is not intended as a stand-in for linters or formatters. Emphasis is put on discussing underlying concepts and rationale, rather than listing rules and restrictions.
 
-- Present best practices and preferred conventions for contributing type-safe, maintainable TypeScript code.
-- Explain underlying concepts for issues that are not effectively resolved or prevented with blind compliance.
-- Serve as a **reference** during code review to encourage preferred approaches, minimize redundant discussion, and educate contributors about established practices.
+Type safety is the highest priority in these guidelines, even if that sometimes means recommending unconventional or opinionated practices.
 
-### Scope
-
-The intended _scope_ of this document does **not** include:
-
-- Becoming a comprehensive resource that covers all major aspects of syntax and style.
-- Redundantly listing or explaining conventions that are enforceable with linters or rulesets.
-- Endorsing practices for TypeScript code in external repos.
+Note that this document assumes that the reader has a high level of familiarity with TypeScript, and may omit explanations.
 
 ## Types
 
