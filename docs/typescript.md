@@ -337,13 +337,15 @@ nftMetadataResults.filter(
   );
 ```
 
-> Note: The [`is` assertion is unnecessary](https://github.com/microsoft/TypeScript/pull/57465) as of TypeScript v5.5.
+> Note: The `is` type predicate in this example [is unnecessary as of TypeScript v5.5](https://github.com/microsoft/TypeScript/pull/57465).
 
 #### Determine the target type for an `as` assertion by examining compiler error messages
 
+Often, the compiler will tell us exactly what the target type for an assertion needs to be.
+
 ##### **Example <a id="example-2ee8f56a-e3be-417b-a2c0-260c1319b755"></a> ([🔗 permalink](#example-2ee8f56a-e3be-417b-a2c0-260c1319b755)):**
 
-**Example <a id="example-2ee8f56a-e3be-417b-a2c0-260c1319b755"></a> ([🔗 permalink](#example-2ee8f56a-e3be-417b-a2c0-260c1319b755))**:
+🚫 Compiler specifies that the target type should be `keyof NftController`
 
 ```typescript
 // Error: Argument of type '"getNftInformation"' is not assignable to parameter of type 'keyof NftController'.ts(2345)
@@ -351,13 +353,7 @@ nftMetadataResults.filter(
 sinon.stub(nftController, 'getNftInformation');
 ```
 
-🚫 `as any`
-
-```typescript
-sinon.stub(nftController, 'getNftInformation' as any);
-```
-
-✅ Compiler specifies that the target type should be `keyof NftController`
+✅ `as` assertion to type specified by compiler
 
 ```typescript
 sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
