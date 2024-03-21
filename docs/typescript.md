@@ -420,7 +420,7 @@ When a type assertion is used with a clear rationale, we should document the rea
   };
 
   export const STATIC_MAINNET_TOKEN_LIST = Object.entries(
-    // This type assertion is to the known schema of the JSON object `contract-metadata.json`.
+    // This type assertion is to the known schema of the JSON object `contractMap`.
     contractMap as Record<Hex, LegacyToken>,
   ).reduce((acc, [base, contract]) => {
     const { name, symbol, decimals, logo, erc721 } = contract;
@@ -526,7 +526,7 @@ When a type assertion is used with a clear rationale, we should document the rea
 
 ### Escape Hatches
 
-TypeScript provides several escape hatches that disable compiler type checks altogether and suppress compiler errors. Using these to ignore typing issues is dangerous and reduces the effectiveness of TypeScript. The following are presented in order of preference for usage.
+TypeScript provides several escape hatches that disable compiler type checks altogether and suppress compiler errors. Using these to ignore typing issues is dangerous and reduces the effectiveness of TypeScript.
 
 - `@ts-expect-error`
   - Applies to a single line, which may contain multiple variables and errors.
@@ -549,7 +549,7 @@ TypeScript provides several escape hatches that disable compiler type checks alt
   - Does not propagate to instances of the target variable or type that are outside of its scope.
   - Banned by the `@typescript-eslint/ban-ts-comment` rule.
 
-- `any`:
+- `any`
   - Applies to all instances of the target variable or type throughout the entire codebase, and in downstream code as well.
   - Has the same effect as applying `@ts-ignore` to every single instance of the target variable or type.
   - Banned by the `@typescript-eslint/no-explicit-any` rule.
@@ -634,7 +634,7 @@ This recommendation applies to any disruptive change that creates many errors at
 
 See [this entry](https://github.com/MetaMask/core/blob/main/docs/package-migration-process-guide.md#4-resolve-or-todo-downstream-errors) in the core repo "package migration process guide," which recommends that complex or blocked errors should be annotated with a `// @ts-expect-error TODO:` comment, and then revisited once the disruptive change has been completed.
 
-#### Always avoid `any`
+#### Avoid `any`
 
 `any` is the most dangerous form of explicit type declaration, and should be completely avoided.
 
