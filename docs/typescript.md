@@ -99,7 +99,7 @@ this.messagingSystem.publish(
 // Property 'error' is missing in type 'typeof updatedTransactionMeta' but required in type '{ status: TransactionStatus.failed; error: TransactionError; }'.ts(2345)
 ```
 
-🚫
+🚫 Widen to `TransactionMeta`
 
 Adding a type annotation _does_ prevent the error above from being produced:
 
@@ -111,7 +111,7 @@ const updatedTransactionMeta: TransactionMeta = {
 };
 ```
 
-✅
+✅ Narrow to the correct type signature
 
 However, `TransactionMeta` is a [discriminated union](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions) of two separate types — "not failed" and "failed" — and the property that acts as the discriminator is `status`. Instead of using `TransactionMeta`, which specifies that a `error` property _could_ be present, it would be better to get TypeScript to infer the first of the two types ("not failed"), which guarantees that `error` is not present. We can do this by adding `as const` after `TransactionStatus.rejected`:
 
@@ -639,7 +639,9 @@ To prevent `any` instances from being introduced into the codebase, it is not en
 - `any` does not represent the widest type. In fact, it is not a type at all. `any` is a compiler directive for _disabling_ type checking for the value or type to which it's assigned.
 - `any` suppresses all error messages about its assignee.
   - The suppressed errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
+  <!-- TODO: Add example -->
   - Much like type assertions, code with `any` usage becomes brittle against changes, since the compiler is unable to update its feedback even if the suppressed error has been altered, or entirely new type errors have been added.
+  <!-- TODO: Add example -->
 
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value becomes an `any` type itself. This represents an unmitigated loss of type information.
 
@@ -659,6 +661,7 @@ To prevent `any` instances from being introduced into the codebase, it is not en
   ```
 
 - `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unsafe code with no guarantees about type safety or runtime behavior.
+<!-- TODO: Add example -->
 
 All of this makes `any` a prominent cause of dangerous **silent failures** (false negatives), where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
 
@@ -679,9 +682,7 @@ Unfortunately, when typing the _assigned_ type, `unknown` cannot substitute `any
 - `unknown` is only assignable to `unknown`.
 - The type of the _assigned_ must be a subtype of the _assignee_, but `unknown` can only be a subtype of `unknown`.
 
-However, `never` is assignable to all types
-
-> **Note:** Once `unknown` has been ruled out as a substitute for `any`, trying `never` serves as a valuable test: It tells us that the search space for the correct substitute type is bounded to subtypes of the _assignee_ type.
+However, `never` is assignable to all types.
 
 **Example <a id="example-56165606-17db-479d-a2f7-cc95250f2129"></a> ([🔗 permalink](#example-56165606-17db-479d-a2f7-cc95250f2129)):**
 
@@ -710,6 +711,8 @@ function f2(arg2: unknown) {
 ```
 
 ✅ `never`
+
+> **Note:** Once `unknown` has been ruled out as a substitute for `any`, trying `never` serves as a useful test: It tells us that the search space for the correct substitute type is bounded to subtypes of the _assignee_ type.
 
 This works, but `arg2` can be widened further.
 
