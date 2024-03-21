@@ -494,7 +494,14 @@ The key thing to remember about `any` is that it does not resolve errors, but on
 
 All of this makes `any` a prominent cause of dangerous **silent failures** (false negatives), where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
 
-##### If `any` is being used as the _assignee_ type, use `unknown` instead
+#### Prefer type assertions over `any`
+
+Type assertions are unsafe, but they are still always preferred over introducing `any` into the code.
+
+- With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
+- Type assertions also provide an indication of what the author intends or expects the type to be.
+- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes.
+
 
 `any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
 
