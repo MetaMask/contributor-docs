@@ -266,6 +266,9 @@ for (const key of Object.keys(directions) as (keyof typeof directions)[]) {
 ##### **Example <a id="example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541"></a> ([🔗 permalink](#example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541)):**
 
 ```typescript
+type SomeInterface = { name: string; length: number };
+type SomeOtherInterface = { value: boolean };
+
 function isSomeInterface(x: unknown): x is SomeInterface {
   return (
     'name' in x &&
@@ -280,10 +283,7 @@ function isSomeInterface(x: unknown): x is SomeInterface {
 
 ```typescript
 function f(x: SomeInterface | SomeOtherInterface) {
-  if (x.name) {
-    // We know that `x` is `SomeInterface` because `x` has a `name` but `SomeOtherInterface` does not
-    console.log((x as SomeInterface).name);
-  }
+  console.log((x as SomeInterface).name);
 }
 ```
 
