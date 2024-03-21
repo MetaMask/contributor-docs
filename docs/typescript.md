@@ -250,119 +250,6 @@ Type assertions are inherently unsafe and should only be used if the accurate ty
     }
     ```
 
-#### Document safe or necessary use of type assertions in comments
-
-When a type assertion is used with a clear rationale, we should document the reasoning behind its usage in the form of a comment.
-
-- A type assertion may be necessary to satisfy constraints, or to align with a type which is verified to be accurate by an external source of truth.
-
-  **Example <a id="example-05558b5e-527e-46b0-8b40-918f28d05156"></a> ([🔗 permalink](#example-05558b5e-527e-46b0-8b40-918f28d05156)):**
-
-  ✅
-
-  ```typescript
-  import contractMap from '@metamask/contract-metadata';
-
-  type LegacyToken = {
-    name: string;
-    logo: `${string}.svg`;
-    symbol: string;
-    decimals: number;
-    erc20?: boolean;
-    erc721?: boolean;
-  };
-
-  export const STATIC_MAINNET_TOKEN_LIST = Object.entries(
-    // This type assertion is to the known schema of the JSON object `contract-metadata.json`.
-    contractMap as Record<Hex, LegacyToken>,
-  ).reduce((acc, [base, contract]) => {
-    const { name, symbol, decimals, logo, erc721 } = contract;
-    return {
-      ...acc,
-      [base.toLowerCase()]: {
-        ...{ name, symbol, decimals },
-        address: base.toLowerCase(),
-        iconUrl: `images/contract/${logo}`,
-        isERC721: erc721 ?? false
-        aggregators: [],
-      },
-    };
-  }, {});
-  ```
-
-- A type assertion may be safe if it's supported by runtime validations.
-
-  **Example <a id="example-81737669-75fb-46d6-b2ce-c09acd5b89ab"></a> ([🔗 permalink](#example-81737669-75fb-46d6-b2ce-c09acd5b89ab)):**
-
-  ```typescript
-  handle<Params extends JsonRpcParams, Result extends Json>(
-    request: JsonRpcRequest<Params>,
-    callback: (error: unknown, response: JsonRpcResponse<Result>) => void,
-  ): void;
-
-  handle<Params extends JsonRpcParams, Result extends Json>(
-    requests: (JsonRpcRequest<Params> | JsonRpcNotification<Params>)[],
-    callback: (error: unknown, responses: JsonRpcResponse<Result>[]) => void,
-  ): void;
-
-  handle<Params extends JsonRpcParams, Result extends Json>(
-    requests: (JsonRpcRequest<Params> | JsonRpcNotification<Params>)[],
-  ): Promise<JsonRpcResponse<Result>[]>;
-  ```
-
-  ✅
-
-  ```typescript
-  handle(
-    req:
-      | (JsonRpcRequest | JsonRpcNotification)[]
-      | JsonRpcRequest
-      | JsonRpcNotification,
-    callback?: (error: unknown, response: never) => void,
-  ) {
-    ...
-    if (Array.isArray(req) && callback) {
-      return this.#handleBatch(
-        req,
-        // This assertion is safe because of the runtime checks validating that `req` is an array and `callback` is defined.
-        // There is only one overload signature that satisfies both conditions, and its `callback` type is the one that's being asserted.
-        callback as (
-          error: unknown,
-          responses?: JsonRpcResponse<Json>[],
-        ) => void,
-      );
-    }
-    ...
-  }
-  ```
-
-- Rarely, a type assertion may be necessary to resolve or suppress a type error caused by a bug or limitation of an external library, or even the TypeScript language itself.
-
-  **Example <a id="example-3d77c689-2bec-48d6-8c2e-c38b7b2079ea"></a> ([🔗 permalink](#example-3d77c689-2bec-48d6-8c2e-c38b7b2079ea)):**
-
-  ✅
-
-  ```typescript
-  import { produceWithPatches } from 'immer';
-
-  protected update(
-    callback: (state: Draft<ControllerState>) => void | ControllerState,
-  ): {
-    nextState: ControllerState;
-    patches: Patch[];
-    inversePatches: Patch[];
-  } {
-    // We run into ts2589, "infinite type depth", if we don't assert `produceWithPatches` here.
-    const [nextState, patches, inversePatches] = (
-      produceWithPatches as unknown as (
-        state: ControllerState,
-        cb: typeof callback,
-      ) => [ControllerState, Patch[], Patch[]]
-    )(this.#internalState, callback);
-    ...
-  }
-  ```
-
 #### Avoid `as` assertions by using type guards to improve type inference
 
 **Example <a id="example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541"></a> ([🔗 permalink](#example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541)):**
@@ -495,6 +382,125 @@ for (const key of getKnownPropertyNames(this.internalConfig)) {
 
 delete addressBook[chainId as unknown as `0x${string}`];
 ```
+
+#### Always prefer type assertions over "escape hatches"
+
+- With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
+- Type assertions also provide an indication of what the author intends or expects the type to be.
+- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes.
+
+#### Document safe or necessary use of type assertions in comments
+
+When a type assertion is used with a clear rationale, we should document the reasoning behind its usage in the form of a comment.
+
+- A type assertion may be necessary to satisfy constraints, or to align with a type which is verified to be accurate by an external source of truth.
+
+  **Example <a id="example-05558b5e-527e-46b0-8b40-918f28d05156"></a> ([🔗 permalink](#example-05558b5e-527e-46b0-8b40-918f28d05156)):**
+
+  ✅
+
+  ```typescript
+  import contractMap from '@metamask/contract-metadata';
+
+  type LegacyToken = {
+    name: string;
+    logo: `${string}.svg`;
+    symbol: string;
+    decimals: number;
+    erc20?: boolean;
+    erc721?: boolean;
+  };
+
+  export const STATIC_MAINNET_TOKEN_LIST = Object.entries(
+    // This type assertion is to the known schema of the JSON object `contract-metadata.json`.
+    contractMap as Record<Hex, LegacyToken>,
+  ).reduce((acc, [base, contract]) => {
+    const { name, symbol, decimals, logo, erc721 } = contract;
+    return {
+      ...acc,
+      [base.toLowerCase()]: {
+        ...{ name, symbol, decimals },
+        address: base.toLowerCase(),
+        iconUrl: `images/contract/${logo}`,
+        isERC721: erc721 ?? false
+        aggregators: [],
+      },
+    };
+  }, {});
+  ```
+
+- A type assertion may be safe if it's supported by runtime validations.
+
+  **Example <a id="example-81737669-75fb-46d6-b2ce-c09acd5b89ab"></a> ([🔗 permalink](#example-81737669-75fb-46d6-b2ce-c09acd5b89ab)):**
+
+  ```typescript
+  handle<Params extends JsonRpcParams, Result extends Json>(
+    request: JsonRpcRequest<Params>,
+    callback: (error: unknown, response: JsonRpcResponse<Result>) => void,
+  ): void;
+
+  handle<Params extends JsonRpcParams, Result extends Json>(
+    requests: (JsonRpcRequest<Params> | JsonRpcNotification<Params>)[],
+    callback: (error: unknown, responses: JsonRpcResponse<Result>[]) => void,
+  ): void;
+
+  handle<Params extends JsonRpcParams, Result extends Json>(
+    requests: (JsonRpcRequest<Params> | JsonRpcNotification<Params>)[],
+  ): Promise<JsonRpcResponse<Result>[]>;
+  ```
+
+  ✅
+
+  ```typescript
+  handle(
+    req:
+      | (JsonRpcRequest | JsonRpcNotification)[]
+      | JsonRpcRequest
+      | JsonRpcNotification,
+    callback?: (error: unknown, response: never) => void,
+  ) {
+    ...
+    if (Array.isArray(req) && callback) {
+      return this.#handleBatch(
+        req,
+        // This assertion is safe because of the runtime checks validating that `req` is an array and `callback` is defined.
+        // There is only one overload signature that satisfies both conditions, and its `callback` type is the one that's being asserted.
+        callback as (
+          error: unknown,
+          responses?: JsonRpcResponse<Json>[],
+        ) => void,
+      );
+    }
+    ...
+  }
+  ```
+
+- Rarely, a type assertion may be necessary to resolve or suppress a type error caused by a bug or limitation of an external library, or even the TypeScript language itself.
+
+  **Example <a id="example-3d77c689-2bec-48d6-8c2e-c38b7b2079ea"></a> ([🔗 permalink](#example-3d77c689-2bec-48d6-8c2e-c38b7b2079ea)):**
+
+  ✅
+
+  ```typescript
+  import { produceWithPatches } from 'immer';
+
+  protected update(
+    callback: (state: Draft<ControllerState>) => void | ControllerState,
+  ): {
+    nextState: ControllerState;
+    patches: Patch[];
+    inversePatches: Patch[];
+  } {
+    // We run into ts2589, "infinite type depth", if we don't assert `produceWithPatches` here.
+    const [nextState, patches, inversePatches] = (
+      produceWithPatches as unknown as (
+        state: ControllerState,
+        cb: typeof callback,
+      ) => [ControllerState, Patch[], Patch[]]
+    )(this.#internalState, callback);
+    ...
+  }
+  ```
 
 #### `as` is always acceptable to use in TypeScript syntax that does not involve type assertions
 
@@ -644,14 +650,6 @@ The key thing to remember about `any` is that it does not resolve errors, but on
 - `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unsafe code with no guarantees about type safety or runtime behavior.
 
 All of this makes `any` a prominent cause of dangerous **silent failures** (false negatives), where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
-
-#### Prefer type assertions over `any`
-
-Type assertions are unsafe, but they are still always preferred over introducing `any` into the code.
-
-- With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
-- Type assertions also provide an indication of what the author intends or expects the type to be.
-- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes.
 
 #### If `any` is being used as the _assignee_ type, try `unknown` first, and then try narrowing to an appropriate supertype of the _assigned_ type
 
