@@ -465,6 +465,37 @@ sinon.stub(nftController, 'getNftInformation');
 sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 ```
 
+#### Use `as unknown as` to force a type assertion to an incompatible type, or to perform runtime property access, assignment, or deletion
+
+- `as unknown as` enables structurally unsound type assertions to incompatible types. This should be used as a last resort for a very good reason, and not as a convenient way to force types into incorrect shapes that will temporarily silence errors.
+
+- `as unknown as` can also resolve type errors arising from runtime property access, assignment, or deletion.
+
+**Example <a id="example-03d4fc8b-73a3-478a-a986-df89c9b80775"></a> ([🔗 permalink](#example-03d4fc8b-73a3-478a-a986-df89c9b80775)):**
+
+🚫 `any`
+
+```typescript
+for (const key of getKnownPropertyNames(this.internalConfig)) {
+  (this as any)[key] = this.internalConfig[key];
+}
+
+delete addressBook[chainId as any];
+// Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ [chainId: `0x${string}`]: { [address: string]: AddressBookEntry; }; }'.
+//  No index signature with a parameter of type 'string' was found on type '{ [chainId: `0x${string}`]: { [address: string]: AddressBookEntry; }; }'.ts(7053)
+```
+
+✅ `as unknown as`
+
+```typescript
+for (const key of getKnownPropertyNames(this.internalConfig)) {
+  (this as unknown as typeof this.internalConfig)[key] =
+    this.internalConfig[key];
+}
+
+delete addressBook[chainId as unknown as `0x${string}`];
+```
+
 #### `as` is always acceptable to use in TypeScript syntax that does not involve type assertions
 
 - `as const` assertions.
@@ -715,35 +746,6 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 );
 // Argument of type '(origin: any, type: any) => void' is not assignable to parameter of type '(networkClientId: string) => NetworkConfiguration | undefined'.
 // Target signature provides too few arguments. Expected 2 or more, but got 1.ts(2345)
-```
-
-#### Prefer `as unknown as` over `as any`
-
-In most type errors involving property access or runtime property assignment, `any` usage can be avoided by substituting with `as unknown as`.
-
-**Example <a id="example-03d4fc8b-73a3-478a-a986-df89c9b80775"></a> ([🔗 permalink](#example-03d4fc8b-73a3-478a-a986-df89c9b80775)):**
-
-🚫
-
-```typescript
-for (const key of getKnownPropertyNames(this.internalConfig)) {
-  (this as any)[key] = this.internalConfig[key];
-}
-
-delete addressBook[chainId as any];
-// Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ [chainId: `0x${string}`]: { [address: string]: AddressBookEntry; }; }'.
-//  No index signature with a parameter of type 'string' was found on type '{ [chainId: `0x${string}`]: { [address: string]: AddressBookEntry; }; }'.ts(7053)
-```
-
-✅
-
-```typescript
-for (const key of getKnownPropertyNames(this.internalConfig)) {
-  (this as unknown as typeof this.internalConfig)[key] =
-    this.internalConfig[key];
-}
-
-delete addressBook[chainId as unknown as `0x${string}`];
 ```
 
 #### `any` may be acceptable to use within generic constraints
