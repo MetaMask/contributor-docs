@@ -768,6 +768,8 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 // Target signature provides too few arguments. Expected 2 or more, but got 1.ts(2345)
 ```
 
+> **Note:** This is an issue with `@types/jest` v27. Jest v29 no longer uses `any` as the default type for its generic parameters.
+
 #### `any` may be acceptable to use within generic constraints
 
 **Example <a id="example-706045b1-1f01-4e24-ae02-d9a3a8e81615"></a> ([🔗 permalink](#example-706045b1-1f01-4e24-ae02-d9a3a8e81615)):**
