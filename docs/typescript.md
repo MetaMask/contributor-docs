@@ -630,14 +630,17 @@ See [this entry](https://github.com/MetaMask/core/blob/main/docs/package-migrati
 
 `any` is the most dangerous form of explicit type declaration, and should be completely avoided.
 
-Unfortunately, `any` is also such a tempting escape hatch from the TypeScript type system that there's a strong incentive to use it whenever a nontrivial typing issue is encountered. Entire teams can easily be enticed into a pattern of unblocking feature development by introducing `any` with the intention of fixing it later. This is a major source of tech debt, and its destructive influence on the type safety of a codebase cannot be understated.
+Unfortunately, when confronted with nontrivial typing issues, there's a very strong incentive to use `any` to bypass the TypeScript type system.
 
-Therefore, to prevent new `any` instances from being introduced into our codebase, it is not enough to rely on the `@typescript-eslint/no-explicit-any` ESLint rule. It's also necessary for all contributors to understand exactly why `any` is dangerous, and how it can be avoided.
+It's very easy for teams to fall into a pattern of unblocking feature development using `any`, with the intention of fixing it later. This is a major source of tech debt, and the destructive influence of `any` usage on the type safety of a codebase cannot be understated.
 
-The key thing to remember about `any` is that it does not resolve errors, but only hides them. The errors still affect the code, while `any` makes it impossible to assess and counteract their influence.
+To prevent `any` instances from being introduced into the codebase, it is not enough to rely on the `@typescript-eslint/no-explicit-any` ESLint rule. It's also necessary for all contributors to share a common understanding of exactly why `any` is dangerous, and how it can be avoided.
 
-- `any` doesn't represent the widest type, or indeed any type at all. `any` is a compiler directive for _disabling_ static type checking for the value or type to which it's assigned.
-- `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code has changed enough to alter or remove the error, or even add new type errors.
+- `any` does not represent the widest type. In fact, it is not a type at all. `any` is a compiler directive for _disabling_ type checking for the value or type to which it's assigned.
+- `any` suppresses all error messages about its assignee.
+  - The suppressed errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
+  - Much like type assertions, code with `any` usage becomes brittle against changes, since the compiler is unable to update its feedback even if the suppressed error has been altered, or entirely new type errors have been added.
+
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value becomes an `any` type itself. This represents an unmitigated loss of type information.
 
   **Example <a id="example-1fb5b0ad-61a9-4ad8-9d84-e29b78d88325"></a> ([🔗 permalink](#example-1fb5b0ad-61a9-4ad8-9d84-e29b78d88325)):**
