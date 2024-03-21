@@ -401,43 +401,7 @@ delete addressBook[chainId as unknown as `0x${string}`];
 
 When a type assertion is used with a clear rationale, we should document the reasoning behind its usage in the form of a comment.
 
-- A type assertion may be necessary to satisfy constraints, or to align with a type which is verified to be accurate by an external source of truth.
-
-  **Example <a id="example-05558b5e-527e-46b0-8b40-918f28d05156"></a> ([🔗 permalink](#example-05558b5e-527e-46b0-8b40-918f28d05156)):**
-
-  ✅
-
-  ```typescript
-  import contractMap from '@metamask/contract-metadata';
-
-  type LegacyToken = {
-    name: string;
-    logo: `${string}.svg`;
-    symbol: string;
-    decimals: number;
-    erc20?: boolean;
-    erc721?: boolean;
-  };
-
-  export const STATIC_MAINNET_TOKEN_LIST = Object.entries(
-    // This type assertion is to the known schema of the JSON object `contractMap`.
-    contractMap as Record<Hex, LegacyToken>,
-  ).reduce((acc, [base, contract]) => {
-    const { name, symbol, decimals, logo, erc721 } = contract;
-    return {
-      ...acc,
-      [base.toLowerCase()]: {
-        ...{ name, symbol, decimals },
-        address: base.toLowerCase(),
-        iconUrl: `images/contract/${logo}`,
-        isERC721: erc721 ?? false
-        aggregators: [],
-      },
-    };
-  }, {});
-  ```
-
-- A type assertion may be safe if it's supported by runtime validations.
+- A type assertion may be necessary to satisfy constraints. To be used safely, it must be supported by runtime validations.
 
   **Example <a id="example-81737669-75fb-46d6-b2ce-c09acd5b89ab"></a> ([🔗 permalink](#example-81737669-75fb-46d6-b2ce-c09acd5b89ab)):**
 
@@ -481,6 +445,37 @@ When a type assertion is used with a clear rationale, we should document the rea
     }
     ...
   }
+  ```
+
+- A type assertion may be necessary to align with a type which is verified to be accurate by an external source of truth. To be used safely, it must be supported by runtime validations.
+
+  **Example <a id="example-05558b5e-527e-46b0-8b40-918f28d05156"></a> ([🔗 permalink](#example-05558b5e-527e-46b0-8b40-918f28d05156)):**
+
+  ✅
+
+  ```typescript
+  import contractMap from '@metamask/contract-metadata';
+
+  type LegacyToken = {
+    name: string;
+    logo: `${string}.svg`;
+    symbol: string;
+    decimals: number;
+    erc20?: boolean;
+    erc721?: boolean;
+  };
+
+  export const STATIC_MAINNET_TOKEN_LIST = Object.entries(
+    // This type assertion is to the known schema of the JSON object `contractMap`.
+    contractMap as Record<Hex, LegacyToken>,
+  ).reduce((acc, [base, contract]) => {
+    const { name, symbol, decimals, logo, erc20, erc721 } = contract;
+    // The required properties are validated at runtime
+    if ([name, symbol, decimals, logo].some((e) => !e)) {
+      return;
+    }
+    ...
+  }, {});
   ```
 
 - Rarely, a type assertion may be necessary to resolve or suppress a type error caused by a bug or limitation of an external library, or even the TypeScript language itself.
