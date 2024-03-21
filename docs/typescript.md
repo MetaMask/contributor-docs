@@ -405,20 +405,39 @@ TypeScript provides several escape hatches that disable compiler type checks alt
   - Is banned by the ESLint rule `@typescript-eslint/no-explicit-any.
   - Has the same effect as applying `@ts-ignore` to every single instance of the target variable or type.
 
-#### Acceptable usages of `@ts-expect-error`
+#### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
 
-In general, `@ts-expect-error` usage should be reserved to situations where an error is the intended or expected result of an operation, not to silence errors when the correct typing solution couldn't be found.
+Sometimes, there is a need to force a branch to execute at runtime for security or testing purposes, even though that branch has correctly been inferred as being inaccessible by the TypeScript compiler.
 
-##### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
-
-Sometimes, there is a need to force a branch to execute at runtime for security or testing purposes, when that branch has correctly been inferred as being inaccessible by the TypeScript compiler.
+This is often the case when downstream consumers of the code are using JavaScript and do not have access to compile-time guardrails.
 
 ##### **Example <a id="example-76b145a7-89bf-4f19-914b-d1c02e2db185"></a> ([🔗 permalink](#example-76b145a7-89bf-4f19-914b-d1c02e2db185)):**
 
-> **Error:** This comparison appears to be unintentional because the types '`0x${string}`' and '"**proto**"' have no overlap.ts(2367)
+🚫
+
+> **Error:** This comparison appears to be unintentional because the types '`0x${string}`' and '"\_\_proto\_\_"' have no overlap.ts(2367)
 
 ```typescript
-exampleFunction(chainId: `0x${string}`) {
+function exampleFunction(chainId: `0x${string}`) {
+    if (chainId === '__proto__') {
+      return;
+    }
+    ...
+}
+```
+
+🚫
+
+> **Error:** Argument of type '"\_\_proto\_\_"' is not assignable to parameter of type '`0x${string}`'.ts(2345)
+
+```typescript
+exampleFunction('__proto__');
+```
+
+✅
+
+```typescript
+function exampleFunction(chainId: `0x${string}`) {
     // @ts-expect-error Suppressing to perform runtime check
     if (chainId === '__proto__') {
       return;
@@ -427,7 +446,14 @@ exampleFunction(chainId: `0x${string}`) {
 }
 ```
 
-##### `@ts-expect-error` may be acceptable to use in tests, to intentionally break features
+✅
+
+```typescript
+// @ts-expect-error Suppressing to perform runtime check
+exampleFunction('__proto__');
+```
+
+#### `@ts-expect-error` may be acceptable to use in tests, to intentionally break features
 
 ##### **Example <a id="example-e299e95d-1c41-4251-85b6-f8064b22f577"></a> ([🔗 permalink](#example-e299e95d-1c41-4251-85b6-f8064b22f577)):**
 
