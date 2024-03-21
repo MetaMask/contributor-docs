@@ -139,23 +139,31 @@ Introduced in [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announc
 
 (continued from [previous example](#example-e9b0d703-032d-428b-a232-f5aa56a94470))
 
-🚫 Use a type annotation for type validation
+> **Error:** Object literal may only specify known properties, and 'nonTransactionMetaProperty' does not exist in type 'TransactionMeta'.ts(1360)
+
+🚫 Use a type annotation for type validation.
+
+`updatedTransactionMeta` is widened to `TransactionMeta`.
 
 ```typescript
 const updatedTransactionMeta: TransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected,
+  nonTransactionMetaProperty: null,
 };
 
 updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.approved | TransactionStatus.cancelled | TransactionStatus.confirmed | TransactionStatus.dropped | TransactionStatus.rejected | TransactionStatus.signed | TransactionStatus.submitted | TransactionStatus.unapproved; ... }'.(2339)
 ```
 
-✅ Use the `satisfies` operator for type validation
+✅ Use the `satisfies` operator for type validation.
+
+`updatedTransactionMeta` is narrowed to its correct type signature (`status` property is not a union).
 
 ```typescript
 const updatedTransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected as const,
+  nonTransactionMetaProperty: null,
 } satisfies TransactionMeta;
 
 updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.rejected; ... }'.(2339)
