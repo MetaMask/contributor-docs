@@ -221,45 +221,41 @@ SUPPORTED_CHAIN_IDS.includes(chainId) // No error
 
 ### Type Assertions
 
-`as` assertions are inherently unsafe. They overwrite type-checked and inferred types with user-supplied types, and suppress the resulting compiler errors.
+Type assertions are inherently unsafe and should only be used if the accurate type is unreachable through other means.
 
-They should only be introduced into the code if the accurate type is unreachable through other means.
+- Type assertions overwrite type-checked and compiler-inferred types with user-supplied types, and suppress the resulting compiler errors.
+- Because type assertions do not affect runtime code in any way, it is likely that types asserted at compile time will conflict with values at runtime.
+- Type assertions make the codebase brittle against changes.
 
-##### Document safe or necessary use of type assertions
+  - As changes accumulate in the codebase, type assertions may continue to enforce type assignments that have become incorrect, or keep silencing errors that have changed. This can cause dangerous silent failures (false negatives).
+  - Type assertions will also provide no indication when they become unnecessary or redundant (false positives). Even if changes in the code resolve the error that the assertion was silencing, TypeScript will keep the assertion in place.
 
-When a type assertion is absolutely necessary due to constraints or is even safe due to runtime checks, we should document the reasoning behind its usage in the form of a comment.
+    ##### **Example <a id="example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c"></a> ([🔗 permalink](#example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c)):**
+
+    ```typescript
+    enum Direction {
+      Up = 'up',
+      Down = 'down',
+      Left = 'left',
+      Right = 'right',
+    }
+    const directions = Object.values(Direction);
+
+    // Error: Element implicitly has an 'any' type because index expression is not of type 'number'.(7015)
+    // Only one of the two `as` assertions necessary to fix error, but neither are flagged as redundant.
+    for (const key of Object.keys(directions) as (keyof typeof directions)[]) {
+      const direction = directions[key as keyof typeof directions];
+    }
+    ```
+
+#### Document safe or necessary use of type assertions
+
+When a type assertion is used with a clear rationale, we should document the reasoning behind its usage in the form of a comment.
+
+- A type assertion may be necessary to satisfy constraints, or to align with a type that is defined by an external source of truth and is known to be accurate.
+- A type assertion may be determined to be safe if it's accompanied by runtime validations.
 
 <!-- TODO: Add example -->
-
-#### Avoid `as`
-
-Type assertions make the code brittle against changes.
-
-While TypeScript and ESLint will flag some unsafe, structurally unsound, or redundant type assertions, they will generally accept user-supplied types without further type-checking.
-
-This can cause silent failures or false negatives where errors are suppressed. This is especially damaging as the codebase accumulates changes over time. Type assertions may continue to silence errors, even though the type itself, or the type's relationship to the rest of the code may have been altered so that the asserted type is no longer valid.
-
-##### Redundant or unnecessary `as` assertions are not flagged for removal
-
-Type assertions can also cause false positives, because assertions are independent expressions, untied to the type errors they were intended to fix. Even if code drift fixes or removes a particular type error, the type assertions that were put in place to fix that error will provide no indication that they are no longer necessary and now should be removed.
-
-##### **Example <a id="example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c"></a> ([🔗 permalink](#example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c)):**
-
-```typescript
-enum Direction {
-  Up = 'up',
-  Down = 'down',
-  Left = 'left',
-  Right = 'right',
-}
-const directions = Object.values(Direction);
-
-// Error: Element implicitly has an 'any' type because index expression is not of type 'number'.(7015)
-// Only one of the two `as` assertions necessary to fix error, but neither are flagged as redundant.
-for (const key of Object.keys(directions) as (keyof typeof directions)[]) {
-  const direction = directions[key as keyof typeof directions];
-}
-```
 
 #### Avoid `as` assertions by using type guards to improve type inference
 
