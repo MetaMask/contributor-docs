@@ -518,25 +518,33 @@ When a type assertion is used with a clear rationale, we should document the rea
 
 ### Escape Hatches
 
-TypeScript provides several escape hatches that disable compiler type checks altogether and suppress compiler errors. Using these to ignore typing issues is dangerous and reduces the effectiveness of TypeScript.
+TypeScript provides several escape hatches that disable compiler type checks altogether and suppress compiler errors. Using these to ignore typing issues is dangerous and reduces the effectiveness of TypeScript. The following are presented in order of preference for usage.
 
 - `@ts-expect-error`
   - Applies to a single line, which may contain multiple variables and errors.
   - **It alerts users if an error it was suppressing is resolved by changes in the code:**
+
     > **Error:** Unused '@ts-expect-error' directive.
+
+    This feature makes `@ts-expect-error` a safer alternative to type assertions by mitigating false positives.
+
   - `@ts-expect-error` usage should generally be reserved to situations where an error is the intended or expected result of an operation, not to silence errors when the correct typing solution is difficult to find.
+  - Allowed by the `@typescript-eslint/ban-ts-comment` rule, although a description comment is required.
 - `as any`
 
   - Applies only to a single instance of a single variable without propagating to other instances.
+  - Banned by the `@typescript-eslint/no-explicit-any` rule.
 
 - `@ts-ignore`
 
   - Applies to a line or block of code, which may contain multiple variables and errors.
   - Does not propagate to instances of the target variable or type that are outside of its scope.
+  - Banned by the `@typescript-eslint/ban-ts-comment` rule.
 
 - `any`:
   - Applies to all instances of the target variable or type throughout the entire codebase, and in downstream code as well.
   - Has the same effect as applying `@ts-ignore` to every single instance of the target variable or type.
+  - Banned by the `@typescript-eslint/no-explicit-any` rule.
 
 #### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
 
