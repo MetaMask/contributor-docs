@@ -383,22 +383,20 @@ TypeScript provides several escape hatches that disable compiler type checks alt
 
 - `@ts-expect-error`
   - Applies to a single line, which may contain multiple variables and errors.
-  - Is allowed by the ESLint rule `@typescript-eslint/ban-ts-comment`, but is required to be accompanied by an explanation comment.
-  - **It alerts users if an error it was suppressing has been resolved by changes in the code**:
+  - **It alerts users if an error it was suppressing is resolved by changes in the code:**
     > **Error:** Unused '@ts-expect-error' directive.
+  - `@ts-expect-error` usage should generally be reserved to situations where an error is the intended or expected result of an operation, not to silence errors when the correct typing solution is difficult to find.
 - `as any`
 
-  - Applies to a single instance of a single variable.
-  - Is banned by the ESLint rule `@typescript-eslint/no-explicit-any.
+  - Applies only to a single instance of a single variable without propagating to other instances.
 
 - `@ts-ignore`
 
   - Applies to a line or block of code, which may contain multiple variables and errors.
-  - Is banned by the ESLint rule `@typescript-eslint/ban-ts-comment`.
+  - Does not propagate to instances of the target variable or type that are outside of its scope.
 
 - `any`:
   - Applies to all instances of the target variable or type throughout the entire codebase, and in downstream code as well.
-  - Is banned by the ESLint rule `@typescript-eslint/no-explicit-any.
   - Has the same effect as applying `@ts-ignore` to every single instance of the target variable or type.
 
 #### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
