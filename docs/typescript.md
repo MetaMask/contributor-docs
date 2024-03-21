@@ -502,46 +502,70 @@ Type assertions are unsafe, but they are still always preferred over introducing
 - Type assertions also provide an indication of what the author intends or expects the type to be.
 - Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes.
 
+#### If `any` is being used as the _assignee_ type, try `unknown` first, and then try narrowing to an appropriate supertype of the _assigned_ type
 
-`any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is the most likely type-safe substitute for `any` in these cases.
+`any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is a likely type-safe substitute for `any` in these cases.
 
 - `unknown` is the universal supertype i.e. the widest possible type, equivalent to the universal set(U).
-- Every type is assignable to `unknown`, but `unknown` is only assignable to `unknown`.
+- Every type is assignable to `unknown`, but `unknown` is not assignable to any type but itself.
 - When typing the _assignee_, `any` and `unknown` are completely interchangeable since every type is assignable to both.
 
-##### If `any` is being used as the _assigned_ type, find an appropriate subtype of the _assignee_ type
+<!-- TODO: Add example -->
+
+#### If `any` is being used as the _assigned_ type, try `never` first, and then try widening to an appropriate subtype of the _assignee_ type
 
 Unfortunately, when typing the _assigned_ type, `unknown` cannot substitute `any` in most cases, because:
 
 - `unknown` is only assignable to `unknown`.
 - The type of the _assigned_ must be a subtype of the _assignee_, but `unknown` can only be a subtype of `unknown`.
 
+However, `never` is assignable to all types
+
+> **Note:** Once `unknown` has been ruled out as a substitute for `any`, trying `never` serves as a valuable test: It tells us that the search space for the correct substitute type is bounded to subtypes of the _assignee_ type.
+
 ##### **Example <a id="example-56165606-17db-479d-a2f7-cc95250f2129"></a> ([🔗 permalink](#example-56165606-17db-479d-a2f7-cc95250f2129)):**
 
-  ```typescript
-  function f1(arg1: string) { ... }
-  function f2(arg2: any) {
-    f1(arg2) // `arg1` is the assignee type, and `arg2` is the assigned type.
-  }
-  ```
+```typescript
+function f1(arg1: string) { ... }
+```
 
-  🚫 `unknown`
+🚫 `any`
 
-  ```typescript
-  function f1(arg1: string) { ... }
-  function f2(arg2: unknown) {
-    f1(arg2) // Error: Argument of type 'unknown' is not assignable to parameter of type 'string'.(2345)
-  }
-  ```
+In the function call `f1(arg2)`, the argument `arg2` is the _assigned_ type and the parameter `arg1` is the _assignee_ type.
 
-  ✅ Subtype of `string`, the assignee type
+```typescript
+function f2(arg2: any) {
+  f1(arg2);
+}
+```
 
-  ```typescript
-  function f1(arg1: string) { ... }
-  function f2(arg2: `0x${string}`) {
-    f1(arg2)
-  }
-  ```
+🚫 `unknown`
+
+> **Error:** Argument of type 'unknown' is not assignable to parameter of type 'string'.(2345)
+
+```typescript
+function f2(arg2: unknown) {
+  f1(arg2); // Error
+}
+```
+
+✅ `never`
+
+This works, but `arg2` can be widened further.
+
+```typescript
+function f2(arg2: never) {
+  f1(arg2); // No error
+}
+```
+
+✅ Subtype of `string`, the assignee type
+
+```typescript
+function f2(arg2: `0x${string}`) {
+  f1(arg2); // No error
+}
+```
 
 #### Don't allow generic type parameters to resolve to a default type of `any`
 
