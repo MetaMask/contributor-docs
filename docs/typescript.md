@@ -2,13 +2,13 @@
 
 ## Introduction
 
-This is a collection of TypeScript best practices and preferred conventions for contributors to the _MetaMask_ project.
+This is a collection of TypeScript best practices and preferred conventions for contributors to the MetaMask project.
 
 This document is not intended as a stand-in for linters or formatters. Emphasis is put on discussing underlying concepts and rationale, rather than listing rules and restrictions.
 
-Type safety is the highest priority in these guidelines, even if that sometimes means recommending unconventional or opinionated practices.
+Type safety and maintainability are the highest priorities in these guidelines, even if that sometimes leads to unconventional or opinionated recommendations.
 
-Note that this document assumes that the reader has a high level of familiarity with TypeScript, and may omit explanations.
+This document assumes that the reader has a high level of familiarity with TypeScript, and may omit explanations.
 
 ## Types
 
