@@ -563,7 +563,21 @@ exampleFunction('__proto__');
 
 #### If accompanied by a TODO comment, `@ts-expect-error` is acceptable to use for marking errors that have clear plans of being resolved
 
-<!-- TODO: Add example -->
+**Example <a id="example-43313247-4393-4966-b78e-378f636fedec"></a> ([🔗 permalink](#example-43313247-4393-4966-b78e-378f636fedec)):**
+
+✅
+
+```typescript
+// @ts-expect-error TODO: remove this annotation once the `Eip1193Provider` class is released, resolving thi provider misalignment issue.
+return new Web3Provider(provider);
+
+// TODO: Fix this by handling or eliminating the undefined case
+// @ts-expect-error This variable can be `undefined`, which would break here.
+```
+
+This recommendation applies to any disruptive change that creates many errors at once (e.g. dependency update, upstream refactor, package migration).
+
+See [this entry](https://github.com/MetaMask/core/blob/main/docs/package-migration-process-guide.md#4-resolve-or-todo-downstream-errors) in the core repo "package migration process guide," which recommends that complex or blocked errors should be annotated with a `// @ts-expect-error TODO:` comment, and then revisited once the disruptive change has been completed.
 
 #### Always avoid `any`
 
