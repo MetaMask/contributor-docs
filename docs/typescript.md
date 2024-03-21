@@ -137,6 +137,8 @@ Introduced in [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announc
 
 **Example <a id="example-21ed5949-8d34-4754-b806-412de1696f46"></a> ([🔗 permalink](#example-21ed5949-8d34-4754-b806-412de1696f46)):**
 
+(continued from [previous example](#example-e9b0d703-032d-428b-a232-f5aa56a94470))
+
 🚫 Use a type annotation for type validation
 
 ```typescript
