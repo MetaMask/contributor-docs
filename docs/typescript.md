@@ -15,9 +15,9 @@ Note that this document assumes that the reader has a high level of familiarity 
 TypeScript provides a range of syntax for communicating type information with the compiler.
 
 - The compiler performs **type inference** on all types and values in the code.
-- The user can assign **type annotations** (`:`, `satisfies`) to override inferred types or add type constraints.
-- The user can add **type assertions** (`as`, `!`) to force the compiler to accept user-supplied types even if they contradicts the inferred types.
-- Finally, there are **escape hatches** that let type checking be disabled (`any`, `@ts-expect-error`) for a certain scope of code.
+- The user can assign **type annotations** (`satisfies`, `:`) to override inferred types or add type constraints.
+- The user can add **type assertions** (`!`, `as`) to force the compiler to accept user-supplied types even if they contradicts the inferred types.
+- Finally, there are **escape hatches** that let type checking be disabled (`@ts-expect-error`, `any`) for a certain scope of code.
 
 The order of this list represents the general order of preference for using these features.
 
@@ -509,7 +509,7 @@ This is often the case when downstream consumers of the code are using JavaScrip
 
 🚫
 
-> **Error:** This comparison appears to be unintentional because the types '`0x${string}`' and '"\_\_proto\_\_"' have no overlap.ts(2367)
+> **Error:** This comparison appears to be unintentional because the types '\`0x${string}\`' and '"\_\_proto\_\_"' have no overlap.ts(2367)
 
 ```typescript
 function exampleFunction(chainId: `0x${string}`) {
@@ -522,7 +522,7 @@ function exampleFunction(chainId: `0x${string}`) {
 
 🚫
 
-> **Error:** Argument of type '"\_\_proto\_\_"' is not assignable to parameter of type '`0x${string}`'.ts(2345)
+> **Error:** Argument of type '"\_\_proto\_\_"' is not assignable to parameter of type '\`0x${string}\`'.ts(2345)
 
 ```typescript
 exampleFunction('__proto__');
