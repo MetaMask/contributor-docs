@@ -29,7 +29,7 @@ Some fundamental type information must always be supplied by the user, such as f
 
 However, for most types, inference should be preferred over annotations and assertions.
 
-##### Prefer type inference over annotations and assertions
+#### Prefer type inference over annotations and assertions
 
 - Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent inference-based narrowing of the user-supplied types.
   - The compiler errs on the side of trusting user input, which prevents it from utilizing additional type information that it is able to infer.
@@ -37,11 +37,11 @@ However, for most types, inference should be preferred over annotations and asse
 - Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
 - The `as const` operator can be used to narrow an inferred abstract type into a specific literal type, or do the same for the elements of an array or object.
 
-##### Avoid unintentionally widening an inferred type with a type annotation
+#### Avoid unintentionally widening an inferred type with a type annotation
 
 Enforcing a wider type defeats the purpose of adding an explicit type declaration, as it _loses_ type information instead of adding it. Double-check that the declared type is narrower than the inferred type.
 
-**Example <a id="example-aba42b65-1cb9-4df0-881e-c2e0e79db0bd"></a> ([🔗 permalink](#example-aba42b65-1cb9-4df0-881e-c2e0e79db0bd))**:
+##### **Example <a id="example-aba42b65-1cb9-4df0-881e-c2e0e79db0bd"></a> ([🔗 permalink](#example-aba42b65-1cb9-4df0-881e-c2e0e79db0bd)):**
 
 🚫 Type declarations
 
@@ -73,7 +73,7 @@ const BUILT_IN_NETWORKS = {
 } as const; // Type { readonly mainnet: '0x1'; readonly sepolia: '0xaa36a7'; }
 ```
 
-**Example <a id="example-e9b0d703-032d-428b-a232-f5aa56a94470"></a> ([🔗 permalink](#example-e9b0d703-032d-428b-a232-f5aa56a94470))**:
+##### **Example <a id="example-e9b0d703-032d-428b-a232-f5aa56a94470"></a> ([🔗 permalink](#example-e9b0d703-032d-428b-a232-f5aa56a94470)):**
 
 ```typescript
 type TransactionMeta = TransactionBase &
@@ -131,11 +131,11 @@ An explicit type annotation is acceptable for overriding an inferred type if:
 
 Compared to type assertions, type annotations are more responsive to code drift. If the assignee's type becomes incompatible with the assigned type annotation, the compiler will raise a type error, whereas in most cases a type assertion will still suppress the error.
 
-##### Prefer the `satisfies` operator over the `:` operator for enforcing type constraints
+#### Prefer `satisfies` annotation over `:` annotation for enforcing type constraints
 
 Introduced in [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/), the `satisfies` operator can be used to enforce a type constraint, while also allowing the compiler to fully narrow the assigned type through inference.
 
-**Example <a id="example-21ed5949-8d34-4754-b806-412de1696f46"></a> ([🔗 permalink](#example-21ed5949-8d34-4754-b806-412de1696f46))**:
+##### **Example <a id="example-21ed5949-8d34-4754-b806-412de1696f46"></a> ([🔗 permalink](#example-21ed5949-8d34-4754-b806-412de1696f46)):**
 
 🚫 Use a type annotation for type validation
 
@@ -159,7 +159,7 @@ const updatedTransactionMeta = {
 updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.rejected; ... }'.(2339)
 ```
 
-##### Provide a type annotation When instantiating an empty composite data-type value
+#### Provide a `:` annotation when instantiating an empty composite data-type value
 
 This is a special case where type inference cannot be expected to reach a useful conclusion without user-provided information.
 
@@ -167,7 +167,7 @@ The compiler doesn't have any values to use for inferring a type, and it cannot 
 
 It's up to the user to appropriately narrow down this type by adding an explicit annotation that provides information about the user's intentions.
 
-**Example <a id="example-b5a1175c-919f-4822-b92b-53a3d9dcd2e7"></a> ([🔗 permalink](#example-b5a1175c-919f-4822-b92b-53a3d9dcd2e7))**:
+##### **Example <a id="example-b5a1175c-919f-4822-b92b-53a3d9dcd2e7"></a> ([🔗 permalink](#example-b5a1175c-919f-4822-b92b-53a3d9dcd2e7)):**
 
 🚫
 
@@ -183,13 +183,13 @@ const tokens: string[] = []; // Type 'string[]'
 const tokensMap = new Map<string, Token>(); // Type 'Map<string, Token>'
 ```
 
-##### When typing an extensible data type, use a type annotation
+#### Prefer a `:` annotation over `satisfies` when typing an extensible data type
 
 The reason type inference and the `satisfies` operator are generally preferred over type annotations is that they provide us with the narrowest applicable type signature.
 
 When typing an extensible data type, however, this becomes a liability, because the narrowest type signature by definition doesn't include any newly assigned properties or elements. Therefore, when declaring or instantiating an object, array, or class, explicitly assign a type annotation, unless it is intended to be immutable.
 
-**Example <a id="example-a5fc6e57-2609-41c2-8315-558824bfffed"></a> ([🔗 permalink](#example-a5fc6e57-2609-41c2-8315-558824bfffed))**:
+##### **Example <a id="example-a5fc6e57-2609-41c2-8315-558824bfffed"></a> ([🔗 permalink](#example-a5fc6e57-2609-41c2-8315-558824bfffed)):**
 
 🚫 Type inference, `satisfies` operator
 
@@ -243,7 +243,7 @@ This can cause silent failures or false negatives where errors are suppressed. T
 
 Type assertions can also cause false positives, because assertions are independent expressions, untied to the type errors they were intended to fix. Even if code drift fixes or removes a particular type error, the type assertions that were put in place to fix that error will provide no indication that they are no longer necessary and now should be removed.
 
-**Example <a id="example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c"></a> ([🔗 permalink](#example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c))**:
+##### **Example <a id="example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c"></a> ([🔗 permalink](#example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c)):**
 
 ```typescript
 enum Direction {
@@ -261,9 +261,9 @@ for (const key of Object.keys(directions) as (keyof typeof directions)[]) {
 }
 ```
 
-##### Type guards can be used to improve type inference and avoid type assertion
+#### Avoid `as` assertions by using type guards to improve type inference
 
-**Example <a id="example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541"></a> ([🔗 permalink](#example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541))**:
+##### **Example <a id="example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541"></a> ([🔗 permalink](#example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541)):**
 
 ```typescript
 function isSomeInterface(x: unknown): x is SomeInterface {
@@ -297,7 +297,7 @@ function f(x: SomeInterface | SomeOtherInterface) {
 }
 ```
 
-**Example <a id="example-f7ff4b0d-e5e9-4568-b916-5153ddd2095b"></a> ([🔗 permalink](#example-f7ff4b0d-e5e9-4568-b916-5153ddd2095b))**:
+##### **Example <a id="example-f7ff4b0d-e5e9-4568-b916-5153ddd2095b"></a> ([🔗 permalink](#example-f7ff4b0d-e5e9-4568-b916-5153ddd2095b)):**
 
 ```typescript
 const nftMetadataResults = await Promise.allSettled(...);
@@ -343,18 +343,9 @@ nftMetadataResults.filter(
 
 > Note: The [`is` assertion is unnecessary](https://github.com/microsoft/TypeScript/pull/57465) as of TypeScript v5.5.
 
-#### Acceptable usages of `as`
+#### Determine the target type for an `as` assertion by examining compiler error messages
 
-Type assertions are unsafe, but they are still always preferred to introducing `any` into the code.
-
-- With type assertions, we still get working intellisense, autocomplete, and other IDE and compiler features using the asserted type.
-- Type assertions also provide an indication of what the author intends or expects the type to be.
-
-- Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes, and is therefore preferrable to the dangerous radio silence enforced by `any`.
-
-##### Prefer type assertions over `as any`
-
-Often, the compiler will tell us exactly what the target type for an assertion needs to be, enabling us to avoid `as any`.
+##### **Example <a id="example-2ee8f56a-e3be-417b-a2c0-260c1319b755"></a> ([🔗 permalink](#example-2ee8f56a-e3be-417b-a2c0-260c1319b755)):**
 
 **Example <a id="example-2ee8f56a-e3be-417b-a2c0-260c1319b755"></a> ([🔗 permalink](#example-2ee8f56a-e3be-417b-a2c0-260c1319b755))**:
 
@@ -376,19 +367,13 @@ sinon.stub(nftController, 'getNftInformation' as any);
 sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 ```
 
-##### `as` is acceptable to use for typing data objects whose structure and contents are determined at runtime
-
-This typing should be accompanied by schema validation or deserialization performed with type guards and unit tests.
-
-<!-- TODO: Add example -->
-
-#### `as` is always acceptable to use in the context of TypeScript syntax that does not involve type assertions
+#### `as` is always acceptable to use in TypeScript syntax that does not involve type assertions
 
 - `as const` assertions.
 
 - Key remapping in mapped types uses the `as` keyword.
 
-  **Example <a id="example-6ffd8c99-4768-42e1-8cb7-5710d14f8552"></a> ([🔗 permalink](#example-6ffd8c99-4768-42e1-8cb7-5710d14f8552))**:
+  ##### **Example <a id="example-6ffd8c99-4768-42e1-8cb7-5710d14f8552"></a> ([🔗 permalink](#example-6ffd8c99-4768-42e1-8cb7-5710d14f8552)):**
 
   ```typescript
   type MappedTypeWithNewProperties<Type> = {
@@ -428,9 +413,7 @@ In general, `@ts-expect-error` usage should be reserved to situations where an e
 
 Sometimes, there is a need to force a branch to execute at runtime for security or testing purposes, when that branch has correctly been inferred as being inaccessible by the TypeScript compiler.
 
-**Example <a id="example-76b145a7-89bf-4f19-914b-d1c02e2db185"></a> ([🔗 permalink](#example-76b145a7-89bf-4f19-914b-d1c02e2db185))**:
-
-✅
+##### **Example <a id="example-76b145a7-89bf-4f19-914b-d1c02e2db185"></a> ([🔗 permalink](#example-76b145a7-89bf-4f19-914b-d1c02e2db185)):**
 
 > **Error:** This comparison appears to be unintentional because the types '`0x${string}`' and '"**proto**"' have no overlap.ts(2367)
 
@@ -446,7 +429,7 @@ exampleFunction(chainId: `0x${string}`) {
 
 ##### `@ts-expect-error` may be acceptable to use in tests, to intentionally break features
 
-**Example <a id="example-e299e95d-1c41-4251-85b6-f8064b22f577"></a> ([🔗 permalink](#example-e299e95d-1c41-4251-85b6-f8064b22f577))**:
+##### **Example <a id="example-e299e95d-1c41-4251-85b6-f8064b22f577"></a> ([🔗 permalink](#example-e299e95d-1c41-4251-85b6-f8064b22f577)):**
 
 ✅
 
@@ -458,11 +441,11 @@ exampleFunction(chainId: `0x${string}`) {
 // @ts-expect-error We are intentionally passing bad input.
 ```
 
-##### If accompanied by a TODO comment, `@ts-expect-error` is acceptable to use for marking errors that have clear plans of being resolved
+#### If accompanied by a TODO comment, `@ts-expect-error` is acceptable to use for marking errors that have clear plans of being resolved
 
 <!-- TODO: Add example -->
 
-#### Avoid `any`
+#### Always avoid `any`
 
 `any` is the most dangerous form of explicit type declaration, and should be completely avoided.
 
@@ -476,7 +459,7 @@ The key thing to remember about `any` is that it does not resolve errors, but on
 - `any` suppresses all error messages about its assignee. This makes code with `any` usage brittle against changes, since the compiler is unable to update its feedback even when the code has changed enough to alter or remove the error, or even add new type errors.
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value becomes an `any` type itself. This represents an unmitigated loss of type information.
 
-  **Example <a id="example-1fb5b0ad-61a9-4ad8-9d84-e29b78d88325"></a> ([🔗 permalink](#example-1fb5b0ad-61a9-4ad8-9d84-e29b78d88325))**:
+  ##### **Example <a id="example-1fb5b0ad-61a9-4ad8-9d84-e29b78d88325"></a> ([🔗 permalink](#example-1fb5b0ad-61a9-4ad8-9d84-e29b78d88325)):**
 
   ```typescript
   // Type of 'payload_0': 'any'
@@ -510,7 +493,7 @@ Unfortunately, when typing the _assigned_ type, `unknown` cannot substitute `any
 - `unknown` is only assignable to `unknown`.
 - The type of the _assigned_ must be a subtype of the _assignee_, but `unknown` can only be a subtype of `unknown`.
 
-  **Example <a id="example-56165606-17db-479d-a2f7-cc95250f2129"></a> ([🔗 permalink](#example-56165606-17db-479d-a2f7-cc95250f2129))**:
+##### **Example <a id="example-56165606-17db-479d-a2f7-cc95250f2129"></a> ([🔗 permalink](#example-56165606-17db-479d-a2f7-cc95250f2129)):**
 
   ```typescript
   function f1(arg1: string) { ... }
@@ -537,11 +520,11 @@ Unfortunately, when typing the _assigned_ type, `unknown` cannot substitute `any
   }
   ```
 
-##### Don't allow generic type parameters to resolve to a default type of `any`
+#### Don't allow generic type parameters to resolve to a default type of `any`
 
 Some generic types use `any` as a generic parameter default. If not consciously avoided, this can silently introduce an `any` type into the code, causing unexpected behavior and suppressing useful errors.
 
-**Example <a id="example-c64ed0da-01f1-4b61-a28a-ff8e8ab3c8b5"></a> ([🔗 permalink](#example-c64ed0da-01f1-4b61-a28a-ff8e8ab3c8b5))**:
+##### **Example <a id="example-c64ed0da-01f1-4b61-a28a-ff8e8ab3c8b5"></a> ([🔗 permalink](#example-c64ed0da-01f1-4b61-a28a-ff8e8ab3c8b5)):**
 
 🚫
 
@@ -567,11 +550,11 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 // Target signature provides too few arguments. Expected 2 or more, but got 1.ts(2345)
 ```
 
-##### Prefer `as unknown as` over `as any`
+#### Prefer `as unknown as` over `as any`
 
 In most type errors involving property access or runtime property assignment, `any` usage can be avoided by substituting with `as unknown as`.
 
-**Example <a id="example-03d4fc8b-73a3-478a-a986-df89c9b80775"></a> ([🔗 permalink](#example-03d4fc8b-73a3-478a-a986-df89c9b80775))**:
+##### **Example <a id="example-03d4fc8b-73a3-478a-a986-df89c9b80775"></a> ([🔗 permalink](#example-03d4fc8b-73a3-478a-a986-df89c9b80775)):**
 
 🚫
 
@@ -596,11 +579,9 @@ for (const key of getKnownPropertyNames(this.internalConfig)) {
 delete addressBook[chainId as unknown as `0x${string}`];
 ```
 
-#### Acceptable usages of `any`
+#### `any` may be acceptable to use within generic constraints
 
-##### `any` may be acceptable to use within generic constraints
-
-**Example <a id="example-706045b1-1f01-4e24-ae02-d9a3a8e81615"></a> ([🔗 permalink](#example-706045b1-1f01-4e24-ae02-d9a3a8e81615))**:
+##### **Example <a id="example-706045b1-1f01-4e24-ae02-d9a3a8e81615"></a> ([🔗 permalink](#example-706045b1-1f01-4e24-ae02-d9a3a8e81615)):**
 
 ✅
 
@@ -616,7 +597,7 @@ class BaseController<
 - More specific constraints provide better type safety and intellisense, and should be preferred wherever possible.
 - This only applies to generic _constraints_. It does not apply to passing in `any` as a generic _argument_.
 
-  **Example <a id="example-7b9781b4-0f33-4619-ba50-a90b2594e23f"></a> ([🔗 permalink](#example-7b9781b4-0f33-4619-ba50-a90b2594e23f))**:
+  ##### **Example <a id="example-7b9781b4-0f33-4619-ba50-a90b2594e23f"></a> ([🔗 permalink](#example-7b9781b4-0f33-4619-ba50-a90b2594e23f)):**
 
   🚫
 
@@ -627,11 +608,11 @@ class BaseController<
 
 ## Functions
 
-##### For functions and methods, provide explicit return types
+#### For functions and methods, provide explicit return types
 
 Although TypeScript is capable of inferring return types, adding them explicitly makes it much easier for the reader to see the API from the code alone and prevents unexpected changes to the API from emerging.
 
-**Example <a id="example-a88b18ef-b066-4aa7-8106-bc244298f9e6"></a> ([🔗 permalink](#example-a88b18ef-b066-4aa7-8106-bc244298f9e6))**:
+##### **Example <a id="example-a88b18ef-b066-4aa7-8106-bc244298f9e6"></a> ([🔗 permalink](#example-a88b18ef-b066-4aa7-8106-bc244298f9e6)):**
 
 🚫
 
