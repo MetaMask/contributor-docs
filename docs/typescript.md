@@ -15,8 +15,8 @@ This document assumes that the reader has a high level of familiarity with TypeS
 TypeScript provides a range of syntax for communicating type information with the compiler.
 
 - The compiler performs **type inference** on all types and values in the code.
-- The user can assign **type annotations** (`satisfies`, `:`) to override inferred types or add type constraints.
-- The user can add **type assertions** (`!`, `as`) to force the compiler to accept user-supplied types even if they contradicts the inferred types.
+- The user can assign **type annotations** (`:`, `satisfies`) to override inferred types or add type constraints.
+- The user can add **type assertions** (`as`, `!`) to force the compiler to accept user-supplied types even if they contradict the inferred types.
 - Finally, there are **escape hatches** that let type checking be disabled (`@ts-expect-error`, `any`) for a certain scope of code.
 
 The order of this list represents the general order of preference for using these features.
@@ -34,8 +34,8 @@ However, for most types, inference should be preferred over annotations and asse
 - Explicit type annotations (`:`) and type assertions (`as`, `!`) prevent inference-based narrowing of the user-supplied types.
   - The compiler errs on the side of trusting user input, which prevents it from utilizing additional type information that it is able to infer.
   - The `satisfies` operator is an exception to this rule.
-- Type inferences are responsive to changes in code without requiring user input, while annotations and assertions rely on hard-coding, making them brittle against code drift.
-- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type, or do the same for the elements of an array or object.
+- Type inferences are responsive to changes in code, always reflecting up-to-date type information, while annotations and assertions rely on hard-coding, making them brittle against code drift.
+- The `as const` operator can be used to narrow an inferred abstract type into a specific literal type. When used on an object or array, it applies to each element.
 
 #### Avoid unintentionally widening an inferred type with a type annotation
 
@@ -124,10 +124,10 @@ const updatedTransactionMeta = {
 
 ### Type Annotations
 
-An explicit type annotation is acceptable for overriding an inferred type if:
+An explicit type annotation may be used to override an inferred type if:
 
-1. It can further narrow an inferred type, supplying type information that the compiler cannot infer or access otherwise.
-2. It is being used to enforce a type constraint, not assign a type definition. For this use case, `satisfies` is preferred over `:`.
+1. It can further narrow the inferred type, supplying type information that the compiler cannot infer or does not have access to.
+2. It is being used to enforce a wider type constraint, not to assign a specific type definition. For this use case, `satisfies` is preferred over `:`.
 
 Compared to type assertions, type annotations are more responsive to code drift. If the assignee's type becomes incompatible with the assigned type annotation, the compiler will raise a type error, whereas in most cases a type assertion will still suppress the error.
 
@@ -139,37 +139,42 @@ Introduced in [TypeScript 4.9](https://devblogs.microsoft.com/typescript/announc
 
 (continued from [previous example](#example-e9b0d703-032d-428b-a232-f5aa56a94470))
 
-> **Error:** Object literal may only specify known properties, and 'nonTransactionMetaProperty' does not exist in type 'TransactionMeta'.ts(1360)
-
 🚫 Use a type annotation for type validation.
 
-`updatedTransactionMeta` is widened to `TransactionMeta`.
+- `updatedTransactionMeta` is widened to `TransactionMeta`.
+- The error message enumerates all members of the `Exclude<TransactionStatus, TransactionStatus.failed>` union as the correct type for `status`.
+- While this means that `updatedTransactionMeta` has been correctly narrowed to the first member in the `TransactionMeta` discriminated union, it is still not assigned the most specific type that could be inferred.
 
 ```typescript
 const updatedTransactionMeta: TransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected,
+  // Object literal may only specify known properties, and 'nonTransactionMetaProperty' does not exist in type 'TransactionMeta'.ts(1360)
   nonTransactionMetaProperty: null,
 };
 
-updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.approved | TransactionStatus.cancelled | TransactionStatus.confirmed | TransactionStatus.dropped | TransactionStatus.rejected | TransactionStatus.signed | TransactionStatus.submitted | TransactionStatus.unapproved; ... }'.(2339)
+// Property 'error' does not exist on type '{ status: TransactionStatus.approved | TransactionStatus.cancelled | TransactionStatus.confirmed | TransactionStatus.dropped | TransactionStatus.rejected | TransactionStatus.signed | TransactionStatus.submitted | TransactionStatus.unapproved; ... }'.(2339)
+updatedTransactionMeta.error;
 ```
 
 ✅ Use the `satisfies` operator for type validation.
 
-`updatedTransactionMeta` is narrowed to its correct type signature (`status` property is not a union).
+- `updatedTransactionMeta` is narrowed to its most specific type signature.
+- The expected `status` property is not a union.
 
 ```typescript
 const updatedTransactionMeta = {
   ...transactionMeta,
   status: TransactionStatus.rejected as const,
+  // Object literal may only specify known properties, and 'nonTransactionMetaProperty' does not exist in type 'TransactionMeta'.ts(1360)
   nonTransactionMetaProperty: null,
 } satisfies TransactionMeta;
 
-updatedTransactionMeta.error; // Property 'error' does not exist on type '{ status: TransactionStatus.rejected; ... }'.(2339)
+// // Property 'error' does not exist on type '{ status: TransactionStatus.rejected; ... }'.(2339)
+updatedTransactionMeta.error;
 ```
 
-#### Provide a `:` annotation when instantiating an empty composite data-type value
+#### Provide a type annotation (`:`) when instantiating an empty composite data-type value
 
 This is a special case where type inference cannot be expected to reach a useful conclusion without user-provided information.
 
@@ -193,7 +198,7 @@ const tokens: string[] = []; // Type 'string[]'
 const tokensMap = new Map<string, Token>(); // Type 'Map<string, Token>'
 ```
 
-#### Prefer a `:` annotation over `satisfies` when typing an extensible data type
+#### Prefer a type annotation (`:`) over `satisfies` when typing an extensible data type
 
 The reason type inference and the `satisfies` operator are generally preferred over type annotations is that they provide us with the narrowest applicable type signature.
 
@@ -233,12 +238,13 @@ SUPPORTED_CHAIN_IDS.includes(chainId) // No error
 
 Type assertions are inherently unsafe and should only be used if the accurate type is unreachable through other means.
 
-- Type assertions overwrite type-checked and compiler-inferred types with user-supplied types, and suppress the resulting compiler errors.
-- Because type assertions do not affect runtime code in any way, it is likely that types asserted at compile time will conflict with values at runtime.
+- Type assertions overwrite type-checked and compiler-inferred types with unverified user-supplied types.
+- Type assertions can be used to suppress valid compiler errors by asserting to an incorrect type.
+- Type assertions are erased at compile time without being validated against runtime code. If the type assertion is wrong, it will fail silently without generating an exception or null.
 - Type assertions make the codebase brittle against changes.
 
-  - As changes accumulate in the codebase, type assertions may continue to enforce type assignments that have become incorrect, or keep silencing errors that have changed. This can cause dangerous silent failures (false negatives).
-  - Type assertions will also provide no indication when they become unnecessary or redundant (false positives). Even if changes in the code resolve the error that the assertion was silencing, TypeScript will keep the assertion in place.
+  - As changes accumulate in the codebase, type assertions may continue to enforce type assignments that have become incorrect, or keep silencing errors that have changed. This can cause dangerous silent failures.
+  - Type assertions will also provide no indication when they become unnecessary or redundant due to changes in the code.
 
     **Example <a id="example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c"></a> ([🔗 permalink](#example-3675ab71-bcd6-4325-ac18-8ba4dd8ec03c)):**
 
@@ -258,7 +264,7 @@ Type assertions are inherently unsafe and should only be used if the accurate ty
     }
     ```
 
-#### Avoid `as` assertions by using type guards to improve type inference
+#### Avoid type assertions by using type guards to improve type inference
 
 **Example <a id="example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541"></a> ([🔗 permalink](#example-50c3fbc9-c2d7-4140-9f75-be5f0a56d541)):**
 
@@ -340,7 +346,7 @@ nftMetadataResults.filter(
 
 > Note: The `is` type predicate in this example [is unnecessary as of TypeScript v5.5](https://github.com/microsoft/TypeScript/pull/57465).
 
-#### Determine the target type for an `as` assertion by examining compiler error messages
+#### Determine the target type for a type assertion by examining compiler error messages
 
 Often, the compiler will tell us exactly what the target type for an assertion needs to be.
 
@@ -362,7 +368,10 @@ sinon.stub(nftController, 'getNftInformation' as keyof typeof nftController);
 
 #### Use `as unknown as` to force a type assertion to an incompatible type, or to perform runtime property access, assignment, or deletion
 
-- `as unknown as` enables structurally unsound type assertions to incompatible types. This should be used as a last resort for a very good reason, and not as a convenient way to force types into incorrect shapes that will temporarily silence errors.
+- TypeScript only allows type assertions that narrow or widen a type. Type assertions that fall outside of this category generate the following error:
+  > **Error:** Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.(2352)
+- `as unknown as` enables type coercions to structurally incompatible types.
+- `as unknown as` should only be used as a last resort for a very good reason, and not as a convenient way to force types into incorrect shapes that will temporarily silence errors.
 
 - `as unknown as` can also resolve type errors arising from runtime property access, assignment, or deletion.
 
@@ -397,11 +406,9 @@ delete addressBook[chainId as unknown as `0x${string}`];
 - Type assertions also provide an indication of what the author intends or expects the type to be.
 - Even an assertion to a wrong type still allows the compiler to show us warnings and errors as the code changes.
 
-#### Document safe or necessary use of type assertions in comments
+#### For safe or necessary type assertions, document the reasoning behind its usage with a comment
 
-When a type assertion is used with a clear rationale, we should document the reasoning behind its usage in the form of a comment.
-
-- A type assertion may be necessary to satisfy constraints. To be used safely, it must be supported by runtime validations.
+- A type assertion may be necessary to satisfy constraints. To be used safely, it must also be supported by runtime validations.
 
   **Example <a id="example-81737669-75fb-46d6-b2ce-c09acd5b89ab"></a> ([🔗 permalink](#example-81737669-75fb-46d6-b2ce-c09acd5b89ab)):**
 
@@ -447,7 +454,7 @@ When a type assertion is used with a clear rationale, we should document the rea
   }
   ```
 
-- A type assertion may be necessary to align with a type which is verified to be accurate by an external source of truth. To be used safely, it must be supported by runtime validations.
+- A type assertion may be necessary to align with a type which is verified to be accurate by an external source of truth. To be used safely, it must also be supported by runtime validations.
 
   **Example <a id="example-05558b5e-527e-46b0-8b40-918f28d05156"></a> ([🔗 permalink](#example-05558b5e-527e-46b0-8b40-918f28d05156)):**
 
@@ -524,6 +531,7 @@ When a type assertion is used with a clear rationale, we should document the rea
 TypeScript provides several escape hatches that disable compiler type checks altogether and suppress compiler errors. Using these to ignore typing issues is dangerous and reduces the effectiveness of TypeScript.
 
 - `@ts-expect-error`
+
   - Applies to a single line, which may contain multiple variables and errors.
   - **It alerts users if an error it was suppressing is resolved by changes in the code:**
 
@@ -537,7 +545,6 @@ TypeScript provides several escape hatches that disable compiler type checks alt
 - `any`
   - Applies to all instances of the target variable or type throughout the entire codebase, and in downstream code as well.
     - `as any` only applies to a single instance of a single variable without propagating to other instances.
-  - Has the same effect as applying `@ts-ignore` to every single instance of the target variable or type.
   - Banned by the `@typescript-eslint/no-explicit-any` rule.
 
 #### Use `@ts-expect-error` to force runtime execution of a branch for validation or testing
@@ -632,7 +639,9 @@ To prevent `any` instances from being introduced into the codebase, it is not en
 
 - `any` does not represent the widest type. In fact, it is not a type at all. `any` is a compiler directive for _disabling_ type checking for the value or type to which it's assigned.
 - `any` suppresses all error messages about its assignee.
+
   - The suppressed errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
+  - `any` has the same effect as going through the entire codebase to apply `@ts-ignore` to every single instance of the target variable or type.
   <!-- TODO: Add example -->
   - Much like type assertions, code with `any` usage becomes brittle against changes, since the compiler is unable to update its feedback even if the suppressed error has been altered, or entirely new type errors have been added.
   <!-- TODO: Add example -->
@@ -654,12 +663,12 @@ To prevent `any` instances from being introduced into the codebase, it is not en
   const { a, b, c } = returnsAny();
   ```
 
-- `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unsafe code with no guarantees about type safety or runtime behavior.
+- `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unsafe code that have no guarantees about type safety or runtime behavior.
 <!-- TODO: Add example -->
 
-All of this makes `any` a prominent cause of dangerous **silent failures** (false negatives), where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
+All of this makes `any` a prominent cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
 
-#### If `any` is being used as the _assignee_ type, try `unknown` first, and then try narrowing to an appropriate supertype of the _assigned_ type
+#### If `any` is being used as the _assignee_ type, try `unknown` first, and then narrowing to an appropriate supertype of the _assigned_ type
 
 `any` usage is often motivated by a need to find a placeholder type that could be anything. `unknown` is a likely type-safe substitute for `any` in these cases.
 
@@ -669,7 +678,7 @@ All of this makes `any` a prominent cause of dangerous **silent failures** (fals
 
 <!-- TODO: Add example -->
 
-#### If `any` is being used as the _assigned_ type, try `never` first, and then try widening to an appropriate subtype of the _assignee_ type
+#### If `any` is being used as the _assigned_ type, try `never` first, and then widening to an appropriate subtype of the _assignee_ type
 
 Unfortunately, when typing the _assigned_ type, `unknown` cannot substitute `any` in most cases, because:
 
@@ -706,9 +715,11 @@ function f2(arg2: unknown) {
 
 ✅ `never`
 
-> **Note:** Once `unknown` has been ruled out as a substitute for `any`, trying `never` serves as a useful test: It tells us that the search space for the correct substitute type is bounded to subtypes of the _assignee_ type.
+> **Note:** While `never` itself is rarely the correct type, trying `never` as a substitute for `any` is a useful test.
 
-This works, but `arg2` can be widened further.
+The fact that **`never` works while `unknown` doesn't** is a very useful piece of information that lets us narrow down the search space to subtypes of the _assignee_ type.
+
+In this case, that means `arg2` could be widened to any type that is a subtype of `string`.
 
 ```typescript
 function f2(arg2: never) {
@@ -724,9 +735,9 @@ function f2(arg2: `0x${string}`) {
 }
 ```
 
-#### Always supply a type argument for generic type parameters that have a default type of `any`
+#### Always supply a type argument if a generic type parameter has a default type of `any`
 
-Some generic types use `any` as a generic parameter default. If not consciously avoided, this can silently introduce an `any` type into the code, causing unexpected behavior and suppressing useful errors.
+Some generic types use `any` as a generic parameter default. If not actively avoided, this can silently introduce an `any` type into the code, causing unexpected behavior and suppressing useful errors.
 
 **Example <a id="example-c64ed0da-01f1-4b61-a28a-ff8e8ab3c8b5"></a> ([🔗 permalink](#example-c64ed0da-01f1-4b61-a28a-ff8e8ab3c8b5)):**
 
