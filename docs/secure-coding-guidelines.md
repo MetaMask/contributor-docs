@@ -30,6 +30,9 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
     - If a non-negative number is expected, do not allow the value to be negative
   - Check that the format matches expectations
     - If we expect a 0x-prefixed hexadecimal string, ensure that the 0x is present
+  - When validating objects coming from untrusted programs, get rid of all dynamic behaviors (getters) from the input by serializing and deserializing it
+    - Most data from external sources in our applications is received via RPC, so it has already been serialized and deserialized, eliminating this risk. We handle data from external sources directly in some places though, like in the Snaps runtime.
+    - An example of malicious dynamic behavior would be a getter on a field that returns the expected value on the first call and a malicious value on the second call.
 
 - Encode data before output
 
