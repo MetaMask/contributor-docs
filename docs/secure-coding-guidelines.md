@@ -134,7 +134,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Audit and Monitor Dependencies
 
 - Monitor dependencies for security vulnerabilities and other problems
-  - Periodically scan for security vulnerabilities (e.g. using tools like `npm audit`)
+  - Periodically scan for security vulnerabilities (e.g. using tools like `npm audit`, Dependabot, and Socket.dev)
   - Update dependencies quickly when they have security vulnerabilities
   - Use Socket.dev to monitor dependencies for other noteworthy changes, such as maintainer changes, or the addition of install scripts or binary files
     - Use the following etiquette when addressing Socket.dev warnings:
