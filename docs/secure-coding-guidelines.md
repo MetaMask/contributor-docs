@@ -140,7 +140,9 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
     - Use the following etiquette when addressing Socket.dev warnings:
       - Investigate and address all warnings before merging a PR
       - Avoid using the `ignore-all` bot command, instead ignoring each warning one at a time
-      - If you've investigated a warning and found that it's not indicative of a malicious dependency, ignore it with a bot comment and explain your investigation with a short comment
+      - If you've investigated a warning and found that it's not indicative of a malicious dependency, ignore it with a bot comment and explain your investigation with a short comment. For example:
+        - For the "Network access" warning, verify that the package is supposed to have network access then leave a comment explaining your investigation.
+        - For the "New author" warning, leave a comment saying "Known maintainer" if you know the author. Otherwise, try to verify that they are the legitimate maintainers, and look for other suspicious changes in the versions they published (and review any LavaMoat policy changes, if your project uses LavaMoat)
       - Contact the security team if you're unsure how to investigate something, or if you'd like to disable a warning category
 
 #### LavaMoat (JavaScript projects only)
