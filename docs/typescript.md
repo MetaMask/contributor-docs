@@ -771,7 +771,7 @@ mockGetNetworkConfigurationByNetworkClientId.mockImplementation(
 
 **Example <a id="example-706045b1-1f01-4e24-ae02-d9a3a8e81615"></a> ([🔗 permalink](#example-706045b1-1f01-4e24-ae02-d9a3a8e81615)):**
 
-✅
+✅ `messenger` is not polluted by `any`
 
 ```typescript
 class BaseController<
@@ -779,6 +779,20 @@ class BaseController<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messenger extends RestrictedControllerMessenger<N, any, any, string, string>
 > ...
+```
+
+✅ `ComposableControllerState` is not polluted by `any`
+
+```typescript
+export class ComposableController<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ComposableControllerState extends { [name: string]: Record<string, any> },
+> extends BaseController<
+  typeof controllerName,
+  // (type parameter) ComposableControllerState in ComposableController<ComposableControllerState extends ComposableControllerStateConstraint>
+  ComposableControllerState,
+  ComposableControllerMessenger<ComposableControllerState>
+> 
 ```
 
 - In general, using `any` in this context is not harmful in the same way that it is in other contexts, as the `any` types only are not directly assigned to any specific variable, and only function as constraints.
