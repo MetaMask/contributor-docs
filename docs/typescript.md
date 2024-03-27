@@ -664,7 +664,60 @@ To prevent `any` instances from being introduced into the codebase, it is not en
   ```
 
 - `any` infects all surrounding and downstream code with its directive to suppress errors. This is the most dangerous characteristic of `any`, as it causes the encroachment of unsafe code that have no guarantees about type safety or runtime behavior.
-<!-- TODO: Add example -->
+
+  **Example <a id="example-02188a9c-836f-47c0-95a7-9495c15ec653"></a> ([🔗 permalink](#example-02188a9c-836f-47c0-95a7-9495c15ec653)):**
+
+  🚫 A single type, `InferWithParams`, is set to `any` in `@metamask/utils`
+
+  ```typescript
+  export declare type InferWithParams<Type extends Struct<any>, Params extends JsonRpcParams> = any;
+  
+  export declare type JsonRpcRequest<Params extends JsonRpcParams = JsonRpcParams> = InferWithParams<typeof JsonRpcRequestStruct, Params>; // Resolves to 'any'
+  
+  export declare type JsonRpcResponse<Result extends Json> = JsonRpcSuccess<Result> | JsonRpcFailure; // Resolves to 'any'
+  ```
+  
+  🚫 A downstream package is polluted with a large number of `any`s.
+  
+  The valid error messages shown in the comments are suppressed by the `any` types.
+
+  ```typescript
+  import type {
+    JsonRpcRequest,
+    JsonRpcResponse
+  } from '@metamask/utils'
+  
+  function sendMetadataHandler<Params extends JsonRpcParams, Result extends Json>(
+    req: JsonRpcRequest<Params> // any,
+    res: JsonRpcResponse<Result> // any,
+    _next: JsonRpcEngineNextCallback,
+    end: JsonRpcEngineEndCallback,
+    { addSubjectMetadata, subjectType }: SendMetadataOptionsType,
+  ): void {
+    // Error: Property 'origin' does not exist on type 'JsonRpcRequest<Params>'.ts(2339)
+    const { origin, params } = req;
+    //      'any' , 'any'
+    if (params && typeof params === 'object' && !Array.isArray(params)) {
+      const { icon = null, name = null, ...remainingParams } = params;
+
+      addSubjectMetadata({
+        ...remainingParams // 'any',
+        iconUrl: icon // 'any',
+        name,
+        subjectType,
+        origin,
+      });
+    } else {
+      return end(ethErrors.rpc.invalidParams({ data: params }));
+                                                  // 'any'
+    }
+    // Error: Property 'result' does not exist on type 'JsonRpcResponse<Result>'.
+      // Property 'result' does not exist on type '{ error: JsonRpcError; id: string | number; jsonrpc: "2.0"; }'.ts(2339)
+    res.result = true;
+    // `res`, `res.result` are both 'any'
+    return end();
+  }
+  ```
 
 All of this makes `any` a prominent cause of dangerous **silent failures**, where the code fails at runtime but the compiler does not provide any prior warning, which defeats the purpose of using a statically-typed language.
 
