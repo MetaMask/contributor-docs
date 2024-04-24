@@ -2,8 +2,6 @@
 
 ## Introduction
 
-This is a collection of TypeScript best practices and preferred conventions for contributors to the MetaMask project.
-
 This document is not intended as a stand-in for linters or formatters. Emphasis is put on discussing underlying concepts and rationale, rather than listing rules and restrictions.
 
 Type safety and maintainability are the highest priorities in these guidelines, even if that sometimes leads to unconventional or opinionated recommendations.
@@ -860,6 +858,148 @@ export class ComposableController<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const controllerMessenger = ControllerMessenger<any, any>;
   ```
+
+## Generic Types
+
+#### Constrain generic types if necessary
+
+It may not be enough just to have a type or a function take another type — you might have to constrain it if it's not allowed to be anything (e.g. extends Json)
+
+```typescript
+// before
+function createExampleMiddleware<Params, Result>(exampleParam);
+// after
+function createExampleMiddleware<
+  Params extends JsonRpcParams,
+  Result extends Json,
+>(exampleParam);
+```
+
+#### Use `Omit` to reduce requirements
+
+`Omit<T, K>` takes two generic types: `T` representing the original object type and `K` representing the property keys you want to remove. It returns a new type that has all the properties of T except for the ones specified in K. Here are some cases to use omit:
+
+- Removing Unnecessary Properties:
+  Imagine you have a user interface with optional email and phone number fields. However, your API call only cares about the `username`. You can use Omit to reduce the required properties:
+
+```typescript
+interface User {
+  username: string;
+  email?: string;
+  phoneNumber?: string;
+}
+
+// Type for API call payload
+type ApiPayload = Omit<User, 'email' | 'phoneNumber'>;
+
+const payload: ApiPayload = { username: 'johndoe' };
+// Now `payload` only has the `username` property, satisfying the API requirements.
+```
+
+- Conditional Omission:
+  Sometimes, you might want to remove properties based on a condition. `Omit` can still be helpful:
+
+```typescript
+interface CartItem {
+  productId: number;
+  quantity: number;
+  color?: string; // Optional color
+
+// Omit color if quantity is 1
+const singleItemPayload = Omit<CartItem, "color" extends string ? "color" : never>;
+
+// Omit color for all items if quantity is always 1
+const cartPayload: singleItemPayload[] = [];
+```
+
+## Interfaces
+
+#### Always prefer type aliases over the `interface` keyword
+
+We enforce consistent and exclusive usage of type aliases over the `interface` keyword to declare types for several reasons:
+
+- The capabilities of type aliases is a strict superset of those of interfaces.
+  - Crucially, `extends`, `implements` are also supported by type aliases.
+  - Declaration merging is the only exception, but we have no use case for this feature that cannot be substituted by using type intersections.
+- Unlike interfaces, type aliases extend `Record` and have an index signature of `string` by default, which makes them compatible with our Json-serializable types (most notably `Record<string, Json>`).
+- Type aliases can be freely merged using the intersection (`&`) operator, like interfaces which can implement multiple inheritance.
+
+#### `implements` keyword
+
+The `implements` keyword enables us to define and enforce interfaces, i.e. strict contracts consisting of expected object and class properties and abstract method signatures.
+Writing an interface to establish the specifications of a class that external code can interact while without being aware of internal implementation details is encouraged as sound OOP development practice.
+Here's an abbreviated example from `@metamask/polling-controller` of an interface being used to define one of our most important constructs.
+
+```typescript
+export type IPollingController = {
+...
+}
+
+export function AbstractPollingControllerBaseMixin<TBase extends Constructor>(
+    Base: TBase,
+) {
+    abstract class AbstractPollingControllerBase
+        extends Base
+        implements IPollingController
+    { ... }
+    return AbstractPollingControllerBase
+}
+```
+
+The concept of the interface as discussed in this section is not to be confused with interface syntax as opposed to type alias syntax. Note that in the above example, the `IPollingController` interface is defined as a type alias, not using the `interface` keyword.
+
+## Enums
+
+TypeScript offers several tools for crafting clear data definitions, with enumerations and unions standing as popular choices.
+
+#### Consider using enums over union types for situations with a fixed set of known values.
+
+Inevitably you will want to refer to the values of a union type somewhere (perhaps as the argument to a function). You can of course just use a literal which represents a member of that union — but if you have an enum, then all of the values are special, and any time you use a value then anyone can see where that value comes from.
+
+🚫
+
+```typescript
+type UserRole = 'admin' | 'editor' | 'subscriber';
+```
+
+✅
+
+```typescript
+enum AccountType {
+  Admin = 'admin',
+  User = 'user',
+  Guest = 'guest',
+}
+```
+
+#### Don't use numeric enums
+
+Numeric enums are misleading because it creates a reverse mapping from value to property name, and when using `Object.values` to access member names, it will return the numerical values instead of the member names, potentially causing unexpected behavior.
+🚫
+
+```typescript
+enum Direction {
+  Up = 0,
+  Down = 1,
+  Left = 2,
+  Right = 3,
+}
+
+const directions = Object.values(Direction); // [0, 1, 2, 3]
+```
+
+✅
+
+```typescript
+enum Direction {
+  Up = 'Up',
+  Down = 'Down',
+  Left = 'Left',
+  Right = 'Right',
+}
+
+const directions = Object.values(Direction); // ["Up", "Down", "Left", "Right"]
+```
 
 ## Functions
 
