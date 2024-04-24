@@ -1,8 +1,10 @@
 # TypeScript Guidelines
 
+The TypeScript Guidelines establishes stylistic conventions and best practices for contributing TypeScript code to the MetaMask codebase.
+
 ## Introduction
 
-This document is not intended as a stand-in for linters or formatters. Emphasis is put on discussing underlying concepts and rationale, rather than listing rules and restrictions.
+This document is intended to complement linters and formatters. Emphasis is put on discussing underlying concepts and rationale, rather than listing rules and restrictions.
 
 Type safety and maintainability are the highest priorities in these guidelines, even if that sometimes leads to unconventional or opinionated recommendations.
 
@@ -640,7 +642,6 @@ To prevent `any` instances from being introduced into the codebase, it is not en
 
   - The suppressed errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
   - `any` has the same effect as going through the entire codebase to apply `@ts-ignore` to every single instance of the target variable or type.
-  <!-- TODO: Add example -->
   - Much like type assertions, code with `any` usage becomes brittle against changes, since the compiler is unable to update its feedback even if the suppressed error has been altered, or entirely new type errors have been added.
   <!-- TODO: Add example -->
 
@@ -727,7 +728,21 @@ All of this makes `any` a prominent cause of dangerous **silent failures**, wher
 - Every type is assignable to `unknown`, but `unknown` is not assignable to any type but itself.
 - When typing the _assignee_, `any` and `unknown` are completely interchangeable since every type is assignable to both.
 
-<!-- TODO: Add example -->
+**Example <a id="example-2e5889f6-110a-4c62-b659-20cfcc7c8916"></a> ([🔗 permalink](#example-2e5889f6-110a-4c62-b659-20cfcc7c8916)):**
+
+🚫 `any`
+
+```typescript
+type ExampleFunction = () => any
+const exampleArray: any[] = ['a', 1, true]
+```
+
+✅ `unknown`
+
+```typescript
+type ExampleFunction = () => unknown
+const exampleArray: unknown[] = ['a', 1, true]
+```
 
 #### If `any` is being used as the _assigned_ type, try `never` first, and then widening to an appropriate subtype of the _assignee_ type
 
