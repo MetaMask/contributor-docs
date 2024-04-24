@@ -669,15 +669,22 @@ To prevent `any` instances from being introduced into the codebase, it is not en
   🚫 A single type, `InferWithParams`, is set to `any` in `@metamask/utils`
 
   ```typescript
-  export declare type InferWithParams<Type extends Struct<any>, Params extends JsonRpcParams> = any;
-  
-  export declare type JsonRpcRequest<Params extends JsonRpcParams = JsonRpcParams> = InferWithParams<typeof JsonRpcRequestStruct, Params>; // Resolves to 'any'
-  
-  export declare type JsonRpcResponse<Result extends Json> = JsonRpcSuccess<Result> | JsonRpcFailure; // Resolves to 'any'
+  export declare type InferWithParams<
+    Type extends Struct<any>,
+    Params extends JsonRpcParams,
+  > = any;
+
+  export declare type JsonRpcRequest<
+    Params extends JsonRpcParams = JsonRpcParams,
+  > = InferWithParams<typeof JsonRpcRequestStruct, Params>; // Resolves to 'any'
+
+  export declare type JsonRpcResponse<Result extends Json> =
+    | JsonRpcSuccess<Result>
+    | JsonRpcFailure; // Resolves to 'any'
   ```
-  
+
   🚫 A downstream package is polluted with a large number of `any`s.
-  
+
   The valid error messages shown in the comments are suppressed by the `any` types.
 
   ```typescript
@@ -685,7 +692,7 @@ To prevent `any` instances from being introduced into the codebase, it is not en
     JsonRpcRequest,
     JsonRpcResponse
   } from '@metamask/utils'
-  
+
   function sendMetadataHandler<Params extends JsonRpcParams, Result extends Json>(
     req: JsonRpcRequest<Params> // any,
     res: JsonRpcResponse<Result> // any,
@@ -733,15 +740,15 @@ All of this makes `any` a prominent cause of dangerous **silent failures**, wher
 🚫 `any`
 
 ```typescript
-type ExampleFunction = () => any
-const exampleArray: any[] = ['a', 1, true]
+type ExampleFunction = () => any;
+const exampleArray: any[] = ['a', 1, true];
 ```
 
 ✅ `unknown`
 
 ```typescript
-type ExampleFunction = () => unknown
-const exampleArray: unknown[] = ['a', 1, true]
+type ExampleFunction = () => unknown;
+const exampleArray: unknown[] = ['a', 1, true];
 ```
 
 #### If `any` is being used as the _assigned_ type, try `never` first, and then widening to an appropriate subtype of the _assignee_ type
@@ -858,7 +865,7 @@ export class ComposableController<
   // (type parameter) ComposableControllerState in ComposableController<ComposableControllerState extends ComposableControllerStateConstraint>
   ComposableControllerState,
   ComposableControllerMessenger<ComposableControllerState>
-> 
+>
 ```
 
 - In general, using `any` in this context is not harmful in the same way that it is in other contexts, as the `any` types only are not directly assigned to any specific variable, and only function as constraints.
