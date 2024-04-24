@@ -30,6 +30,9 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
     - If a non-negative number is expected, do not allow the value to be negative
   - Check that the format matches expectations
     - If we expect a 0x-prefixed hexadecimal string, ensure that the 0x is present
+  - When validating objects coming from untrusted programs, get rid of all dynamic behaviors (getters) from the input by serializing and deserializing it
+    - Most data from external sources in our applications is received via RPC, so it has already been serialized and deserialized, eliminating this risk. We handle data from external sources directly in some places though, like in the Snaps runtime.
+    - An example of malicious dynamic behavior would be a getter on a field that returns the expected value on the first call and a malicious value on the second call.
 
 - Encode data before output
 
@@ -131,13 +134,15 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 #### Audit and Monitor Dependencies
 
 - Monitor dependencies for security vulnerabilities and other problems
-  - Periodically scan for security vulnerabilities (e.g. using tools like `npm audit`)
+  - Periodically scan for security vulnerabilities (e.g. using tools like `npm audit`, Dependabot, and Socket.dev)
   - Update dependencies quickly when they have security vulnerabilities
   - Use Socket.dev to monitor dependencies for other noteworthy changes, such as maintainer changes, or the addition of install scripts or binary files
     - Use the following etiquette when addressing Socket.dev warnings:
       - Investigate and address all warnings before merging a PR
       - Avoid using the `ignore-all` bot command, instead ignoring each warning one at a time
-      - If you've investigated a warning and found that it's not indicative of a malicious dependency, ignore it with a bot comment and explain your investigation with a short comment
+      - If you've investigated a warning and found that it's not indicative of a malicious dependency, ignore it with a bot comment and explain your investigation with a short comment. For example:
+        - For the "Network access" warning, verify that the package is supposed to have network access then leave a comment explaining your investigation.
+        - For the "New author" warning, leave a comment saying "Known maintainer" if you know the author. Otherwise, try to verify that they are the legitimate maintainers, and look for other suspicious changes in the versions they published (and review any LavaMoat policy changes, if your project uses LavaMoat)
       - Contact the security team if you're unsure how to investigate something, or if you'd like to disable a warning category
 
 #### LavaMoat (JavaScript projects only)
