@@ -296,15 +296,15 @@ A test can be subdivided into up to four kinds of actions, also called ["phases"
 3. **Verify:** Confirming that the code under test behaves in an expected manner
 4. **Teardown:** Returning the environment to a clean slate
 
-Be aware of the way that a test moves through these phases, particularly if some steps like "exercise" and "verify" are repeated, as this may indicate that your test is doing too much.
+Be aware of the way that a test moves through these phases. It can assist readers in following the flow by making judicious use of line breaks to separate phases visually.
 
-It can be helpful when composing and reading tests to surround the "exercise" phase with empty line breaks. Observe:
+For instance, the placement of empty lines in this test makes it a bit difficult to discern the relationships between different parts of the test. Which part executes the code under test, which part confirms the desired behavior, and which part just sets it up?
 
 1️⃣
 
 ```typescript
 describe('KeyringController', () => {
-  describe('cacheEncryptionKey', () => {
+  describe('submitEncryptionKey', () => {
     it('unlocks the keyrings with valid information', async () => {
       const keyringController = await initializeKeyringController({
         password: 'password',
@@ -333,11 +333,13 @@ describe('KeyringController', () => {
 });
 ```
 
+Now the different phases of this test are unmistakable, because all of the setup code is grouped together visually:
+
 2️⃣
 
 ```typescript
 describe('KeyringController', () => {
-  describe('cacheEncryptionKey', () => {
+  describe('submitEncryptionKey', () => {
     it('unlocks the keyrings with valid information', async () => {
       const keyringController = await initializeKeyringController({
         password: 'password',
