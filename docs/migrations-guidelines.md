@@ -14,7 +14,6 @@ The focus is on ensuring data integrity, handling errors gracefully, and maintai
 2. **Error Handling**: 
 
 The following prevents manipulation of potentially corrupted data, enforcing corrective action before proceeding.
-
     - Log erros with `captureException` from `@sentry/react-native`, which is crucial for diagnosing issues post-migration,
     - Ensure that error messages are descriptive: include the migration number and a clear description of the issue,
     - If an exception is detected, indicating potential data corruption, halt the migration process and return the intial state, 
