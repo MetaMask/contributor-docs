@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document outlines best practices and guidelines for writing migration scripts and their corresponding test cases. The focus is on ensuring data integrity, handling errors gracefully, and maintaining consistency across mobile app versions.
+This document outlines best practices and guidelines for writing migration scripts and their corresponding test cases.
+The focus is on ensuring data integrity, handling errors gracefully, and maintaining consistency across mobile app versions.
 
 ## Migration Guidelines
 
