@@ -6,6 +6,10 @@ This document outlines best practices and guidelines for writing migration scrip
 
 The focus is on ensuring data integrity, handling errors gracefully, and maintaining consistency across mobile app versions.
 
+We always look for improvement, if you see anything that could be improved, please open a PR against this guidelines.
+
+You can also check an example of a migration on MetaMask mobile app [here](https://github.com/MetaMask/metamask-mobile/blob/1855bd674e33bb0ece06fb6d8f09a4e5df46a108/app/store/migrations/044.ts#L1)
+
 ## Migration Guidelines
 
 1. **Pre-Validation Checks**:
