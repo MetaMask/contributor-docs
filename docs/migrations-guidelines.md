@@ -20,8 +20,6 @@ You can also check an example of a migration on MetaMask mobile app [here](https
 
 2. **Error Handling**:
 
-The following prevents manipulation of potentially corrupted data, enforcing corrective action before proceeding.
-
 - Log errors with `captureException` from Sentry, which is crucial for diagnosing issues post-migration,
 - Ensure that error messages are descriptive: include the migration number and a clear description of the issue,
 - If an exception is detected, indicating potential data corruption, halt the migration process and return the intial state,
