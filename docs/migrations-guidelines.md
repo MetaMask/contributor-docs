@@ -14,17 +14,23 @@ You can also check an example of a migration on MetaMask mobile app [here](https
 
 1. **State Integrity Checks**:
 
+Validates the state's structure and types before migration, using specific functions to ensure data meets expectations. Halts migration if inconsistencies are detected, preventing data corruption.
+
 - State's on migrations are type `unknown`, it's crucial to validate state integrity before proceeding, we only migrate when structure and types meets our expectations,
 - Validate the state and its nested properties using functions like `isObject` and `hasProperty` from `@metamask/utils`,
 - Prevent data corruption by halting the migration on any inconsistencies and logging errors.
 
 2. **Error Handling**:
 
+Logs detailed errors and halts the migration if potential data corruption is identified, ensuring issues are addressed before proceeding.
+
 - Log errors with `captureException` from Sentry, which is crucial for diagnosing issues post-migration,
 - Ensure that error messages are descriptive: include the migration number and a clear description of the issue,
 - If an exception is detected, indicating potential data corruption, halt the migration process and return the intial state,
 
 3. **Return State**:
+
+Completes the migration by returning the state, modified or not, ensuring a seamless transition to subsequent migrations.
 
 - Always return the state at the end of the migration function, whether it was modified or not,
 - Returning the state ensures that the migration process completes and the state is passed to the next migrations.
