@@ -316,7 +316,6 @@ Test Name: Connects to a Hardware wallet for Trezor
 
 ✅ Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. A fake version of this website could be created for testing, and the test build could be updated to use this fake version. It's also worth investigating a phishing detection solution, such as replacing Github.com with an empty page.
 
-
 ## Page Object Model (POM)
 
 POM, or Page Object Model, is a design pattern commonly utilized for automating test cases.
@@ -348,14 +347,18 @@ The testcase spec creates the needed page class objects and performs actions usi
 ### Naming Convention
 
 #### Page Objects
+
 - Classes start with a capital letter following the word “page”, i.e., `class LoginPage`.
 - Files are named with a `-page` suffix before the `.ts` extension and use dashes for long page names, i.e., `login-page.ts`.
 
 #### Selectors
+
 - Selectors can be suffixed by the type of the element they are, like `submitButton`, `passwordInput`. Use robust selectors.
 
 #### Action Methods
+
 - Follow the camelCase standard, with names that clearly indicate an action and are self-explanatory, i.e., `confirmTx()`.
 
 #### Check Methods
+
 - Using `check_` followed by camelCase for all check methods effectively distinguishes them from action methods. These methods perform the same function as `assert()` statements in the current test body. This naming convention ensures that check methods are as prominent as `assert()` statements in the existing code. This approach proves especially advantageous for long test bodies.
