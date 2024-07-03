@@ -330,7 +330,7 @@ Each class page is composed of:
 - **Action Methods**: Methods for interacting with the elements.
 - **Check Methods**: Methods that assert the status of elements.
 
-The testcase spec creates the needed page class objects and performs actions using the class methods.
+The testcase spec creates the necessary page class objects and utilizes their methods to perform actions.
 
 ### Best Practices
 
@@ -339,7 +339,7 @@ The testcase spec creates the needed page class objects and performs actions usi
 - The page class should contain properties and methods, or be composed of objects that expose access.
 - Page Objects should remain independent and not invoke other Page Objects to prevent circular references, ensuring they are typically isolated from each other. For handling complex workflows that require interaction across multiple pages, "Processes" should be implemented. This approach enables the incorporation of all relevant Page Objects to support specific flows, such as sending a transaction or creating a swap. A dedicated "Processes" folder is used to organize and manage these complex workflows.
 - The test cases should only call Page Object methods or Processes; they don’t interact directly with page elements.
-- Page Object methods should include detailed logs to help with debugging tests, especially by adding detailed error messages in all check methods.
+- Page Object methods should include detailed logs and detailed error messages in all check methods to aid in debugging tests.
 - Assertions should be included within `check_` methods. In the test specifications, `check_` methods should be called rather than making assertions directly. The reason is to make `check_` methods reusable across different test cases, with enhanced logging defined within these `check_` methods.
 - Page classes and tests should be written in TypeScript.
 - Follow the naming conventions outlined below for Page Objects, selectors, and methods.
@@ -348,7 +348,7 @@ The testcase spec creates the needed page class objects and performs actions usi
 
 #### Page Objects
 
-- Classes start with a capital letter following the word “page”, i.e., `class LoginPage`.
+- Classes start with a capital letter following the word “page”, e.g., `class LoginPage`.
 - Files are named with a `-page` suffix before the `.ts` extension and use dashes for long page names, i.e., `login-page.ts`.
 
 #### Selectors
@@ -357,7 +357,7 @@ The testcase spec creates the needed page class objects and performs actions usi
 
 #### Action Methods
 
-- Follow the camelCase standard, with names that clearly indicate an action and are self-explanatory, i.e., `confirmTx()`.
+- Follow the camelCase standard, with names that clearly indicate an action and are self-explanatory, e.g., `confirmTx()`.
 
 #### Check Methods
 
