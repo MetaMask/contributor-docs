@@ -58,5 +58,5 @@ Completes the migration by returning the state, modified or not, ensuring a seam
   - Ensures the original state object is not mutated during the migration process,
   - guarantees that each test case runs on an correct, clean copy of the state.
 - Never mutate the state directly as this can:
-  - lead to hard-to-track bugs and false positives or negatives test results,
+  - lead to hard-to-track bugs and false positives or negatives test results.
   - start subsequent tests with the original state as intended.
