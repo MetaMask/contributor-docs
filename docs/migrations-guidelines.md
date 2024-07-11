@@ -54,7 +54,7 @@ Completes the migration by returning the state, modified or not, ensuring a seam
 4. **Ensure State Immutability**:
 
 - Always use deep cloning on the old state before passing it to the migration function in tests. For example, use `cloneDeep` from `lodash`.
-  - Deep cloning preserves the integrity of your test data across different test cases,
+  - Deep cloning preserves the integrity of your test data across different test cases.
   - Ensures the original state object is not mutated during the migration process.
   - guarantees that each test case runs on an correct, clean copy of the state.
 - Never mutate the state directly as this can:
