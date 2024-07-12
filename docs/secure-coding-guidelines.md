@@ -155,7 +155,7 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
   After setup and configuration, ensure that `allow-scripts` is run every time you install dependencies as part of your development workflow. There are two approaches to this:
 
-  - On Yarn v3 projects, use [the `yarn-plugin-allow-scripts` plugin](https://github.com/LavaMoat/LavaMoat/tree/main/packages/yarn-plugin-allow-scripts) to run allowed scripts automatically during install
+  - On Yarn Modern projects, use [the `yarn-plugin-allow-scripts` plugin](https://github.com/LavaMoat/LavaMoat/tree/main/packages/yarn-plugin-allow-scripts) to run allowed scripts automatically during install
   - On other projects, use an npm script called `setup` that will call `install` and `allow-scripts` in sequence
 
   Each time a dependency is added or updated, run `yarn allow-scripts auto` to detect new install scripts. They should be added to the configuration automatically, disabled by default. Review each one, only enabling those that are necessary.
