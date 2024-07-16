@@ -351,7 +351,7 @@ A test creates page objects and interacts with web elements by calling methods o
 
 #### Selectors
 
-- Selectors can be suffixed by the type of the element they are, like `submitButton`, `passwordInput`. Use robust selectors.
+- Selectors can be suffixed by the type of the element they represent, e.g., `submitButton`, `passwordInput`, etc. Use robust selectors.
 
 #### Action Methods
 
