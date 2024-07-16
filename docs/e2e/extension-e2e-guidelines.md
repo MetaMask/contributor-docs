@@ -330,7 +330,7 @@ Each page class is composed of:
 - **Action Methods**: Methods for interacting with the elements.
 - **Check Methods**: Methods that assert the status of elements.
 
-The testcase spec creates the necessary page class objects and utilizes their methods to perform actions.
+A test creates page objects and interacts with web elements by calling methods of those page objects.
 
 ### Best Practices
 
