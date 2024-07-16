@@ -340,7 +340,7 @@ A test creates page objects and interacts with web elements by calling methods o
 - Page object methods should include detailed logs and detailed error messages in all check methods to aid in debugging tests.
 - Assertions should be included within `check_` methods. In the test specifications, `check_` methods should be called rather than making assertions directly. The reason is to make `check_` methods reusable across different test cases, with enhanced logging defined within these `check_` methods.
 - Page classes and tests should be written in TypeScript.
-- Follow the naming conventions outlined below for Page Objects, selectors, and methods.
+- Follow the naming conventions outlined below for page objects, selectors, and methods.
 
 ### Naming Convention
 
