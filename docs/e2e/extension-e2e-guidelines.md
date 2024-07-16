@@ -346,7 +346,7 @@ A test creates page objects and interacts with web elements by calling methods o
 
 #### Page Objects
 
-- Classes start with a capital letter following the word “page”, e.g., `class LoginPage`.
+- Classes start with a capital letter following the word “page”, e.g., `LoginPage`.
 - Files are named with a `-page` suffix before the `.ts` extension and use dashes for long page names, i.e., `login-page.ts`.
 
 #### Selectors
