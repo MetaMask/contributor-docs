@@ -334,7 +334,7 @@ A test creates page objects and interacts with web elements by calling methods o
 
 ### Best Practices
 
-- A Page Object should represent meaningful elements of a page and not necessarily a complete page. It can also be a small component, like a navbar.
+- A Page Object should represent meaningful elements of a page and not necessarily a complete page. It can represent a component of a page, like a navbar.
 - All selectors should be kept in the page class file. Carefully define selectors for elements in page classes, opting for robust selectors since they will be extensively used across various locations.
 - The page class should contain properties and methods, or be composed of objects that expose access.
 - Page Objects should remain independent and not invoke other Page Objects to prevent circular references, ensuring they are typically isolated from each other. For handling complex workflows that require interaction across multiple pages, "Processes" should be implemented. This approach enables the incorporation of all relevant Page Objects to support specific flows, such as sending a transaction or creating a swap. A dedicated "Processes" folder is used to organize and manage these complex workflows.
