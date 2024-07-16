@@ -322,9 +322,9 @@ POM, or Page Object Model, is a design pattern commonly utilized for automating 
 
 The Page Object is an object-oriented class that acts as an interface for the page of the application under test. Page classes contain web elements and methods to interact with these elements. While automating test cases, we create objects of these Page Classes and interact with web elements by calling the methods of these classes.
 
-### Composition of Each Class Page
+### Composition of a Page Class
 
-Each class page is composed of:
+Each page class is composed of:
 
 - **Selectors**: HTML elements.
 - **Action Methods**: Methods for interacting with the elements.
