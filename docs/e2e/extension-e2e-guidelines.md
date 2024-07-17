@@ -339,7 +339,7 @@ A test creates page objects and interacts with web elements by calling methods o
 - Page objects should remain independent and not invoke other page objects to prevent circular references, ensuring they are typically isolated from each other. For handling complex workflows that require interaction across multiple pages, _processes_ should be implemented. This approach enables the incorporation of all relevant page objects to support specific flows, such as sending a transaction or creating a swap. A dedicated `processes` folder is used to organize and manage these complex workflows.
 - The tests should only call page object methods or processes; they shouldn't interact directly with page elements.
 - Page object methods should include detailed logs and detailed error messages in all check methods to aid in debugging tests.
-- Assertions should be included within `check_` methods. In the test specifications, `check_` methods should be called rather than making assertions directly. The reason is to make `check_` methods reusable across different test cases, with enhanced logging defined within these `check_` methods.
+- Place assertions inside of `check_` methods, and call `check_` methods inside of tests instead of making assertions directly. Along with enhanced logging, this ensures that `check_` methods are reusable across different tests.
 - Page objects and tests should be written in TypeScript.
 - Follow the naming conventions outlined below for page objects, selectors, and methods.
 
