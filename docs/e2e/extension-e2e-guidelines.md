@@ -352,7 +352,7 @@ A test creates page objects and interacts with web elements by calling methods o
 
 #### Locators
 
-- Locators can be suffixed by the type of the element they represent, e.g., `submitButton`, `passwordInput`, etc. Ensure the use of robust locators by adhering to the strategy outlined in [Element Locators section.](#element-locators)
+- Locators can be suffixed by the type of the element they represent, e.g., `submitButton`, `passwordInput`, etc. Ensure the use of robust locators by adhering to the strategy outlined in [element locators section.](#element-locators)
 
 #### Action Methods
 
@@ -360,4 +360,4 @@ A test creates page objects and interacts with web elements by calling methods o
 
 #### Check Methods
 
-- Using `check_` followed by camelCase for all check methods effectively distinguishes them from action methods. These methods perform the same function as `assert()` statements in the current test body. This naming convention ensures that check methods are as prominent as `assert()` statements in the existing code. This approach proves especially advantageous for long test bodies.
+- Using `check_` followed by camelCase for all check methods effectively distinguishes them from action methods, e.g., `check_expectedBalanceIsDisplayed()`. These methods perform the same function as `assert()` statements in the current test body. This naming convention ensures that check methods are as prominent as `assert()` statements in the existing code. This approach proves especially advantageous for long test bodies.
