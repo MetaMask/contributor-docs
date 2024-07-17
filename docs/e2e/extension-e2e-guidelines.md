@@ -33,7 +33,6 @@ While it's theoretically possible to split tests by individual cases on CircleCI
 
 Crafting resilient locators is crucial for reliable tests. It’s important to write selectors that are resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated, for example, during UI redesigns. This results in less effort required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another consideration is whether a test should fail if the content of an element changes. It's worth noting that in the testing framework, element locators extend beyond simple CSS selector strings. They can also be objects or methods that return strings or objects, providing flexible and resilient ways to identify elements.
 
-
 ### Guidelines
 
 ✅ Resilient to changes
