@@ -31,7 +31,8 @@ While it's theoretically possible to split tests by individual cases on CircleCI
 
 ## Element locators
 
-Crafting resilient locators is crucial for reliable tests. It’s important to write selectors that are resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated, for example, during UI redesigns. This results in less effort required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another consideration is whether a test should fail if the content of an element changes.
+Crafting resilient locators is crucial for reliable tests. It’s important to write selectors that are resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated, for example, during UI redesigns. This results in less effort required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another consideration is whether a test should fail if the content of an element changes. It's worth noting that in the testing framework, element locators extend beyond simple CSS selector strings. They can also be objects or methods that return strings or objects, providing flexible and resilient ways to identify elements.
+
 
 ### Guidelines
 
@@ -325,7 +326,7 @@ This design pattern is being adopted due to its numerous benefits, including imp
 
 Each page class is composed of:
 
-- **Selectors**: HTML elements.
+- **Locators**: HTML elements.
 - **Action Methods**: Methods for interacting with the elements.
 - **Check Methods**: Methods that assert the status of elements.
 
@@ -334,14 +335,14 @@ A test creates page objects and interacts with web elements by calling methods o
 ### Best Practices
 
 - A page object should represent meaningful elements of a page and not necessarily a complete page. It can represent a component of a page, like a navbar.
-- All selectors should be kept in the page object file. Carefully define selectors for elements in page objects, opting for robust selectors since they will be extensively used across various locations.
+- All locators should be kept in the page object file. Carefully define locators for elements in page objects, opting for robust locators since they will be extensively used across various locations.
 - Page objects should contain properties and methods, or be composed of objects that expose access.
 - Page objects should remain independent and not invoke other page objects to prevent circular references, ensuring they are typically isolated from each other. For handling complex workflows that require interaction across multiple pages, _processes_ should be implemented. This approach enables the incorporation of all relevant page objects to support specific flows, such as sending a transaction or creating a swap. A dedicated `processes` folder is used to organize and manage these complex workflows.
 - The tests should only call page object methods or processes; they shouldn't interact directly with page elements.
 - Page object methods should include detailed logs and detailed error messages in all check methods to aid in debugging tests.
 - Place assertions inside of `check_` methods, and call `check_` methods inside of tests instead of making assertions directly. Along with enhanced logging, this ensures that `check_` methods are reusable across different tests.
 - Page objects and tests should be written in TypeScript.
-- Follow the naming conventions outlined below for page objects, selectors, and methods.
+- Follow the naming conventions outlined below for page objects, locators, and methods.
 
 ### Naming Convention
 
@@ -350,9 +351,9 @@ A test creates page objects and interacts with web elements by calling methods o
 - Classes start with a capital letter following the word “page”, e.g., `LoginPage`.
 - Files are named with a `-page` suffix before the `.ts` extension and use dashes for long page names, i.e., `login-page.ts`.
 
-#### Selectors
+#### Locators
 
-- Selectors can be suffixed by the type of the element they represent, e.g., `submitButton`, `passwordInput`, etc. Use robust selectors.
+- Locators can be suffixed by the type of the element they represent, e.g., `submitButton`, `passwordInput`, etc. Ensure the use of robust locators by adhering to the strategy outlined in [Element Locators section.](#element-locators)
 
 #### Action Methods
 
