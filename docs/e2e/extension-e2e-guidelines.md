@@ -319,6 +319,7 @@ Test Name: Connects to a Hardware wallet for Trezor
 ## Page Object Model (POM)
 
 POM, or Page Object Model, is a design pattern commonly utilized for writing automated end-to-end tests. A page object is a instance of a class that acts as an interface for the page of the application under test.
+This design pattern is being adopted due to its numerous benefits, including improved test maintenance, increased code reusability, and enhanced readability of test scripts. By abstracting the UI details into page objects, changes to the application's UI require updates only in the page objects, significantly reducing the effort needed to maintain tests as the application evolves. The adoption of POM in our e2e testing strategy aims to leverage these advantages to create a more robust, maintainable, and efficient testing framework.
 
 ### Composition of a Page Class
 
@@ -333,13 +334,13 @@ A test creates page objects and interacts with web elements by calling methods o
 ### Best Practices
 
 - A page object should represent meaningful elements of a page and not necessarily a complete page. It can represent a component of a page, like a navbar.
-- All selectors should be kept in the page class file. Carefully define selectors for elements in page classes, opting for robust selectors since they will be extensively used across various locations.
-- The page class should contain properties and methods, or be composed of objects that expose access.
+- All selectors should be kept in the page object file. Carefully define selectors for elements in page objects, opting for robust selectors since they will be extensively used across various locations.
+- Page objects should contain properties and methods, or be composed of objects that expose access.
 - Page objects should remain independent and not invoke other page objects to prevent circular references, ensuring they are typically isolated from each other. For handling complex workflows that require interaction across multiple pages, _processes_ should be implemented. This approach enables the incorporation of all relevant page objects to support specific flows, such as sending a transaction or creating a swap. A dedicated `processes` folder is used to organize and manage these complex workflows.
 - The tests should only call page object methods or processes; they shouldn't interact directly with page elements.
 - Page object methods should include detailed logs and detailed error messages in all check methods to aid in debugging tests.
 - Assertions should be included within `check_` methods. In the test specifications, `check_` methods should be called rather than making assertions directly. The reason is to make `check_` methods reusable across different test cases, with enhanced logging defined within these `check_` methods.
-- Page classes and tests should be written in TypeScript.
+- Page objects and tests should be written in TypeScript.
 - Follow the naming conventions outlined below for page objects, selectors, and methods.
 
 ### Naming Convention
