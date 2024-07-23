@@ -2,8 +2,8 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/processes/login.process';
-import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { sendTransaction } from '../../page-objects/flows/send-transaction.flow';
 import HomePage from '../../page-objects/pages/home-page';
 
 describe('Simple send eth', function (this: Suite) {
