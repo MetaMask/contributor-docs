@@ -8,7 +8,7 @@
 - Write repeatable tests that produce the same result every time
 - Explicitly state assertions
 - Enhance test stability with request mocking
-- Utilize Page Object Model (POM) for streamlined test automation
+- Utilize [Page Object Model (POM)](#page-object-model-pom) for streamlined test automation
 
 ### Key
 
