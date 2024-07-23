@@ -4,7 +4,7 @@ import { withFixtures, defaultGanacheOptions } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/processes/login.process';
 import { sendTransaction } from '../../page-objects/processes/send-transaction.process';
-import HomePage from '../../page-objects/pages/homepage';
+import HomePage from '../../page-objects/pages/home-page';
 
 describe('Simple send eth', function (this: Suite) {
   it('can send a simple transaction from one account to another', async function () {
