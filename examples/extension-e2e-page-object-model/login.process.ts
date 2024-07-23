@@ -1,5 +1,5 @@
 import LoginPage from '../pages/login-page';
-import HomePage from '../pages/homepage';
+import HomePage from '../pages/home-page';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 import { WALLET_PASSWORD } from '../../helpers';
