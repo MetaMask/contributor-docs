@@ -15,7 +15,8 @@ describe('Simple send eth', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidaiton(driver);
+        await loginWithBalanceValidation(driver);
+
         await sendTransaction(
           driver,
           '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
