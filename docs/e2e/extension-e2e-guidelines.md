@@ -351,7 +351,7 @@ A test creates page objects and interacts with web elements by calling methods o
 
 #### Locators
 
-- Locators can be suffixed by the type of the element they represent, e.g., `submitButton`, `passwordInput`, etc.
+- Locators should be suffixed by the type of the element they represent, e.g., `submitButton`, `passwordInput`, etc.
 
 #### Action Methods
 
