@@ -347,7 +347,8 @@ A test creates page objects and interacts with web elements by calling methods o
 #### Page Objects
 
 - Classes start with a capital letter following the word “page”, e.g., `LoginPage`.
-- File names are a kebab-case version of the class name, e.g. `LoginPage` would be contained in a file called `login-page.ts`.
+- Page file names are a kebab-case version of the class name, e.g. `LoginPage` would be contained in a file called `login-page.ts`.
+- Flow file names should follow the "flow.ts" suffix and be in kebab-case, e.g., a file defining login flow should be named `login.flow.ts`.
 
 #### Locators
 
