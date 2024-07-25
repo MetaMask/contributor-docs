@@ -331,16 +331,16 @@ Each page class is composed of:
 
 A test creates page objects and interacts with web elements by calling methods of those page objects.
 
-![page object model structure](../../../examples/extension-e2e-page-object-model/page-object-model-structure.png "Page Object Model Structure")
+![page object model structure](../../examples/extension-e2e-page-object-model/page-object-model-structure.png 'Page Object Model Structure')
 
 ### Best Practices
 
-- A page object should represent meaningful elements of a page and not necessarily a complete page. It can represent a component of a page, like a navbar. See example [here.](../../../examples/extension-e2e-page-object-model/home-page.ts#L23)
+- A page object should represent meaningful elements of a page and not necessarily a complete page. It can represent a component of a page, like a navbar. See example [here.](../../examples/extension-e2e-page-object-model/home-page.ts#L23)
 - All locators should be kept in the page object file. Carefully define locators for elements in page objects, opting for robust locators since they will be extensively used across various locations. For guidance on crafting these resilient locators, refer to the [element locators section](#element-locators), which outlines the recommended strategies for their creation and usage.
-- Page objects should remain independent and not invoke other page objects to prevent circular references, ensuring they are typically isolated from each other. For handling complex workflows that require interaction across multiple pages, _flows_ should be implemented. Check out the [implementation here.](../../../examples/extension-e2e-page-object-model/login.flow.ts#L14) This approach enables the incorporation of all relevant page objects to support specific flows, such as login, sending a transaction, or creating a swap. A dedicated `flows` folder is used to organize and manage these complex workflows.
-- The tests should only call page object methods or flows, they shouldn't interact directly with page elements. [See example here.](../../../examples/extension-e2e-page-object-model/simple-send.spec.ts#L9)
+- Page objects should remain independent and not invoke other page objects to prevent circular references, ensuring they are typically isolated from each other. For handling complex workflows that require interaction across multiple pages, _flows_ should be implemented. Check out the [implementation here.](../../examples/extension-e2e-page-object-model/login.flow.ts#L14) This approach enables the incorporation of all relevant page objects to support specific flows, such as login, sending a transaction, or creating a swap. A dedicated `flows` folder is used to organize and manage these complex workflows.
+- The tests should only call page object methods or flows, they shouldn't interact directly with page elements. [See example here.](../../examples/extension-e2e-page-object-model/simple-send.spec.ts#L9)
 - Page object methods should include detailed logs and detailed error messages in all `check_` methods to aid in debugging tests.
-- Place assertions inside of `check_` methods, and call `check_` methods inside of tests instead of making assertions directly. Along with enhanced logging, this ensures that `check_` methods are reusable across different tests. [See example here.]../../../examples/extension-e2e-page-object-model/home-page.ts#L117)
+- Place assertions inside of `check_` methods, and call `check_` methods inside of tests instead of making assertions directly. Along with enhanced logging, this ensures that `check_` methods are reusable across different tests. [See example here.](../../examples/extension-e2e-page-object-model/home-page.ts#L117)
 - Page objects and tests should be written in TypeScript.
 - Follow the naming conventions outlined below for page objects, locators, and methods.
 
