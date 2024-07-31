@@ -2,7 +2,7 @@
 
 ## Performance
 
-Note that the below are purely optimizations so any code should still function without them. 
+Note that the below are purely optimizations so any code should still function without them.
 
 ### Use `memo` to skip re-rendering child components when the props are unchanged
 
@@ -54,10 +54,7 @@ export function TodoList({ todos }) {
 export function TodoList({ todos }) {
   const [visibleTodos, setVisibleTodos] = useState();
 
-  useEffect(
-    () => setVisibleTodos(filterTodos(todos)),
-    [todos]
-  );
+  useEffect(() => setVisibleTodos(filterTodos(todos)), [todos]);
 
   return (
     <div>
@@ -71,10 +68,7 @@ export function TodoList({ todos }) {
 
 ```typescript
 export function TodoList({ todos }) {
-  const visibleTodos = useMemo(
-    () => filterTodos(todos),
-    [todos]
-  );
+  const visibleTodos = useMemo(() => filterTodos(todos), [todos]);
 
   return (
     <div>
@@ -134,12 +128,15 @@ function ProductPage({ productId, referrer }) {
 
 ```typescript
 function ProductPage({ productId, referrer }) {
-  const handleSubmit = useCallback((orderDetails) => {
-    post('/product/' + productId + '/buy', {
-      referrer,
-      orderDetails,
-    });
-  }, [productId, referrer]);
+  const handleSubmit = useCallback(
+    (orderDetails) => {
+      post('/product/' + productId + '/buy', {
+        referrer,
+        orderDetails,
+      });
+    },
+    [productId, referrer],
+  );
 
   return (
     <div>
