@@ -5,61 +5,61 @@
 The purpose of this document is to provide our contributors with optimization strategies that they can leverage to implement/refactor our current Redux code to improve our application's performance, and also provide them with Redux best practices when delving into our state storage.
 
 ## 2. **Performance Optimization Guidelines**
-- ### **2.1 Avoiding Expensive Operations in Reducers**
-    Emphasize that reducers should be pure and avoid side effects.
-    
-    ```typescript
-    // Bad: Performing expensive calculations inside the reducer
-    const initialState = { data: [], expensiveResult: 0 };
+## **2.1 Avoiding Expensive Operations in Reducers**
+Emphasize that reducers should be pure and avoid side effects.
 
-    function myReducer(state = initialState, action) {
+```typescript
+// Bad: Performing expensive calculations inside the reducer
+const initialState = { data: [], expensiveResult: 0 };
+
+function myReducer(state = initialState, action) {
+switch (action.type) {
+    case 'ADD_DATA':
+    const newData = action.payload;
+    const expensiveResult = newData.reduce((acc, item) => acc + item.value, 0); // Expensive operation
+    return {
+        ...state,
+        data: [...state.data, newData],
+        expensiveResult,
+    };
+    default:
+        return state;
+    }
+}
+
+// Good: Perform expensive calculations outside the reducer
+const initialState = { data: [], expensiveResult: 0 };
+
+function myReducer(state = initialState, action) {
     switch (action.type) {
         case 'ADD_DATA':
-        const newData = action.payload;
-        const expensiveResult = newData.reduce((acc, item) => acc + item.value, 0); // Expensive operation
         return {
             ...state,
-            data: [...state.data, newData],
-            expensiveResult,
+            data: [...state.data, action.payload],
+        };
+        case 'SET_EXPENSIVE_RESULT':
+        return {
+            ...state,
+            expensiveResult: action.payload,
         };
         default:
             return state;
-        }
     }
+}
 
-    // Good: Perform expensive calculations outside the reducer
-    const initialState = { data: [], expensiveResult: 0 };
+// Perform the expensive calculation in an action creator or middleware
+function addData(newData) {
+    return (dispatch, getState) => {
+        dispatch({ type: 'ADD_DATA', payload: newData });
+        const expensiveResult = newData.reduce((acc, item) => acc + item.value, 0);
+        dispatch({ type: 'SET_EXPENSIVE_RESULT', payload: expensiveResult });
+    };
+}
+```
 
-    function myReducer(state = initialState, action) {
-        switch (action.type) {
-            case 'ADD_DATA':
-            return {
-                ...state,
-                data: [...state.data, action.payload],
-            };
-            case 'SET_EXPENSIVE_RESULT':
-            return {
-                ...state,
-                expensiveResult: action.payload,
-            };
-            default:
-                return state;
-        }
-    }
-
-    // Perform the expensive calculation in an action creator or middleware
-    function addData(newData) {
-        return (dispatch, getState) => {
-            dispatch({ type: 'ADD_DATA', payload: newData });
-            const expensiveResult = newData.reduce((acc, item) => acc + item.value, 0);
-            dispatch({ type: 'SET_EXPENSIVE_RESULT', payload: expensiveResult });
-        };
-    }
-    ```
-
-- ### **2.2 Memoization**
-    Use selectors and reselect to memoize derived state.
-     ```typescript
+### **2.2 Memoization**
+Use selectors and reselect to memoize derived state.
+```typescript
      import { createSelector } from 'reselect';
     // State shape
     const state = {
@@ -80,10 +80,10 @@ The purpose of this document is to provide our contributors with optimization st
 
     // Usage
     const totalValue = selectTotalValue(state); // 30
-     ```
-- ### **2.3 Normalization**
-    Normalize state shape to avoid deeply nested structures
-    ```typescript
+```
+### **2.3 Normalization**
+Normalize state shape to avoid deeply nested structures
+```typescript
     // Bad: Deeply nested state shape
     const state = {
     users: {
@@ -111,71 +111,71 @@ The purpose of this document is to provide our contributors with optimization st
             allIds: [1, 2],
         },
     };
-    ```
-- ### **2.4 Batching Actions**
-    Combine multiple actions into a single action when possible.
-    ```typescript
-        // Bad: Dispatching multiple actions separately
-        function updateUserAndPosts(user, posts) {
-            return (dispatch) => {
-                dispatch({ type: 'UPDATE_USER', payload: user });
-                dispatch({ type: 'UPDATE_POSTS', payload: posts });
-            };
-        }
+```
+### **2.4 Batching Actions**
+Combine multiple actions into a single action when possible.
+```typescript
+    // Bad: Dispatching multiple actions separately
+    function updateUserAndPosts(user, posts) {
+        return (dispatch) => {
+            dispatch({ type: 'UPDATE_USER', payload: user });
+            dispatch({ type: 'UPDATE_POSTS', payload: posts });
+        };
+    }
 
-        // Good: Combining actions into a single action
-        function updateUserAndPosts(user, posts) {
+    // Good: Combining actions into a single action
+    function updateUserAndPosts(user, posts) {
+        return {
+            type: 'UPDATE_USER_AND_POSTS',
+            payload: { user, posts },
+        };
+    }
+
+    // Reducer handling the combined action
+    function rootReducer(state = initialState, action) {
+        switch (action.type) {
+            case 'UPDATE_USER_AND_POSTS':
             return {
-                type: 'UPDATE_USER_AND_POSTS',
-                payload: { user, posts },
+                ...state,
+                user: action.payload.user,
+                posts: action.payload.posts,
             };
-        }
-
-        // Reducer handling the combined action
-        function rootReducer(state = initialState, action) {
-            switch (action.type) {
-                case 'UPDATE_USER_AND_POSTS':
-                return {
-                    ...state,
-                    user: action.payload.user,
-                    posts: action.payload.posts,
-                };
-                default:
-                    return state;
-            }
-        }
-    ```
-- ### **2.5 Using Immutable Data Structures**
-    Ensure immutability to prevent unnecessary re-renders.
-    ```typescript
-        // Bad: Mutating state directly
-        const initialState = { items: [] };
-
-        function myReducer(state = initialState, action) {
-            switch (action.type) {
-                case 'ADD_ITEM':
-                state.items.push(action.payload); // Direct mutation
+            default:
                 return state;
-                default:
-                return state;
-            }
         }
+    }
+```
+### **2.5 Using Immutable Data Structures**
+Ensure immutability to prevent unnecessary re-renders.
+```typescript
+    // Bad: Mutating state directly
+    const initialState = { items: [] };
 
-        // Good: Using immutable updates
-        const initialState = { items: [] };
-
-        function myReducer(state = initialState, action) {
-            switch (action.type) {
-                case 'ADD_ITEM':
-                return {
-                    ...state,
-                    items: [...state.items, action.payload], // Immutable update
-                };
-                default:
-                return state;
-            }
+    function myReducer(state = initialState, action) {
+        switch (action.type) {
+            case 'ADD_ITEM':
+            state.items.push(action.payload); // Direct mutation
+            return state;
+            default:
+            return state;
         }
-    ```
+    }
+
+    // Good: Using immutable updates
+    const initialState = { items: [] };
+
+    function myReducer(state = initialState, action) {
+        switch (action.type) {
+            case 'ADD_ITEM':
+            return {
+                ...state,
+                items: [...state.items, action.payload], // Immutable update
+            };
+            default:
+            return state;
+        }
+    }
+```
 
 ## 3. **Redux Style Guide**
 
