@@ -1010,34 +1010,219 @@ function LoginForm() {
 
 
 ## 4.2 **Installation**
+```typescript
+npm install @reduxjs/toolkit
+```
 ## 4.2 **Migrating Existing Code**
-  - Using `createSlice`
-  - Using `createAsyncThunk`
-  - Using `configureStore`
 
-........................................................
+## 4.2.1 **Using `createSlice`** 
 
-## 5. **Proper Usage of Redux Toolkit**
-- Slices
-- Reducers and Actions
-- Async Thunks
-- Selectors
-- Middleware
+createSlice allows us to simplify reducers and actions.
 
-## 6. **Best Practices**
-- Code Organization
-- Type Safety
-- Testing
-- Documentation
+```typescript
+import { createSlice } from '@reduxjs/toolkit';
 
-## 7. **Additional Resources**
-- Official Documentation
-- Community Resources
-- Examples
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: 0,
+  reducers: {
+    increment: (state) => state + 1,
+    decrement: (state) => state - 1,
+  },
+});
+
+export const { increment, decrement } = counterSlice.actions;
+export default counterSlice.reducer;
+```
+
+Example of our current reducer in engine:
+```typescript
+import Engine from '../../core/Engine';
+
+const initialState = {
+  backgroundState: {},
+};
+
+const engineReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'INIT_BG_STATE':
+      return { backgroundState: Engine.state };
+    case 'UPDATE_BG_STATE': {
+      const newState = { ...state };
+      newState.backgroundState[action.key] = Engine.state[action.key];
+      return newState;
+    }
+    default:
+      return state;
+  }
+};
+
+export default engineReducer;
+```
+
+How it would look after converting it to RTK:
+```typescript
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { EngineState } from '../../../Engine';
+
+export interface updateEngineAction {
+  key: string;
+  engineState: EngineState;
+}
+
+const initialState = {
+  backgroundState: {} as any,
+};
+
+// Redux Toolkit's createReducer and createSlice automatically use Immer internally
+// to let us write simpler immutable update logic using "mutating" syntax.
+// This helps simplify most reducer implementations.
+const engineSlice = createSlice({
+  name: 'engine',
+  initialState,
+  reducers: {
+    initializeEngineState: (state, action: PayloadAction<EngineState>) => {
+      state.backgroundState = action.payload;
+    },
+    updateEngineState: (state, action: PayloadAction<updateEngineAction>) => {
+      state.backgroundState[action.payload.key] =
+        action.payload.engineState[action.payload.key as keyof EngineState];
+    },
+  },
+});
+
+export const actions = engineSlice.actions;
+export const reducer = engineSlice.reducer;
+```
+
+## 4.2.2 **Using `createAsyncThunk`** 
+
+createAsyncThunk allows us to handle async logic more effectively.
+
+```typescript
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+export const fetchUserById = createAsyncThunk(
+  'users/fetchByIdStatus',
+  async (userId, thunkAPI) => {
+    const response = await fetch(`/api/user/${userId}`);
+    return response.json();
+  }
+);
+
+const userSlice = createSlice({
+  name: 'user',
+  initialState: { entities: {}, loading: 'idle' },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUserById.pending, (state) => {
+        state.loading = 'loading';
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loading = 'idle';
+        state.entities[action.payload.id] = action.payload;
+      });
+  },
+});
+
+export default userSlice.reducer;
+```
+## 4.2.3 **Using `configureStore`**
+
+Set up the store with good defaults and middleware.
+
+  ```typescript
+    import { configureStore } from '@reduxjs/toolkit';
+    import rootReducer from './reducers';
+
+    const store = configureStore({
+        reducer: rootReducer,
+    });
+
+    export default store;
+  ```
+
+## 4.3 **Best practices for using Redux Toolkit**
+
+## 4.3.1 **Use createSlice for Each Feature**
+
+Create a slice for each feature to encapsulate its state and reducers.
+
+```typescript
+import { createSlice } from '@reduxjs/toolkit';
+
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    addTodo: (state, action) => {
+      state.push(action.payload);
+    },
+    toggleTodo: (state, action) => {
+      const todo = state.find((todo) => todo.id === action.payload);
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
+    },
+  },
+});
+
+export const { addTodo, toggleTodo } = todosSlice.actions;
+export default todosSlice.reducer;
+```
+
+## 4.3.2 **Use createAsyncThunk for Async Actions**
+
+Use [createAsyncThunk](https://redux-toolkit.js.org/usage/usage-with-typescript#createasyncthunk) to handle asynchronous actions.
+
+## 4.3.3 **Use configureStore to Set Up the Store**
+
+Use [configureStore](https://redux-toolkit.js.org/usage/usage-with-typescript#configurestore) to set up the Redux store with good defaults and middleware.
+
+## 4.3.4 **Use createEntityAdapter for Normalized State**
+
+Use [createEntityAdapter](https://redux-toolkit.js.org/api/createEntityAdapter) to manage normalized state.
 
 
+```typescript
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
+const todosAdapter = createEntityAdapter();
 
-Using [bla](https://react.dev/reference/react/memo) more text
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: todosAdapter.getInitialState(),
+  reducers: {
+    addTodo: todosAdapter.addOne,
+    updateTodo: todosAdapter.updateOne,
+    removeTodo: todosAdapter.removeOne,
+  },
+});
 
+export const { addTodo, updateTodo, removeTodo } = todosSlice.actions;
+export default todosSlice.reducer;
+```
 
+## 4.3.5 **Use createEntityAdapter for Normalized State**
+
+Use [createEntityAdapter](https://redux-toolkit.js.org/api/createEntityAdapter) to manage normalized state.
+
+```typescript
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+
+const todosAdapter = createEntityAdapter();
+
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: todosAdapter.getInitialState(),
+  reducers: {
+    addTodo: todosAdapter.addOne,
+    updateTodo: todosAdapter.updateOne,
+    removeTodo: todosAdapter.removeOne,
+  },
+});
+
+export const { addTodo, updateTodo, removeTodo } = todosSlice.actions;
+export default todosSlice.reducer;
+```
