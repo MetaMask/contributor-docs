@@ -841,7 +841,7 @@ const INCREMENT = 'counter/increment';
 ```
 
 
-## 3.3.x **Write Actions Using the Flux Standard Action Convention**
+## 3.3.2 **Write Actions Using the Flux Standard Action Convention**
 
 Prefer using FSA-formatted actions for consistency.
 
@@ -858,23 +858,155 @@ const fetchTodosFailure = (error) => ({
 });
 ```
 
-
-........................................................
-
-## 3.3.x **Title**
+## 3.3.3 **Use Action Creators**
 
 Text
 
 ```typescript
+const addTodo = (text) => ({
+  type: 'ADD_TODO',
+  payload: text,
+});
+
+const increment = () => ({
+  type: 'INCREMENT',
+});
 ```
 
-## 3. **Upgrading to Redux Toolkit**
+## 3.3.4 **Use RTK Query for Data Fetching**
+
+Use RTK Query as the default approach for data fetching and caching.
+
+```typescript
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  endpoints: (builder) => ({
+    getTodos: builder.query({
+      query: () => 'todos',
+    }),
+  }),
+});
+
+export const { useGetTodosQuery } = api;
+```
+
+## 3.3.5 **Use Thunks and Listeners for Other Async Logic**
+
+Use the Redux thunk middleware for imperative logic.
+
+```typescript
+// Thunk for fetching data
+const fetchData = () => {
+  return async (dispatch) => {
+    dispatch({ type: 'FETCH_START' });
+    try {
+      const response = await fetch('/api/data');
+      const data = await response.json();
+      dispatch({ type: 'FETCH_SUCCESS', payload: data });
+    } catch (error) {
+      dispatch({ type: 'FETCH_FAILURE', error });
+    }
+  };
+};
+```
+
+## 3.3.6 **Move Complex Logic Outside Components**
+
+Move complex synchronous or async logic outside components, usually into thunks.
+
+```typescript
+// Thunk for handling complex logic
+const complexLogic = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    // Perform complex logic here
+    dispatch({ type: 'COMPLEX_LOGIC_DONE' });
+  };
+};
+```
+
+## 3.3.7 **Use Selector Functions to Read from Store State**
+
+Use memoized selector functions for reading store state whenever possible.
+
+```typescript
+import { createSelector } from 'reselect';
+
+const selectTodos = (state) => state.todos;
+
+const selectVisibleTodos = createSelector(
+  [selectTodos, (state) => state.visibilityFilter],
+  (todos, filter) => {
+    switch (filter) {
+      case 'SHOW_COMPLETED':
+        return todos.filter((todo) => todo.completed);
+      case 'SHOW_ACTIVE':
+        return todos.filter((todo) => !todo.completed);
+      default:
+        return todos;
+    }
+  }
+);
+```
+
+## 3.3.8 **Name Selector Functions as selectThing**
+
+Prefix selector function names with the word "select".
+
+```typescript
+const selectTodos = (state) => state.todos;
+const selectVisibleTodos = createSelector(
+  [selectTodos, (state) => state.visibilityFilter],
+  (todos, filter) => {
+    switch (filter) {
+      case 'SHOW_COMPLETED':
+        return todos.filter((todo) => todo.completed);
+      case 'SHOW_ACTIVE':
+        return todos.filter((todo) => !todo.completed);
+      default:
+        return todos;
+    }
+  }
+);
+```
+
+## 3.3.9 **Avoid Putting Form State In Redux**
+
+Most form state should not go in Redux.
+
+```typescript
+// Local component state for form inputs
+function LoginForm() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = () => {
+    // Dispatch action to update Redux store
+    dispatch(loginUser({ username, password }));
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={username} onChange={(e) => setUsername(e.target.value)} />
+      <input value={password} onChange={(e) => setPassword(e.target.value)} />
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+```
+
+## 4. **Upgrading to Redux Toolkit**
 - Why Upgrade
 - Installation
 - Migrating Existing Code
   - Using `createSlice`
   - Using `createAsyncThunk`
   - Using `configureStore`
+
+........................................................
 
 ## 4. **Proper Usage of Redux Toolkit**
 - Slices
