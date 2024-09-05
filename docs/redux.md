@@ -88,8 +88,8 @@ Normalize state shape to avoid deeply nested structures
     const state = {
     users: {
         byId: {
-        1: { id: 1, name: 'Alice', posts: [{ id: 1, title: 'Post 1' }] },
-        2: { id: 2, name: 'Bob', posts: [{ id: 2, title: 'Post 2' }] },
+        'user_1a2b': { id: 'user_1a2b', name: 'Alice', posts: [{ id: 'post_1a2b', title: 'Post 1' }] },
+        'user_2b3c': { id: 'user_2b3c', name: 'Bob', posts: [{ id: 'post_2b3c', title: 'Post 2' }] },
         },
     },
     };
@@ -98,17 +98,17 @@ Normalize state shape to avoid deeply nested structures
     const normalizedState = {
         users: {
             byId: {
-                1: { id: 1, name: 'Alice', postIds: [1] },
-                2: { id: 2, name: 'Bob', postIds: [2] },
+                'user_1a2b': { id: 'user_1a2b', name: 'Alice', postIds: ['post_1a2b'] },
+                'user_2b3c': { id: 'user_2b3c', name: 'Bob', postIds: ['post_2b3c'] },
             },
-            allIds: [1, 2],
+            allIds: ['user_1a2b', 'post_2b3c'],
         },
         posts: {
             byId: {
-                1: { id: 1, title: 'Post 1' },
-                2: { id: 2, title: 'Post 2' },
+                'post_1a2b': { id: 'post_1a2b', title: 'Post 1' },
+                'post_2b3c': { id: 'post_2b3c', title: 'Post 2' },
             },
-            allIds: [1, 2],
+            allIds: ['post_1a2b', 'post_2b3c'],
         },
     };
 ```
@@ -147,7 +147,7 @@ Combine multiple actions into a single action when possible.
 ```
 ### **2.5 Using Immutable Data Structures**
 Ensure immutability to prevent unnecessary re-renders.
-```typescript
+```tsx
     // 🚫 Bad: Mutating state directly
     const initialState = { items: [] };
 
@@ -193,7 +193,7 @@ These patters are split into 3 categories of rules
 
 Mutating state is the most common cause of bugs in Redux applications.
 
-```typescript
+```tsx
 // 🚫 Bad: Mutating state directly
 const initialState = { items: [] };
 
@@ -229,7 +229,7 @@ Reducers should only depend on their state and action arguments.
 
 
 
-```typescript
+```tsx
 // 🚫 Bad: Performing side effects in reducers
 function myReducer(state = initialState, action) {
   switch (action.type) {
@@ -273,7 +273,7 @@ function fetchData() {
 
 Avoid putting non-serializable values such as Promises, Symbols, Maps/Sets, functions, or class instances into the Redux store state or dispatched actions.
 
-```typescript
+```tsx
 // 🚫 Bad: Storing non-serializable values in state
 const initialState = { data: new Map() };
 
@@ -309,7 +309,7 @@ function myReducer(state = initialState, action) {
 
 Reducers should only depend on their state and action arguments.
 
-```typescript
+```tsx
 // store.js
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers';
@@ -338,7 +338,7 @@ ReactDOM.render(
 
 Redux Toolkit simplifies your logic and ensures that your application is set up with good defaults.
 
-```typescript
+```tsx
 import { createSlice, configureStore } from '@reduxjs/toolkit';
 
 const counterSlice = createSlice({
@@ -362,9 +362,9 @@ export default store;
 
 ## 3.2.2 **Use Immer for Writing Immutable Updates**
 
-Immer allows you to write simpler immutable updates using "mutative" logic.
+[Immer](https://redux-toolkit.js.org/usage/immer-reducers) allows you to write simpler immutable updates using "mutative" logic.
 
-```typescript
+```tsx
 import produce from 'immer';
 
 const initialState = { items: [] };
@@ -385,7 +385,7 @@ const myReducer = (state = initialState, action) => {
 
 Co-locating logic for a given feature in one place typically makes it easier to maintain that code.
 
-```typescript
+```text
 src/
   features/
     counter/
@@ -397,7 +397,7 @@ src/
 
 Try to put as much of the logic for calculating a new state into the appropriate reducer.
 
-```typescript
+```tsx
 // 🚫 Bad: Logic in action creators
 function addItem(item) {
   return (dispatch, getState) => {
@@ -431,7 +431,7 @@ const myReducer = (state = initialState, action) => {
 
 Minimize the use of "blind spreads/returns".
 
-```typescript
+```tsx
 // 🚫 Bad: Blind spread
 function myReducer(state = initialState, action) {
   switch (action.type) {
@@ -464,7 +464,7 @@ function myReducer(state = initialState, action) {
 
 Name these keys after the data that is kept inside.
 
-```typescript
+```tsx
 import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers({
@@ -479,7 +479,7 @@ export default rootReducer;
 
 Define and name root state slices based on the major data types or areas of functionality.
 
-```typescript
+```tsx
 const rootReducer = combineReducers({
   auth: authReducer,
   posts: postsReducer,
@@ -494,7 +494,7 @@ export default rootReducer;
 
 Treat reducers as "state machines".
 
-```typescript
+```tsx
 const initialState = { status: 'idle', data: null };
 
 function myReducer(state = initialState, action) {
@@ -524,7 +524,7 @@ function myReducer(state = initialState, action) {
 
 Prefer storing data in a "normalized" form.
 
-```typescript
+```tsx
 // Normalized state shape
 const normalizedState = {
   users: {
@@ -548,7 +548,7 @@ const normalizedState = {
 
 Derive additional values from the state as needed.
 
-```typescript
+```tsx
 import { createSelector } from 'reselect';
 
 const selectTodos = state => state.todos;
@@ -563,7 +563,7 @@ const selectCompletedTodos = createSelector(
 
 Treat actions more as "describing events that occurred".
 
-```typescript
+```tsx
 // 🚫 Bad: Setter action
 const setUserName = (name) => ({
   type: 'SET_USER_NAME',
@@ -581,7 +581,7 @@ const userNameUpdated = (name) => ({
 
 Actions should be written with meaningful, informative, descriptive type fields.
 
-```typescript
+```tsx
 // 🚫 Bad: Generic action name
 const setData = (data) => ({
   type: 'SET_DATA',
@@ -599,7 +599,7 @@ const userDataFetched = (data) => ({
 
 Many reducer functions can handle the same action separately.
 
-```typescript
+```tsx
 const userReducer = (state = {}, action) => {
   switch (action.type) {
     case 'USER_LOGGED_IN':
@@ -623,7 +623,7 @@ const uiReducer = (state = {}, action) => {
 
 Prefer dispatching a single "event"-type action.
 
-```typescript
+```tsx
 // 🚫 Bad: Dispatching multiple actions
 function loginUser(user) {
   return (dispatch) => {
@@ -645,7 +645,7 @@ function loginUser(user) {
 
 Decide what state should live in the Redux store and what should stay in component state.
 
-```typescript
+```tsx
 // Local component state for form inputs
 function LoginForm() {
   const [username, setUsername] = useState('');
@@ -670,7 +670,7 @@ function LoginForm() {
 
 Prefer using the React-Redux hooks API.
 
-```typescript
+```tsx
 import { useSelector, useDispatch } from 'react-redux';
 
 function Counter() {
@@ -690,7 +690,7 @@ function Counter() {
 
 Prefer having more UI components subscribed to the Redux store and reading data at a more granular level.
 
-```typescript
+```tsx
 function UserList() {
   const userIds = useSelector((state) => state.users.allIds);
 
@@ -714,7 +714,7 @@ function UserListItem({ userId }) {
 
 Text
 
-```typescript
+```tsx
 const mapDispatchToProps = {
   increment,
   decrement,
@@ -727,7 +727,7 @@ export default connect(null, mapDispatchToProps)(CounterComponent);
 
 Prefer calling useSelector many times and retrieving smaller amounts of data.
 
-```typescript
+```tsx
 function TodoList() {
   const todos = useSelector((state) => state.todos);
   const filter = useSelector((state) => state.visibilityFilter);
@@ -754,9 +754,9 @@ function TodoList() {
 
 ## 3.2.20 **Use Static Typing**
 
-Use a static type system like TypeScript or Flow.
+Use a static type system like TypeScript.
 
-```typescript
+```tsx
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CounterState {
@@ -791,7 +791,7 @@ export default counterSlice.reducer;
 
 Configure your Redux store to enable debugging with the Redux DevTools Extension.
 
-```typescript
+```tsx
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers';
 
@@ -807,7 +807,7 @@ export default store;
 
 Prefer using plain JavaScript objects and arrays for your state tree.
 
-```typescript
+```tsx
 const initialState = {
   users: [],
   posts: [],
@@ -835,7 +835,7 @@ function myReducer(state = initialState, action) {
 
 Use the "domain/eventName" convention for readability.
 
-```typescript
+```tsx
 const ADD_TODO = 'todos/addTodo';
 const INCREMENT = 'counter/increment';
 ```
@@ -845,7 +845,7 @@ const INCREMENT = 'counter/increment';
 
 Prefer using FSA-formatted actions for consistency.
 
-```typescript
+```tsx
 const addTodo = (text) => ({
   type: 'todos/addTodo',
   payload: text,
@@ -862,7 +862,7 @@ const fetchTodosFailure = (error) => ({
 
 Text
 
-```typescript
+```tsx
 const addTodo = (text) => ({
   type: 'ADD_TODO',
   payload: text,
@@ -877,7 +877,7 @@ const increment = () => ({
 
 Use RTK Query as the default approach for data fetching and caching.
 
-```typescript
+```tsx
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const api = createApi({
@@ -897,7 +897,7 @@ export const { useGetTodosQuery } = api;
 
 Use the Redux thunk middleware for imperative logic.
 
-```typescript
+```tsx
 // Thunk for fetching data
 const fetchData = () => {
   return async (dispatch) => {
@@ -917,7 +917,7 @@ const fetchData = () => {
 
 Move complex synchronous or async logic outside components, usually into thunks.
 
-```typescript
+```tsx
 // Thunk for handling complex logic
 const complexLogic = () => {
   return (dispatch, getState) => {
@@ -932,7 +932,7 @@ const complexLogic = () => {
 
 Use memoized selector functions for reading store state whenever possible.
 
-```typescript
+```tsx
 import { createSelector } from 'reselect';
 
 const selectTodos = (state) => state.todos;
@@ -956,7 +956,7 @@ const selectVisibleTodos = createSelector(
 
 Prefix selector function names with the word "select".
 
-```typescript
+```tsx
 const selectTodos = (state) => state.todos;
 const selectVisibleTodos = createSelector(
   [selectTodos, (state) => state.visibilityFilter],
@@ -977,7 +977,7 @@ const selectVisibleTodos = createSelector(
 
 Most form state should not go in Redux.
 
-```typescript
+```tsx
 // Local component state for form inputs
 function LoginForm() {
   const [username, setUsername] = useState('');
@@ -1010,7 +1010,7 @@ function LoginForm() {
 
 
 ## 4.2 **Installation**
-```typescript
+```tsx
 npm install @reduxjs/toolkit
 ```
 ## 4.2 **Migrating Existing Code**
@@ -1019,7 +1019,7 @@ npm install @reduxjs/toolkit
 
 createSlice allows us to simplify reducers and actions.
 
-```typescript
+```tsx
 import { createSlice } from '@reduxjs/toolkit';
 
 const counterSlice = createSlice({
@@ -1036,7 +1036,7 @@ export default counterSlice.reducer;
 ```
 
 Example of our current reducer in engine:
-```typescript
+```tsx
 import Engine from '../../core/Engine';
 
 const initialState = {
@@ -1061,7 +1061,7 @@ export default engineReducer;
 ```
 
 How it would look after converting it to RTK:
-```typescript
+```tsx
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { EngineState } from '../../../Engine';
 
@@ -1099,7 +1099,7 @@ export const reducer = engineSlice.reducer;
 
 createAsyncThunk allows us to handle async logic more effectively.
 
-```typescript
+```tsx
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const fetchUserById = createAsyncThunk(
@@ -1132,7 +1132,7 @@ export default userSlice.reducer;
 
 Set up the store with good defaults and middleware.
 
-  ```typescript
+  ```tsx
     import { configureStore } from '@reduxjs/toolkit';
     import rootReducer from './reducers';
 
@@ -1149,7 +1149,7 @@ Set up the store with good defaults and middleware.
 
 Create a slice for each feature to encapsulate its state and reducers.
 
-```typescript
+```tsx
 import { createSlice } from '@reduxjs/toolkit';
 
 const todosSlice = createSlice({
@@ -1185,7 +1185,7 @@ Use [configureStore](https://redux-toolkit.js.org/usage/usage-with-typescript#co
 Use [createEntityAdapter](https://redux-toolkit.js.org/api/createEntityAdapter) to manage normalized state.
 
 
-```typescript
+```tsx
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
 const todosAdapter = createEntityAdapter();
@@ -1208,7 +1208,7 @@ export default todosSlice.reducer;
 
 Use [createEntityAdapter](https://redux-toolkit.js.org/api/createEntityAdapter) to manage normalized state.
 
-```typescript
+```tsx
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
 
 const todosAdapter = createEntityAdapter();
