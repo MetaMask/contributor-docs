@@ -1083,12 +1083,14 @@ It may be an error screen and not the actual component.
 To make this clear, name your snapshot test cases by the following rules:
 
 🚫 Wrong naming
+
 ```ts
 describe('MyComponent', () => {
   it('should renders correctly')
 ```
 
 ✅ Correct naming
+
 ```ts
 describe('MyComponent', () => {
   it('render matches snapshot')
