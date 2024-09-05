@@ -9,7 +9,7 @@ The purpose of this document is to provide our contributors with optimization st
 Emphasize that reducers should be pure and avoid side effects.
 
 ```typescript
-// Bad: Performing expensive calculations inside the reducer
+// 🚫 Bad: Performing expensive calculations inside the reducer
 const initialState = { data: [], expensiveResult: 0 };
 
 function myReducer(state = initialState, action) {
@@ -27,7 +27,7 @@ switch (action.type) {
     }
 }
 
-// Good: Perform expensive calculations outside the reducer
+// 👍 Good: Perform expensive calculations outside the reducer
 const initialState = { data: [], expensiveResult: 0 };
 
 function myReducer(state = initialState, action) {
@@ -84,7 +84,7 @@ Use selectors and reselect to memoize derived state.
 ### **2.3 Normalization**
 Normalize state shape to avoid deeply nested structures
 ```typescript
-    // Bad: Deeply nested state shape
+    // 🚫 Bad: Deeply nested state shape
     const state = {
     users: {
         byId: {
@@ -94,7 +94,7 @@ Normalize state shape to avoid deeply nested structures
     },
     };
 
-    // Good: Normalized state shape
+    // 👍 Good: Normalized state shape
     const normalizedState = {
         users: {
             byId: {
@@ -115,7 +115,7 @@ Normalize state shape to avoid deeply nested structures
 ### **2.4 Batching Actions**
 Combine multiple actions into a single action when possible.
 ```typescript
-    // Bad: Dispatching multiple actions separately
+    // 🚫 Bad: Dispatching multiple actions separately
     function updateUserAndPosts(user, posts) {
         return (dispatch) => {
             dispatch({ type: 'UPDATE_USER', payload: user });
@@ -123,7 +123,7 @@ Combine multiple actions into a single action when possible.
         };
     }
 
-    // Good: Combining actions into a single action
+    // 👍 Good: Combining actions into a single action
     function updateUserAndPosts(user, posts) {
         return {
             type: 'UPDATE_USER_AND_POSTS',
@@ -148,7 +148,7 @@ Combine multiple actions into a single action when possible.
 ### **2.5 Using Immutable Data Structures**
 Ensure immutability to prevent unnecessary re-renders.
 ```typescript
-    // Bad: Mutating state directly
+    // 🚫 Bad: Mutating state directly
     const initialState = { items: [] };
 
     function myReducer(state = initialState, action) {
@@ -161,7 +161,7 @@ Ensure immutability to prevent unnecessary re-renders.
         }
     }
 
-    // Good: Using immutable updates
+    // 👍 Good: Using immutable updates
     const initialState = { items: [] };
 
     function myReducer(state = initialState, action) {
@@ -194,7 +194,7 @@ These patters are split into 3 categories of rules
 Mutating state is the most common cause of bugs in Redux applications.
 
 ```typescript
-// Bad: Mutating state directly
+// 🚫 Bad: Mutating state directly
 const initialState = { items: [] };
 
 function myReducer(state = initialState, action) {
@@ -207,7 +207,7 @@ function myReducer(state = initialState, action) {
   }
 }
 
-// Good: Using immutable updates
+// 👍 Good: Using immutable updates
 const initialState = { items: [] };
 
 function myReducer(state = initialState, action) {
@@ -230,7 +230,7 @@ Reducers should only depend on their state and action arguments.
 
 
 ```typescript
-// Bad: Performing side effects in reducers
+// 🚫 Bad: Performing side effects in reducers
 function myReducer(state = initialState, action) {
   switch (action.type) {
     case 'FETCH_DATA':
@@ -245,7 +245,7 @@ function myReducer(state = initialState, action) {
   }
 }
 
-// Good: Handling side effects outside reducers
+// 👍 Good: Handling side effects outside reducers
 function myReducer(state = initialState, action) {
   switch (action.type) {
     case 'SET_DATA':
@@ -274,7 +274,7 @@ function fetchData() {
 Avoid putting non-serializable values such as Promises, Symbols, Maps/Sets, functions, or class instances into the Redux store state or dispatched actions.
 
 ```typescript
-// Bad: Storing non-serializable values in state
+// 🚫 Bad: Storing non-serializable values in state
 const initialState = { data: new Map() };
 
 function myReducer(state = initialState, action) {
@@ -289,7 +289,7 @@ function myReducer(state = initialState, action) {
   }
 }
 
-// Good: Storing serializable values in state
+// 👍 Good: Storing serializable values in state
 const initialState = { data: {} };
 
 function myReducer(state = initialState, action) {
@@ -398,7 +398,7 @@ src/
 Try to put as much of the logic for calculating a new state into the appropriate reducer.
 
 ```typescript
-// Bad: Logic in action creators
+// 🚫 Bad: Logic in action creators
 function addItem(item) {
   return (dispatch, getState) => {
     const state = getState();
@@ -408,7 +408,7 @@ function addItem(item) {
   };
 }
 
-// Good: Logic in reducers
+// 👍 Good: Logic in reducers
 const initialState = { items: [] };
 
 const myReducer = (state = initialState, action) => {
@@ -432,7 +432,7 @@ const myReducer = (state = initialState, action) => {
 Minimize the use of "blind spreads/returns".
 
 ```typescript
-// Bad: Blind spread
+// 🚫 Bad: Blind spread
 function myReducer(state = initialState, action) {
   switch (action.type) {
     case 'SET_DATA':
@@ -445,7 +445,7 @@ function myReducer(state = initialState, action) {
   }
 }
 
-// Good: Explicitly define state shape
+// 👍 Good: Explicitly define state shape
 function myReducer(state = initialState, action) {
   switch (action.type) {
     case 'SET_DATA':
@@ -564,13 +564,13 @@ const selectCompletedTodos = createSelector(
 Treat actions more as "describing events that occurred".
 
 ```typescript
-// Bad: Setter action
+// 🚫 Bad: Setter action
 const setUserName = (name) => ({
   type: 'SET_USER_NAME',
   payload: name,
 });
 
-// Good: Event action
+// 👍 Good: Event action
 const userNameUpdated = (name) => ({
   type: 'USER_NAME_UPDATED',
   payload: name,
@@ -582,13 +582,13 @@ const userNameUpdated = (name) => ({
 Actions should be written with meaningful, informative, descriptive type fields.
 
 ```typescript
-// Bad: Generic action name
+// 🚫 Bad: Generic action name
 const setData = (data) => ({
   type: 'SET_DATA',
   payload: data,
 });
 
-// Good: Descriptive action name
+// 👍 Good: Descriptive action name
 const userDataFetched = (data) => ({
   type: 'USER_DATA_FETCHED',
   payload: data,
@@ -624,7 +624,7 @@ const uiReducer = (state = {}, action) => {
 Prefer dispatching a single "event"-type action.
 
 ```typescript
-// Bad: Dispatching multiple actions
+// 🚫 Bad: Dispatching multiple actions
 function loginUser(user) {
   return (dispatch) => {
     dispatch({ type: 'SET_USER', payload: user });
@@ -632,7 +632,7 @@ function loginUser(user) {
   };
 }
 
-// Good: Dispatching a single action
+// 👍 Good: Dispatching a single action
 function loginUser(user) {
   return {
     type: 'USER_LOGGED_IN',
