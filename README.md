@@ -12,6 +12,7 @@ This is a living repository — nothing is set in stone! If you're member of Met
 - [Pull Requests Guide](./docs/pull-requests.md)
 - [React Guidelines](./docs/react.md)
 - [Secure Coding Guidelines](./docs/secure-coding-guidelines.md)
+- [Redux Guidelines](./docs/redux.md)
 - [Secure Development Lifecycle Policy](./docs/sdlc.md)
 - [TypeScript Guidelines](./docs/typescript.md)
 - [Unit Testing Guidelines](./docs/unit-testing.md)
