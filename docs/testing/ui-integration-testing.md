@@ -8,13 +8,13 @@ Just like for unit tests, for UI integration tests, we use Jest as the test runn
 
 UI integration tests should focus on user journeys and interactions within the application. Design tests to mimic actual user actions and flows. This helps in identifying issues that could affect the user experience.
 
-### Full App Context
+### Provide Full App Context
 
 Always test page-level components in the context of the full application. This approach ensures that tests reflect real user scenarios and interactions within the app.
 
 UI integration tests should not be written for components other than page-level components. Other components should be tested using unit tests.
 
-## Test Location
+## Keep Tests Separate from Implementation
 
 Place integration test files within a `test/integration` directory. This centralized location helps manage tests that span multiple pages and components, improving maintenance and discoverability. This approach differs from unit tests, where co-location with the component is standard.
 
@@ -22,6 +22,6 @@ Place integration test files within a `test/integration` directory. This central
 
 Refrain from using snapshot testing in UI integration tests. They tend to be less meaningful in the context of full app testing and can lead to brittle tests.
 
-## No Mocking UI Components
+## Don't Mock UI Components
 
 Keep mocking to minimum. Ideally only the background connection (MetaMask Extension), or any network request (fired from the UI) should be mocked.
