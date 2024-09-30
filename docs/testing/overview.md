@@ -4,7 +4,7 @@ At MetaMask, we are committed to delivering high-quality software. A key aspect 
 
 ## What are unit tests?
 
-Unit testing is a conceptually vague practice, as there is no consensus on how they should be written and what they should test. But in general, [as outlined by Martin Fowler](https://martinfowler.com/articles/2021-test-shapes.html), there are two common approaches: solitary unit tests and sociable unit tests. At MetaMask, we employ both of these types of unit tests (see [discussion on the use cases of each type](https://github.com/MetaMask/core/pull/3827#discussion_r1469377179))
+Unit testing is a conceptually vague practice, as there is no consensus on how they should be written and what they should test. But in general, [as outlined by Martin Fowler](https://martinfowler.com/articles/2021-test-shapes.html), there are two common approaches: solitary unit tests and sociable unit tests. At MetaMask, we employ both of these types of unit tests (see [discussion on the use cases of each type](https://github.com/MetaMask/core/pull/3827#discussion_r1469377179)).
 Unit tests examine individual components or functions in isolation or within their immediate context. At MetaMask we encourage a flexible approach to unit testing, recognizing the spectrum between sociable and solitary unit tests.
 
 ### When to write unit tests?

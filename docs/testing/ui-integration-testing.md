@@ -24,4 +24,4 @@ Refrain from using snapshot testing in UI integration tests. They tend to be les
 
 ## Don't Mock UI Components
 
-Keep mocking to minimum. Ideally only the background connection (MetaMask Extension), or any network request (fired from the UI) should be mocked.
+Keep mocking to minimum. Ideally only the background connection (MetaMask Extension), or any network request (fired from the UI) should be mocked. Avoid mocking any UI components or hooks. For mocking the background connection we can use jest, for mocking network requests we can use `nock` (or `msw`).
