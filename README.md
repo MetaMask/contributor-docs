@@ -9,6 +9,7 @@ This is a living repository — nothing is set in stone! If you're member of Met
 - [Contributor Code of Conduct](https://github.com/MetaMask/.github/blob/main/CODE_OF_CONDUCT.md)
 - [Engineering Principles](./docs/engineering-principles.md)
 - [JavaScript Guidelines](./docs/javascript.md)
+- [Migrations Best Practices](./docs/migrations-guidelines.md)
 - [Pull Requests Guide](./docs/pull-requests.md)
 - [React Guidelines](./docs/react.md)
 - [Secure Coding Guidelines](./docs/secure-coding-guidelines.md)
