@@ -112,6 +112,14 @@ Mock testing should complement E2E testing. The aim is to use E2E tests to gain 
 
 By blending E2E and mock testing, we ensure comprehensive test coverage while maintaining fast and reliable tests that simulate real-world conditions.
 
+## When to Use Mocks
+
+You should use mocks in scenarios such as testing isolated features without relying on live data or real backend services. This includes testing edge cases that are difficult to reproduce with real data or ensuring deterministic test results by controlling the inputs and outputs. For example, when the `suggestedGasApi` is down, the app should default to the legacy modal and API. This is a scenario that cannot be consistently tested with E2E or even manually. Mocking enables us to test the app's behaviour in isolated scenarios or edge cases that are difficult to reproduce efficiently in E2E or manual testing.
+
+## When Not to Use Mocks
+
+Be cautious against overusing mocks, especially when integration with real services is essential for accurate testing. Relying too heavily on mocks could result in tests that do not reflect real-world conditions, leading to false confidence in system stability.
+
 ## File Structure
 
 Here’s an example of how your files should be structured:
