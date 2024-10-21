@@ -12,7 +12,7 @@ Note that the below are purely optimizations and should not be used as a precaut
 
 Performance optimizations are not free. They always come with a cost but do not always come with a benefit to offset that cost.
 
-These notes are based upon the following article: [When to useMemo and useCallback](https://kentcdodds.com/blog/usememo-and-usecallback)
+These notes are based upon and taken from the following article: [When to useMemo and useCallback](https://kentcdodds.com/blog/usememo-and-usecallback)
 
 ### When to useMemo and useCallback
 
