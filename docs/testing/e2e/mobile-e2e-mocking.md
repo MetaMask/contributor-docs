@@ -119,13 +119,3 @@ You should use mocks in scenarios such as testing isolated features without rely
 ## When Not to Use Mocks
 
 Be cautious against overusing mocks, especially when integration with real services is essential for accurate testing. Relying too heavily on mocks could result in tests that do not reflect real-world conditions, leading to false confidence in system stability.
-
-## File Structure
-
-Here’s an example of how your files should be structured:
-
-- `e2e/mockServer/mockServer.js`: The main file where the mock server is started.
-- `e2e/mockServer/mock-config/mock-events.js`: Defines mock events (GET and POST) and their associated endpoints and responses.
-- `e2e/mockServer/mock-responses/mockResponses.js`: Contains the mock responses used by the mock events.
-
-Following this structure and strategy ensures efficient mock testing, complementing your E2E tests.
