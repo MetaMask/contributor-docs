@@ -1,3 +1,4 @@
+
 # Mocking APIs in MetaMask Mobile for Enhanced E2E Testing
 
 ## Mocking
@@ -25,6 +26,9 @@ root/
 │   │   │   └── mockSpec.js
 │   │   ├── Transactions/
 │   │       └── mockSpec.js
+       mockServer/
+│   ├── mock-responses/
+│   │   └── mockResponses.json
 ```
 
 This structure allows us to keep E2E tests focused on overall app functionality while leveraging mocks to simulate various conditions.
@@ -43,7 +47,7 @@ This guide outlines how to implement API request mocking using Mockttp for mobil
 
 ### Setting Up the Mock Server
 
-To start the mock server, use the `startMockServer` function from `e2e/mockServer/mockServer.js`. This function accepts events organised by HTTP methods (GET, POST), specifying the endpoint, the response to return, and the request body for POST requests.
+To start the mock server, use the `startMockServer` function from `e2e/mockServer/mockServer.js`. This function accepts events organised by HTTP methods (GET, POST), specifying the endpoint, the response to return, and the request body for POST requests. The function enables us to pass multiple events enabling us to mock multiple services at once
 
 ```javascript
 import { mockEvents } from '../mockServer/mock-config/mock-events';
@@ -86,7 +90,38 @@ export const mockEvents = {
 };
 ```
 
-The mock responses are stored in `e2e/mockServer/mock-responses/mockResponses.js`, keeping the responses modular and reusable.
+The mock responses are stored in a separate JSON file `mockResponses.json`, located in `e2e/mockServer/mock-responses/`, keeping the responses modular and reusable.
+
+### Response Structure in `mockResponses.json`
+
+Mock responses are organised with identifiable keys for ease of use. Each key corresponds to a specific API, and subkeys can be used to organise different types of responses, such as success or error scenarios.
+
+```json
+{
+  "suggestedGasApiResponses": {
+    "success": {
+      "low": {
+        "suggestedMaxFeePerGas": "1.000503137",
+        "waitTime": 15000
+      },
+      "medium": {
+        "suggestedMaxFeePerGas": "1.500679235",
+        "waitTime": 15000
+      },
+      "high": {
+        "suggestedMaxFeePerGas": "2.000855333",
+        "waitTime": 15000
+      }
+    },
+    "error": {
+      "status": 500,
+      "message": "Internal Server Error"
+    }
+  }
+}
+```
+
+This structure allows for easy identification and access to various response types for the same API. For example, you can mock success and error responses for the `suggestedGasApi` by referencing `suggestedGasApiResponses.success` or `suggestedGasApiResponses.error` in your test cases.
 
 ### Naming Test Files
 
