@@ -11,7 +11,8 @@ E2E tests should be used wherever possible to validate the application for its e
 
 ## File Structure
 
-We maintain a clear and organised structure to separate E2E tests from mocked tests, which helps manage our testing efforts effectively.
+To identify mocked tests, we rely on naming conventions for now. We maintain a clear and organised structure to separate E2E tests from mocked tests, which helps manage our testing efforts effectively.
+
 
 ```plaintext
 root/
@@ -19,38 +20,38 @@ root/
 │   ├── spec/
 │   │   ├── Accounts/
 │   │   │   └── spec.js
+                mock.spec.js
 │   │   ├── Transactions/
 │   │   │   └── spec.js
-│   ├── mocked-specs/
-│   │   ├── Accounts/
-│   │   │   └── mockSpec.js
-│   │   ├── Transactions/
-│   │       └── mockSpec.js
-       mockServer/
-│   ├── mock-responses/
-│   │   └── mockResponses.json
+            mock.spec.js
+│   ├── api-mocking/
+│       ├── api-mocking/
+│       │   ├── mock-responses/
+│       │   │   ├── gas-api-responses.json
 ```
 
+
 This structure allows us to keep E2E tests focused on overall app functionality while leveraging mocks to simulate various conditions.
+
 
 ## Mock Server Implementation Guide
 
 ### Overview
 
-This guide outlines how to implement API request mocking using Mockttp for mobile testing. Mocking lets you simulate API responses and handle both GET and POST requests during testing, ensuring the app behaves correctly even when external dependencies are unavailable or unreliable.
+This guide outlines how to implement API request mocking using Mockttp for mobile testing. Mocking lets you simulate API responses and handle any HTTP method required during testing, ensuring the app behaves correctly even when external dependencies are unavailable or unreliable.
 
 ### Key Features
 
-- Handles both GET and POST requests.
+- Handles multiple HTTP methods as required by teams.
 - Configurable requests and responses through events, allowing flexibility in response statuses and request bodies.
 - Logs responses for easier debugging during tests.
 
 ### Setting Up the Mock Server
 
-To start the mock server, use the `startMockServer` function from `e2e/mockServer/mockServer.js`. This function accepts events organised by HTTP methods (GET, POST), specifying the endpoint, the response to return, and the request body for POST requests. The function enables us to pass multiple events enabling us to mock multiple services at once
+To start the mock server, use the `startMockServer` function from `e2e/api-mocking/mock-server.js`. This function accepts events organised by HTTP methods (e.g., GET, POST), specifying the endpoint, the response to return, and the request body for POST requests. The function enables us to pass multiple events enabling us to mock multiple services at once
 
 ```javascript
-import { mockEvents } from '../mockServer/mock-config/mock-events';
+import { mockEvents } from '../api-mocking/mock-config/mock-events';
 
 mockServer = await startMockServer({
   GET: [
@@ -66,7 +67,7 @@ This starts the mock server and ensures it listens for the defined routes, retur
 
 ### Defining Mock Events
 
-Mock events are defined in the `e2e/mockServer/mock-config/mock-events.js` file. Each key represents an HTTP method, and events include:
+Mock events are defined in the `e2e/api-mocking/mock-config/mock-events.js` file. Each key represents an HTTP method, and events include:
 
 - **urlEndpoint**: The API endpoint being mocked.
 - **response**: The mock response the server will return.
@@ -90,7 +91,7 @@ export const mockEvents = {
 };
 ```
 
-The mock responses are stored in a separate JSON file `mockResponses.json`, located in `e2e/mockServer/mock-responses/`, keeping the responses modular and reusable.
+The mock responses are stored in a separate JSON file `mockResponses.json`, located in `e2e/api-mocking/mock-responses/`, keeping the responses modular and reusable.
 
 ### Response Structure in `mockResponses.json`
 
@@ -154,3 +155,7 @@ You should use mocks in scenarios such as testing isolated features without rely
 ## When Not to Use Mocks
 
 Be cautious against overusing mocks, especially when integration with real services is essential for accurate testing. Relying too heavily on mocks could result in tests that do not reflect real-world conditions, leading to false confidence in system stability.
+
+## Exception for Complex Mock Events
+
+Teams with complex mock events or criteria can utilise the `mockspecificTest` attribute, where you can define custom mock events in a separate instance to fit your unique requirements. This can be liased with the mobile QA platform team.
