@@ -46,6 +46,16 @@ This guide outlines how to implement API request mocking using Mockttp for mobil
 - Configurable requests and responses through events, allowing flexibility in response statuses and request bodies.
 - Logs responses for easier debugging during tests.
 
+### Naming Test Files
+
+Mock test files should include `.mock.spec.js` in their filename for clarity and organisation. For example, tests for the suggested gas API would be named:
+
+```
+suggestedGasApi.mock.spec.js
+```
+
+This naming convention makes it easy to distinguish mock tests from E2E tests, maintaining a clean and organised test suite.
+
 ### Setting Up the Mock Server
 
 To start the mock server, use the `startMockServer` function from `e2e/api-mocking/mock-server.js`. This function accepts events organised by HTTP methods (e.g., GET, POST), specifying the endpoint, the response to return, and the request body for POST requests. The function enables us to pass multiple events enabling us to mock multiple services at once
@@ -95,44 +105,50 @@ The mock responses are stored in a separate JSON file `mockResponses.json`, loca
 
 ### Response Structure in `mockResponses.json`
 
-Mock responses are organised with identifiable keys for ease of use. Each key corresponds to a specific API, and subkeys can be used to organise different types of responses, such as success or error scenarios.
+# Mock Response Structure
+
+Mock responses are now organised into individual JSON files for each related API or service, simplifying access and maintenance. Each file contains identifiable keys specific to the API, with subkeys as needed to structure various response scenarios, such as suggestedGasApiResponses or suggestedGasFeesApiGanache.
+
+### Example: `gas-api-responses.json`
 
 ```json
 {
   "suggestedGasApiResponses": {
-    "success": {
-      "low": {
-        "suggestedMaxFeePerGas": "1.000503137",
-        "waitTime": 15000
-      },
-      "medium": {
-        "suggestedMaxFeePerGas": "1.500679235",
-        "waitTime": 15000
-      },
-      "high": {
-        "suggestedMaxFeePerGas": "2.000855333",
-        "waitTime": 15000
-      }
-    },
     "error": {
-      "status": 500,
       "message": "Internal Server Error"
     }
+  },
+  "suggestedGasFeesApiGanache": {
+    "low": {
+      "suggestedMaxPriorityFeePerGas": "1",
+      "suggestedMaxFeePerGas": "1.000503137",
+      "minWaitTimeEstimate": 15000,
+      "maxWaitTimeEstimate": 60000
+    },
+    "medium": {
+      "suggestedMaxPriorityFeePerGas": "1.5",
+      "suggestedMaxFeePerGas": "1.500679235",
+      "minWaitTimeEstimate": 15000,
+      "maxWaitTimeEstimate": 45000
+    },
+    "high": {
+      "suggestedMaxPriorityFeePerGas": "2",
+      "suggestedMaxFeePerGas": "2.000855333",
+      "minWaitTimeEstimate": 15000,
+      "maxWaitTimeEstimate": 30000
+    },
+    "estimatedBaseFee": "0.000503137",
+    "networkCongestion": 0.34,
+    "latestPriorityFeeRange": ["1.5", "2"],
+    "historicalPriorityFeeRange": ["0.000001", "236.428872442"],
+    "historicalBaseFeeRange": ["0.000392779", "0.00100495"],
+    "priorityFeeTrend": "up",
+    "baseFeeTrend": "up",
+    "version": "0.0.1"
   }
 }
-```
 
-This structure allows for easy identification and access to various response types for the same API. For example, you can mock success and error responses for the `suggestedGasApi` by referencing `suggestedGasApiResponses.success` or `suggestedGasApiResponses.error` in your test cases.
 
-### Naming Test Files
-
-Mock test files should include `.mock.spec.js` in their filename for clarity and organisation. For example, tests for the suggested gas API would be named:
-
-```
-suggestedGasApi.mock.spec.js
-```
-
-This naming convention makes it easy to distinguish mock tests from E2E tests, maintaining a clean and organised test suite.
 
 ### Logging
 
