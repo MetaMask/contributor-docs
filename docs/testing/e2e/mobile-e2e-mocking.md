@@ -1,18 +1,19 @@
 
 # Mocking APIs in MetaMask Mobile for Enhanced E2E Testing
 
-## Mocking
+## Introduction
+This document outlines how MetaMask Mobile uses API mocking to boost End-to-End (E2E) testing. Mocking lets us simulate different conditions that the app might face, ensuring it functions reliably across various scenarios.
 
-Mocking is an essential technique in our testing strategy, allowing us to simulate various conditions the application may encounter. By creating mock responses for API endpoints, we can effectively test how the app behaves in scenarios like network failures or receiving unexpected data.
+## Mocking vs. E2E Testing
+While E2E tests verify the overall user experience, mocking focuses on testing individual components. Here’s how they differ:
 
-We view mocking as a complement to, not a replacement for, end-to-end (E2E) testing. While E2E tests provide confidence in the overall functionality of the MetaMask app, mocking enables focused component tests that help identify issues early in development. This ensures the app can handle different states gracefully.
+- **E2E Tests**: These validate the app's functionality as a whole, interacting with real APIs and backend services.
+- **Mocking**: Simulates responses from APIs, allowing us to test components in specific network conditions or edge cases.
 
-E2E tests should be used wherever possible to validate the application for its end users, while mocking fills gaps where E2E tests may be unreliable or difficult to set up. As more mocked tests are added, our implementation strategy will evolve, keeping testing relevant and effective.
+We use mocking to enhance our E2E testing, especially for scenarios where E2E alone might be unreliable or tricky to set up.
 
 ## File Structure
-
-To identify mocked tests, we rely on naming conventions for now. We maintain a clear and organised structure to separate E2E tests from mocked tests, which helps manage our testing efforts effectively.
-
+We keep E2E and mock tests separate with file naming conventions:
 
 ```plaintext
 root/
@@ -20,10 +21,10 @@ root/
 │   ├── spec/
 │   │   ├── Accounts/
 │   │   │   └── spec.js
-                mock.spec.js
+                mock.spec.js# Mock test for Accounts
 │   │   ├── Transactions/
 │   │   │   └── spec.js
-            mock.spec.js
+            mock.spec.js # Mock test for Transactions
 │   ├── api-mocking/
 │       ├── api-mocking/
 │       │   ├── mock-responses/
@@ -31,34 +32,25 @@ root/
 ```
 
 
-This structure allows us to keep E2E tests focused on overall app functionality while leveraging mocks to simulate various conditions.
+This structure promotes clear organisation and makes managing tests simpler.
 
-
-## Mock Server Implementation Guide
+## Mock Server Implementation
 
 ### Overview
-
-This guide outlines how to implement API request mocking using Mockttp for mobile testing. Mocking lets you simulate API responses and handle any HTTP method required during testing, ensuring the app behaves correctly even when external dependencies are unavailable or unreliable.
+We use Mockttp to simulate API responses, providing flexible testing across different HTTP methods. This allows us to test app behaviour even when external dependencies are unavailable or unreliable.
 
 ### Key Features
+- Supports multiple HTTP methods (GET, POST, etc.)
+- Configurable requests and responses
+- Logs responses to simplify debugging
 
-- Handles multiple HTTP methods as required by teams.
-- Configurable requests and responses through events, allowing flexibility in response statuses and request bodies.
-- Logs responses for easier debugging during tests.
+### Naming Mock Test Files
+Mock test files are named with `.mock.spec.js` to keep things organised. For example, a test for the suggested gas API would be named:
 
-### Naming Test Files
-
-Mock test files should include `.mock.spec.js` in their filename for clarity and organisation. For example, tests for the suggested gas API would be named:
-
-```
-suggestedGasApi.mock.spec.js
-```
-
-This naming convention makes it easy to distinguish mock tests from E2E tests, maintaining a clean and organised test suite.
+`suggestedGasApi.mock.spec.js`
 
 ### Setting Up the Mock Server
-
-To start the mock server, use the `startMockServer` function from `e2e/api-mocking/mock-server.js`. This function accepts events organised by HTTP methods (e.g., GET, POST), specifying the endpoint, the response to return, and the request body for POST requests. The function enables us to pass multiple events enabling us to mock multiple services at once
+The `startMockServer` function in `e2e/api-mocking/mock-server.js` starts the mock server. It takes events organised by HTTP methods, specifying the endpoint, response data, and request body (for POST requests).
 
 ```javascript
 import { mockEvents } from '../api-mocking/mock-config/mock-events';
@@ -73,15 +65,12 @@ mockServer = await startMockServer({
 });
 ```
 
-This starts the mock server and ensures it listens for the defined routes, returning the specified responses.
-
 ### Defining Mock Events
+`mockEvents.js` defines mock events, including:
 
-Mock events are defined in the `e2e/api-mocking/mock-config/mock-events.js` file. Each key represents an HTTP method, and events include:
-
-- **urlEndpoint**: The API endpoint being mocked.
-- **response**: The mock response the server will return.
-- **requestBody**: (For POST requests) The expected request body.
+- `urlEndpoint`: The API endpoint being mocked
+- `response`: The mock response the server will return
+- `requestBody`: Expected request body (for POST requests)
 
 ```javascript
 export const mockEvents = {
@@ -101,15 +90,12 @@ export const mockEvents = {
 };
 ```
 
-The mock responses are stored in a separate JSON file `mockResponses.json`, located in `e2e/api-mocking/mock-responses/`, keeping the responses modular and reusable.
+Mock responses are saved in separate JSON files (`mockResponses.json`) for reusability and easier management.
 
-### Response Structure in `mockResponses.json`
+### Response Structure
+Mock responses are stored in individual JSON files for each API or service, making them easier to maintain. Each file contains keys for the API and subkeys for various scenarios.
 
-# Mock Response Structure
-
-Mock responses are now organised into individual JSON files for each related API or service, simplifying access and maintenance. Each file contains identifiable keys specific to the API, with subkeys as needed to structure various response scenarios, such as suggestedGasApiResponses or suggestedGasFeesApiGanache.
-
-### Example: `gas-api-responses.json`
+**Example:** `gas-api-responses.json`
 
 ```json
 {
@@ -119,59 +105,31 @@ Mock responses are now organised into individual JSON files for each related API
     }
   },
   "suggestedGasFeesApiGanache": {
-    "low": {
-      "suggestedMaxPriorityFeePerGas": "1",
-      "suggestedMaxFeePerGas": "1.000503137",
-      "minWaitTimeEstimate": 15000,
-      "maxWaitTimeEstimate": 60000
-    },
-    "medium": {
-      "suggestedMaxPriorityFeePerGas": "1.5",
-      "suggestedMaxFeePerGas": "1.500679235",
-      "minWaitTimeEstimate": 15000,
-      "maxWaitTimeEstimate": 45000
-    },
-    "high": {
-      "suggestedMaxPriorityFeePerGas": "2",
-      "suggestedMaxFeePerGas": "2.000855333",
-      "minWaitTimeEstimate": 15000,
-      "maxWaitTimeEstimate": 30000
-    },
-    "estimatedBaseFee": "0.000503137",
-    "networkCongestion": 0.34,
-    "latestPriorityFeeRange": ["1.5", "2"],
-    "historicalPriorityFeeRange": ["0.000001", "236.428872442"],
-    "historicalBaseFeeRange": ["0.000392779", "0.00100495"],
-    "priorityFeeTrend": "up",
-    "baseFeeTrend": "up",
-    "version": "0.0.1"
+    # ... detailed gas fee data ...
   }
 }
+```
 
+## Logging
+The mock server logs response statuses and bodies to help track mocked requests, making debugging more straightforward.
 
+## Using Mock Testing Effectively
+Mock testing should work hand-in-hand with E2E testing. Here’s some guidance:
 
-### Logging
+### When to Use Mocks:
+- For testing isolated features without relying on live data
+- For testing edge cases that are tricky to reproduce with real data
+- For deterministic test results by controlling inputs and outputs
 
-The mock server logs the response status and body to help track what’s being mocked, making debugging simpler.
+### When Not to Use Mocks:
+- Overusing mocks may result in tests that don’t reflect real-world conditions.
+- Integration with live services is essential for accurate testing.
 
-### Strategy for Using Mock Testing
+### Exception for Complex Mock Events
+For more complex mock events or criteria, you can use the `mockspecificTest` attribute to define custom mock events.
 
-Mock testing should complement E2E testing. The aim is to use E2E tests to gain confidence in the app's functionality wherever possible. However, mock testing can be used to fill gaps in scenarios where E2E tests may be unreliable or challenging, such as:
+### Current Workaround for Network Request Interception
+Due to limitations in intercepting network requests directly, we currently route traffic through a proxy server. This lets us intercept and mock requests as needed.
 
-- Testing components under specific network conditions.
-- Ensuring consistent behaviour across mobile platforms.
-- Simulating server errors or slow responses.
-
-By blending E2E and mock testing, we ensure comprehensive test coverage while maintaining fast and reliable tests that simulate real-world conditions.
-
-## When to Use Mocks
-
-You should use mocks in scenarios such as testing isolated features without relying on live data or real backend services. This includes testing edge cases that are difficult to reproduce with real data or ensuring deterministic test results by controlling the inputs and outputs. For example, when the `suggestedGasApi` is down, the app should default to the legacy modal and API. This is a scenario that cannot be consistently tested with E2E or even manually. Mocking enables us to test the app's behaviour in isolated scenarios or edge cases that are difficult to reproduce efficiently in E2E or manual testing.
-
-## When Not to Use Mocks
-
-Be cautious against overusing mocks, especially when integration with real services is essential for accurate testing. Relying too heavily on mocks could result in tests that do not reflect real-world conditions, leading to false confidence in system stability.
-
-## Exception for Complex Mock Events
-
-Teams with complex mock events or criteria can utilise the `mockspecificTest` attribute, where you can define custom mock events in a separate instance to fit your unique requirements. This can be liased with the mobile QA platform team.
+## Future Improvements
+We’re looking into further enhancements for our mocking setup to simplify processes and improve test coverage.
