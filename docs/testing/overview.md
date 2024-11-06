@@ -1,6 +1,52 @@
 # Testing Overview
 
-At MetaMask, we are committed to delivering high-quality software. A key aspect of achieving this goal is through a robust testing strategy that includes both end-to-end (e2e), integration and unit tests. This document provides comprehensive guidelines on each testing type, emphasizing the importance of choosing the right test for the right scenario and detailing the specific practices for writing and organizing these tests.
+At MetaMask, we are committed to delivering high-quality software. These guidelines describe how we use automated tests to maximize product quality while minimizing the cost of writing and maintaining tests.
+
+Our automated tests fall into three general categories: end-to-end (e2e), integration and unit tests. This document provides comprehensive guidelines on each testing type, emphasizing the importance of choosing the right test for the right scenario and detailing the specific practices for writing and organizing these tests.
+
+## Testing principles
+
+What makes a good test? Here are some general principles.
+
+### 1. Tests should describe expectations
+
+What's the difference between a bug and a feature? A feature is expected, a bug is not.
+
+If it's not clear what the code-under-test is supposed to do, it won't be clear what to do when the test fails either. Clear expectations are essential for an effective test.
+
+### 2. Tests should catch bugs
+
+This is the main purpose of tests. Take care to ensure that each test actually fails when the described expectation is not met.
+
+### 3. Tests should not break often
+
+It's expected that tests will break when we change the behavior or APIs under test. But if a test breaks often from refactors, or from changes to behavior or APIs not directly under test, it's sign that the test may be poorly designed.
+
+Test breakages are expensive. We should do what we can to minimize them.
+
+### 4. Tests should be easy to read
+
+A test isn't effective if we can't understand why it failed. The more readable a test is, the faster we can fix it.
+
+### 5. Tests should be easy to write
+
+Some behaviors are inherently more complex than others, increasing the difficulty of testing them. But in general we want tests to be easy to write, so that we can keep costs low.
+
+If a test is hard to write, consider that as a warning that you might be approaching the problem in a non-optimal way. Resist the urge to power through the work, and instead consider how redesigning the code-under-test or using a different testing strategy might save time.
+
+### 6. Tests should be fast
+
+Making tests faster has a dramatic improvement on productivity, reducing feedback loops.
+
+What we consider "fast" depends on what the test does; what's fast for an end-to-end test might be slow for a unit test. But faster is always better, for all types of tests.
+
+### 7. Tests should have a high return on investment
+
+If a test doesn't align with the previous 6 principles, it's probably doing more harm than good. Consider deleting it.
+
+That doesn't mean we should skip writing tests with it's too difficult. On the contrary; we have high expectations for quality, we don't have the luxury of writing only the easiest most valuable tests. We need to aim for total coverage.
+
+But writing and maintaining bad tests is not the shortest path to complete test coverage. Our time is better spent writing good tests, and making investments that allow us to write more good tests. All code can be designed to be easy to test, and even the most complex test setup/teardown can be reasonably fast and easy to read/write with the right tools.
 
 ## What are unit tests?
 
