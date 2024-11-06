@@ -99,7 +99,6 @@ async function someOtherFunction() {
 
 #### Trace the duration of a flow spanning multiple files.
 
-
 ```ts
 // File1.ts
 
