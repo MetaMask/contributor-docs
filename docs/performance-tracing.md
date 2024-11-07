@@ -204,3 +204,25 @@ function someOtherFunction() {
   ...
 }
 ```
+
+#### Use manual timestamps in a trace.
+
+```ts
+import { trace, endTrace, TraceName } from '...';
+
+...
+
+trace({
+  name: TraceName.SomeTrace,
+  startTime: Date.now() - 123
+});
+
+...
+
+endTrace({
+  name: TraceName.SomeTrace,
+  timestamp: Date.now() + 456
+});
+
+...
+```
