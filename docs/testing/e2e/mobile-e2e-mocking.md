@@ -31,7 +31,6 @@ root/
 │       │   │   ├── gas-api-responses.json
 ```
 
-
 This structure promotes clear organisation and makes managing tests simpler.
 
 ## Mock Server Implementation
@@ -90,12 +89,10 @@ export const mockEvents = {
 };
 ```
 
-Mock responses are saved in separate JSON files (`mockResponses.json`) for reusability and easier management.
-
 ### Response Structure
-Mock responses are stored in individual JSON files for each API or service, making them easier to maintain. Each file contains keys for the API and subkeys for various scenarios.
+Mock responses are stored in individual JSON files for each API or service within the `mock-responses` folder, making them easier to maintain and manage. Each API service has its own JSON response file, such as `gasApiResponse.json` for gas-related responses and `ethpriceResponse.json` for Ethereum price responses. This organisation enables clear separation of mock data and simplifies updates or additions.
 
-**Example:** `gas-api-responses.json`
+**Example:** `gasApiResponse.json`
 
 ```json
 {
