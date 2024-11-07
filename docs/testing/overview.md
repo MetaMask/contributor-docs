@@ -20,7 +20,7 @@ This is the main purpose of tests. Take care to ensure that each test actually f
 
 ### 3. Tests should not break often
 
-It's expected that tests will break when we change the behavior or APIs under test. But if a test breaks often from refactors, or from changes to behavior or APIs not directly under test, it's sign that the test may be poorly designed.
+It's expected that tests will break when we change the behavior or APIs under test. But if a test breaks often from refactors, or from changes to behavior or APIs not directly under test, it's sign that the test (or the code-under-test) may be poorly designed.
 
 Test breakages are expensive. We should do what we can to minimize them.
 
