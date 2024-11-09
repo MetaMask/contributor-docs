@@ -6,13 +6,13 @@ Our automated tests fall into three general categories: end-to-end (e2e), integr
 
 ## Testing principles
 
-What makes a good test? Here are some general principles.
+The following are general principles about how to write automated tests effectively, applicable to all types of automated tests.
 
 ### 1. Tests should describe expectations
 
 What's the difference between a bug and a feature? A feature is expected, a bug is not.
 
-If it's not clear what the code-under-test is supposed to do, it won't be clear what to do when the test fails either. Clear expectations are essential for an effective test.
+Each test should be verifying specific expectations. If it's not clear what the code-under-test is supposed to do, it won't be clear what to do when the test fails either. Clear expectations are essential for an effective test.
 
 ### 2. Tests should catch bugs
 
@@ -44,9 +44,9 @@ What we consider "fast" depends on what the test does; what's fast for an end-to
 
 If a test doesn't align with the previous 6 principles, it's probably doing more harm than good. Consider deleting it.
 
-That doesn't mean we should skip writing tests with it's too difficult. On the contrary; we have high expectations for quality, we don't have the luxury of writing only the easiest most valuable tests. We need to aim for total coverage.
+That doesn't mean we should skip writing tests when it's too difficult. On the contrary, given our high expectations for quality we don't have the luxury of writing only the easiest tests. We need to aim for total coverage.
 
-But writing and maintaining bad tests is not the shortest path to complete test coverage. Our time is better spent writing good tests, and making investments that allow us to write more good tests. All code can be designed to be easy to test, and even the most complex test setup/teardown can be reasonably fast and easy to read/write with the right tools.
+However, writing and maintaining bad tests is not the shortest path to complete test coverage. Our time is better spent writing good tests, and making investments that allow us to write more good tests. All code can be designed to be easy to test, and even the most complex test setup/teardown can be reasonably fast and easy to read/write with the right tools.
 
 ## What are unit tests?
 
