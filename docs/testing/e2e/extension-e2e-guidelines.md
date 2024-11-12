@@ -8,6 +8,7 @@
 - Write repeatable tests that produce the same result every time
 - Explicitly state assertions
 - Enhance test stability with request mocking
+- Utilize [Page Object Model (POM)](#page-object-model-pom) for streamlined test automation
 
 ### Key
 
@@ -30,7 +31,7 @@ While it's theoretically possible to split tests by individual cases on CircleCI
 
 ## Element locators
 
-Crafting resilient locators is crucial for reliable tests. It’s important to write selectors that are resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated, for example, during UI redesigns. This results in less effort required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another consideration is whether a test should fail if the content of an element changes.
+Crafting resilient locators is crucial for reliable tests. It’s important to write selectors that are resilient to changes in the extension's UI. Tests become less prone to issues as the extension is updated, for example, during UI redesigns. This results in less effort required to maintain and update the tests, improving the stability of the tests and reducing the associated maintenance costs. Element locators should be independent of CSS or JS so that they do not break on the slightest UI change. Another consideration is whether a test should fail if the content of an element changes. It's worth noting that in the testing framework, element locators extend beyond simple CSS selector strings. They can also be objects or methods that return strings or objects, providing flexible and resilient ways to identify elements.
 
 ### Guidelines
 
@@ -314,3 +315,51 @@ Test Name: Connects to a Hardware wallet for Trezor
 ```
 
 ✅ Proposed solution: The Trezor import flow involves opening the Trezor website, then the user takes additional steps on that website to connect the device. A fake version of this website could be created for testing, and the test build could be updated to use this fake version. It's also worth investigating a phishing detection solution, such as replacing Github.com with an empty page.
+
+## Page Object Model (POM)
+
+POM, or Page Object Model, is a design pattern commonly utilized for writing automated end-to-end tests. A page object is a instance of a class that acts as an interface for the page of the application under test.
+This design pattern is being adopted due to its numerous benefits, including improved test maintenance, increased code reusability, and enhanced readability of test scripts. By abstracting the UI details into page objects, changes to the application's UI require updates only in the page objects, significantly reducing the effort needed to maintain tests as the application evolves. The adoption of POM in our e2e testing strategy aims to leverage these advantages to create a more robust, maintainable, and efficient testing framework.
+
+### Composition of a Page Class
+
+Each page class is composed of:
+
+- **Locators**: HTML elements.
+- **Action Methods**: Methods for interacting with the elements.
+- **Check\_ Methods**: Methods that assert the status of elements.
+
+A test creates page objects and interacts with web elements by calling methods of those page objects.
+
+![page object model structure](../../examples/extension-e2e-page-object-model/page-object-model-structure.png 'Page Object Model Structure')
+
+### Best Practices
+
+- A page object should represent meaningful elements of a page and not necessarily a complete page. It can represent a component of a page, like a navbar. See example [here.](../../examples/extension-e2e-page-object-model/home-page.ts#L23)
+- All locators should be kept in the page object file. Carefully define locators for elements in page objects, opting for robust locators since they will be extensively used across various locations. For guidance on crafting these resilient locators, refer to the [element locators section](#element-locators), which outlines the recommended strategies for their creation and usage.
+- Page objects should remain independent and not invoke other page objects to prevent circular references, ensuring they are typically isolated from each other. For handling complex workflows that require interaction across multiple pages, _flows_ should be implemented. Check out the [implementation here.](../../examples/extension-e2e-page-object-model/login.flow.ts#L14) This approach enables the incorporation of all relevant page objects to support specific flows, such as login, sending a transaction, or creating a swap. A dedicated `flows` folder is used to organize and manage these complex workflows.
+- The tests should only call page object methods or flows, they shouldn't interact directly with page elements. [See example here.](../../examples/extension-e2e-page-object-model/simple-send.spec.ts#L9)
+- Page object methods should include detailed logs and detailed error messages in all `check_` methods to aid in debugging tests.
+- Place assertions inside of `check_` methods, and call `check_` methods inside of tests instead of making assertions directly. Along with enhanced logging, this ensures that `check_` methods are reusable across different tests. [See example here.](../../examples/extension-e2e-page-object-model/home-page.ts#L117)
+- Page objects and tests should be written in TypeScript.
+- Follow the naming conventions outlined below for page objects, locators, and methods.
+
+### Naming Convention
+
+#### Page Objects
+
+- Classes start with a capital letter following the word “page”, e.g., `LoginPage`.
+- Page file names are a kebab-case version of the class name, e.g. `LoginPage` would be contained in a file called `login-page.ts`.
+- Flow file names should follow the "flow.ts" suffix and be in kebab-case, e.g., a file defining login flow should be named `login.flow.ts`.
+
+#### Locators
+
+- Locators should be suffixed by the type of the element they represent, e.g., `submitButton`, `passwordInput`, etc.
+
+#### Action Methods
+
+- Follow the camelCase standard, with names that clearly indicate an action and are self-explanatory, e.g., `confirmTx()`.
+
+#### Check\_ Methods
+
+- Using `check_` followed by camelCase for all check methods effectively distinguishes them from action methods, e.g., `check_expectedBalanceIsDisplayed()`. These methods perform the same function as `assert()` statements in the current test body. This naming convention ensures that check methods are as prominent as `assert()` statements in the existing code. This approach proves especially advantageous for long test bodies.

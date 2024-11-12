@@ -1070,3 +1070,39 @@ Jest incorporates most of the features of Sinon with a slimmer API:
 - `jest.fn()` can be used in place of `sinon.stub()`.
 - `jest.spyOn(object, method)` can be used in place of `sinon.spy(object, method)` or `sinon.stub(object, method)` (with the caveat that the method being spied upon will still be called by default).
 - `jest.useFakeTimers()` can be used in place of `sinon.useFakeTimers()` (though note that Jest's "clock" object had fewer features than Sinon's prior to Jest v29.5).
+
+## Avoid general manual mocks:
+
+According to Jest's documentation `Manual mocks are defined by writing a module in a __mocks__/ subdirectory immediately`. These types of mocks are automatically picked up by Jest for all tests. We should be very careful when writing this types of mocks as they will be shared across all tests (including UI integration tests).
+
+## Snapshots
+
+Jest snapshots are not testing the validity of the value tested against a snapshot.
+It only checks for changes since last snapshot generation.
+
+Never consider that rendering a component and matching the snapshot is a test of the component:
+It will only check that the component render worked.
+It may be an error screen and not the actual component.
+
+To make this clear, name your snapshot test cases by the following rules:
+
+🚫 Wrong naming
+
+```ts
+describe('MyComponent', () => {
+  it('should renders correctly')
+```
+
+✅ Correct naming
+
+```ts
+describe('MyComponent', () => {
+  it('render matches snapshot')
+```
+
+Of course variants of this naming can be used to add some context, for instance:
+
+```ts
+describe('MyComponent', () => {
+   it('render matches snapshot when not enabled'
+```
