@@ -1,8 +1,8 @@
 # Testing Overview
 
-At MetaMask, we are committed to delivering high-quality software. These guidelines describe how we use automated tests to maximize product quality while minimizing the cost of writing and maintaining tests.
+At MetaMask we strive to produce zero-fault software, which is not feasible without automated testing. Our goal is for every expectation of our software to be safeguarded by an automated test.
 
-Our automated tests fall into three general categories: end-to-end (e2e), integration and unit tests. This document provides comprehensive guidelines on each testing type, emphasizing the importance of choosing the right test for the right scenario and detailing the specific practices for writing and organizing these tests.
+These guidelines describe how to effectively write tests, and how to choose the right type of test for each scenario. They are intended to help us achieve comprehensive coverage while minimizing implementation and maintenance costs.
 
 ## Testing principles
 
@@ -12,11 +12,11 @@ The following are general principles about how to write automated tests effectiv
 
 What's the difference between a bug and a feature? A feature is expected, a bug is not.
 
-Each test should be verifying specific expectations. If it's not clear what the code-under-test is supposed to do, it won't be clear what to do when the test fails either. Clear expectations are essential for an effective test.
+Each test should verify specific expectations. If it's not clear what the code-under-test is supposed to do, it won't be clear what to do when the test fails either. Clear expectations are essential for an effective test.
 
 ### 2. Tests should catch bugs
 
-This is the main purpose of tests. Take care to ensure that each test actually fails when the described expectation is not met.
+This is the main purpose of tests. Ensure that each test actually fails when the described expectation is not met.
 
 ### 3. Tests should not break often
 
@@ -47,6 +47,15 @@ If a test doesn't align with the previous 6 principles, it's probably doing more
 That doesn't mean we should skip writing tests when it's too difficult. On the contrary, given our high expectations for quality we don't have the luxury of writing only the easiest tests. We need to aim for total coverage.
 
 However, writing and maintaining bad tests is not the shortest path to complete test coverage. Our time is better spent writing good tests, and making investments that allow us to write more good tests. All code can be designed to be easy to test, and even the most complex test setup/teardown can be reasonably fast and easy to read/write with the right tools.
+
+## Types of tests
+
+Our automated tests fall into three general categories: end-to-end (e2e), integration and unit tests.
+
+End-to-end test the complete application, mimicking real user interactions. An end-to-end test typically only mocks interactions with external systems (e.g. network requests), with very minimal internal mocks or modifications. Even platform interactions such as filesystem operations are not mocked, and in the case of the MetaMask extension we use real browsers. used to validate external integrations, and to redundantly test our most critical and risky functionality in case of some fault in our integration and unit test suites.
+
+
+Most of automated tests are unit or integration tests; these are how we achieve complete test coverage of our codebase.
 
 ## What are unit tests?
 
