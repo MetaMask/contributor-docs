@@ -36,7 +36,7 @@ Or alternatively to track more technical code stages such as:
 
 ### Utilities
 
-The [trace utilities](https://github.com/MetaMask/metamask-extension/blob/develop/shared/lib/trace.ts) provide an abstraction of the respective Sentry package to create Sentry transactions with minimum syntax, but maximum simplicity to support features such as:
+The [trace utilities](https://github.com/MetaMask/metamask-extension/blob/main/shared/lib/trace.ts) provide an abstraction of the respective Sentry package to create Sentry transactions with minimum syntax, but maximum simplicity to support features such as:
 
 - Tags
 - Nested Traces
