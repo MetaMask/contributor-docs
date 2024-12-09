@@ -50,7 +50,7 @@ If there are specific changes within your pull request that you'd like to call y
 
 ### Create smaller pull requests
 
-Large pull requests are extremely painful to review. They also need to be kept up to date more frequently since they have a higher chance of creating conflicts that need to be resolved, and they make the commit history more difficult to understand after they are merged.
+Large pull requests are extremely painful to review. They also need to be kept up-to-date more frequently since they have a higher chance of creating conflicts that need to be resolved, and they make the commit history more difficult to understand after they are merged.
 
 Creating small pull requests starts with creating small issues; break your tasks up into smaller pieces ahead of time whenever possible, to prevent pull requests from growing in size in the first place. If a single task still requires many changes, plan out (or prototype) the code changes that are required, and consider how they can be decomposed into separate changes before marking them as ready for review.
 
