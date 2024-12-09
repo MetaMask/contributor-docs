@@ -318,7 +318,7 @@ Test Name: Connects to a Hardware wallet for Trezor
 
 ## Page Object Model (POM)
 
-POM, or Page Object Model, is a design pattern commonly utilized for writing automated end-to-end tests. A page object is a instance of a class that acts as an interface for the page of the application under test.
+POM, or Page Object Model, is a design pattern commonly utilized for writing automated end-to-end tests. A page object is an instance of a class that acts as an interface for the page of the application under test.
 This design pattern is being adopted due to its numerous benefits, including improved test maintenance, increased code reusability, and enhanced readability of test scripts. By abstracting the UI details into page objects, changes to the application's UI require updates only in the page objects, significantly reducing the effort needed to maintain tests as the application evolves. The adoption of POM in our e2e testing strategy aims to leverage these advantages to create a more robust, maintainable, and efficient testing framework.
 
 ### Composition of a Page Class
