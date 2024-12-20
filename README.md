@@ -6,6 +6,7 @@ This is a living repository — nothing is set in stone! If you're member of Met
 
 ## Table of Contents
 
+- [Changelog Guidelines](./docs/changelogs.md)
 - [Contributor Code of Conduct](https://github.com/MetaMask/.github/blob/main/CODE_OF_CONDUCT.md)
 - [Engineering Principles](./docs/engineering-principles.md)
 - [JavaScript Guidelines](./docs/javascript.md)
