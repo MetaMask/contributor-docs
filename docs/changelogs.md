@@ -281,7 +281,7 @@ Be exact even when [linking out to a pull request](#include-links-to-pull-reques
 - Make `fetch` argument for `fetchTokens` and `fetchTopAssets` optional, defaulting to a cached version ([#123](https://github.com/MetaMask/sample-project/pull/123))
 ```
 
-It may be desirable to couch new changes in terms of features that they enable in consuming projects. If so, consider [describing the specific interface differences underneath the broad description](#use-a-nested-list-to-provide-context-or-details-about-a-change) (although be careful not to [group too many things together](#split-disparate-changes-from-the-same-pull-request-into-multiple-entries-if-necessary) so they can be categorized appropriately).
+It may be desirable to couch new changes in terms of features that they enable in consuming projects. If so, consider [describing the specific interface differences underneath the broad description](#-use-a-nested-list-to-provide-context-or-details-about-a-change) (although be careful not to [group too many things together](#split-disparate-changes-from-the-same-pull-request-into-multiple-entries-if-necessary) so they can be categorized appropriately).
 
 ## 💡 Use a nested list to provide context or details about a change
 
