@@ -4,7 +4,7 @@ Changelogs are invaluable for capturing and communicating releases made to proje
 
 ## tl;dr
 
-- Every MetaMask project for which versions are publicly downloadable (such as a package or a ) should have a changelog file, and it should be called `CHANGELOG.md`.
+- Every MetaMask project for which new versions are distributed publicly should have a changelog file, and it should be called `CHANGELOG.md`.
 - A changelog should be written primarily for consumers of the project, and as such, it should be valuable to them at all times.
 - A changelog is valuable when it clearly and concisely describes modifications that have been made to the surface area of the project at each version throughout time, highlighting special versions that require consumers to make changes to _their_ project to avoid problems or migrate to a different workflow to be able to continue to use the software effectively.
 - The surface area of a project include the parts of the API, CLI, and/or GUI that consumers can "see" and use, as well as the external code that it relies on.
