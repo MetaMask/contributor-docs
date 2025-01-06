@@ -73,11 +73,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Broadly, the changelog has the following structure:
 
 1. Prelude, the top-level header and introduction
-2. "Unreleased", a special section representing unpublished changes
-3. One or more sections representing published versions and their changes
-4. Link references for section headers
+2. Sections representing unpublished or published changes
+3. Link references for section headers
 
-The "Unreleased" section and version-specific sections begin with a header (either "Unreleased" or a version). Within each of these sections is set of categories. Although it is not necessary to provide every category, when present they must appear in the following order (enforced by `@auto-changelog` [here](https://github.com/MetaMask/auto-changelog/blob/ef3e86e15b0de7061856a53fd18c4f38e898f5e8/src/constants.ts)). Note that this diverges from the "Keep a Changelog" spec:
+The central sections begin with a header (either "Unreleased" or a version). Within each of these sections is set of categories. Although it is not necessary to provide every category, when present they must appear in the following order (enforced by `@auto-changelog` [here](https://github.com/MetaMask/auto-changelog/blob/ef3e86e15b0de7061856a53fd18c4f38e898f5e8/src/constants.ts)) (note that this diverges from the "Keep a Changelog" spec):
 
 1. Uncategorized
 2. Added
