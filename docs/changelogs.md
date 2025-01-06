@@ -261,7 +261,7 @@ This includes:
 - Adding new tests ❌
 - Adding tooling, CI checks, or making other infrastructure changes that only benefit developers ❌
 
-## Describe changes to the surface area of a project
+## Describe changes to the surface area of the project
 
 It is tempting when leaving a changelog entry to simply reuse the message for the commit that introduced the change. Projects like [`release-please`](https://github.com/googleapis/release-please) or [`semantic-release`](https://github.com/semantic-release/semantic-release) have certainly popularized this practice. Due to character length requirements, however, commit messages can be rather cryptic, and so they are not as helpful in practice as they could be.
 
