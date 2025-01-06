@@ -373,7 +373,7 @@ Often, a commit contains distinct changes across different areas of the codebase
 - Remove deprecated `fetchLegacyFeatureFlags` method ([#111](https://github.com/MetaMask/sample-project/pull/111))
 ```
 
-If it is desirable to preserve context for the new changes, [use a nested list](#use-a-nested-list-to-provide-context-or-details-about-a-change) (but make sure to only group together entries within the same category):
+If it is desirable to preserve context for the new changes, [use a nested list](#-use-a-nested-list-to-provide-context-or-details-about-a-change) (but make sure to only group together entries within the same category):
 
 ✅ **Context is provided using a nested list**
 
