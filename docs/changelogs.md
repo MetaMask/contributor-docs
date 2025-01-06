@@ -96,7 +96,7 @@ Entries for changes that have not been released should be filed under a section 
 
 Before adding a new changelog entry, determine which category it belongs to, adding a new header for the category if it does not exist. Do not leave changes in "Uncategorized".
 
-Consult the [format](#understand-the-format-of-the-changelog) for the available list of change categories and the order in which they should appear.
+Consult the [format](#understand-the-format-and-structure-of-the-changelog) for the available list of change categories and the order in which they should appear.
 
 ### Added
 
@@ -214,7 +214,14 @@ A change is "breaking" if it forces the consumer to take some kind of action aft
 - An error at runtime
 - A surprising difference in behavior
 
-A changelog entry which refers to such a change should be preceded with `**BREAKING:**` so that it is more visible to consumers.
+A changelog entry which refers to such a change should be preceded with `**BREAKING:**` so that it is more visible to consumers. Breaking changes should be listed above other entries in the same section. For example:
+
+```markdown
+## Changed
+
+- **BREAKING:** The `getNetworkClientById` method now throws an error if a network client for the given ID cannot be found instead of returning `undefined` ([#123](https://github.com/MetaMask/sample-project/pull/123))
+- Upgrade `@metamask/utils` to `^1.2.3` ([#456](https://github.com/MetaMask/sample-project/pull/456))
+```
 
 Determining what is breaking is trickier than usual, particularly as it relates to TypeScript types. The following changes are always breaking:
 
