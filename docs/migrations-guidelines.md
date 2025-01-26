@@ -26,7 +26,7 @@ Logs detailed errors and halts the migration if potential data corruption is ide
 
 - Log errors with `captureException` from Sentry, which is crucial for diagnosing issues post-migration,
 - Ensure that error messages are descriptive: include the migration number and a clear description of the issue,
-- If an exception is detected, indicating potential data corruption, halt the migration process and return the intial state,
+- If an exception is detected, indicating potential data corruption, halt the migration process and return the initial state,
 
 3. **Return State**:
 
