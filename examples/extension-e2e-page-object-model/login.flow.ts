@@ -16,7 +16,7 @@ export const loginWithBalanceValidation = async (
   password: string = WALLET_PASSWORD,
   expectedBalance: string = DEFAULT_GANACHE_ETH_BALANCE_DEC,
 ) => {
-  console.log('Navigate to unlock page and try to login with pasword');
+  console.log('Navigate to unlock page and try to login with password');
   await driver.navigate();
   const loginPage = new LoginPage(driver);
   await loginPage.check_pageIsLoaded();
