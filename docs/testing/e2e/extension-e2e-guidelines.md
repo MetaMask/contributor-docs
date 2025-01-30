@@ -70,12 +70,12 @@ Here are some examples how to improve selectors following above guidelines:
 ```javascript
 // current element locator:
 .qr-code__wrapper
-// recommanded element locator: replace CSS locator with a data-testid
+// recommended element locator: replace CSS locator with a data-testid
 '[data-testid="account-details-qr-code"]'
 
 // current element locator:
 '//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery Phrase to keep your wallet and funds secure')]'
-// recommanded element locator: replace XPATH with a query
+// recommended element locator: replace XPATH with a query
 '{ text: Backup your Secret Recovery Phrase to keep your wallet and funds secure, tag: div }'
 ```
 
