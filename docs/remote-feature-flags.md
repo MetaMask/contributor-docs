@@ -62,7 +62,8 @@ Your selector must include:
 - Unit tests
 - Any required business logic for value manipulation
 
-> **Important**: Always use the specific feature flag selector when accessing values. Accessing feature flags directly from Redux state or the main selector bypasses fallback values and can cause crashes.
+> [!IMPORTANT]
+> Always use the specific feature flag selector when accessing values. Accessing feature flags directly from Redux state or the main selector bypasses fallback values and can cause crashes.
 
 ### 3. Remote Feature Flags with thresholds
 
