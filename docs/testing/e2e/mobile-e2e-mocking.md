@@ -1,4 +1,3 @@
-
 # Mocking APIs in MetaMask Mobile for Enhanced E2E Testing
 
 ## Introduction
@@ -17,6 +16,7 @@ We use mocking to enhance our E2E testing, especially for scenarios where E2E al
 ## File Structure
 
 We keep E2E and mock tests separate with file naming conventions:
+
 ```
 root/
 ├── e2e/
@@ -32,6 +32,7 @@ root/
 │       │   ├── mock-responses/
 │       │   │   ├── gas-api-responses.json
 ```
+
 This structure promotes clear organisation and makes managing tests simpler.
 
 ## Mock Server Implementation
@@ -58,12 +59,8 @@ The `startMockServer` function in `e2e/api-mocking/mock-server.js` starts the mo
 import { mockEvents } from '../api-mocking/mock-config/mock-events';
 
 mockServer = await startMockServer({
-  GET: [
-    mockEvents.GET.suggestedGasApiErrorResponse,
-  ],
-  POST: [
-    mockEvents.POST.suggestedGasApiPostResponse,
-  ],
+  GET: [mockEvents.GET.suggestedGasApiErrorResponse],
+  POST: [mockEvents.POST.suggestedGasApiPostResponse],
 });
 ```
 
@@ -98,6 +95,7 @@ export const mockEvents = {
 Mock responses are stored in individual JSON files for each API or service within the `mock-responses` folder, making them easier to maintain and manage. Each API service has its own JSON response file, such as `gasApiResponse.json` for gas-related responses and `ethpriceResponse.json` for Ethereum price responses. This organisation enables clear separation of mock data and simplifies updates or additions.
 
 **Example:** `gasApiResponse.json`
+
 ```json
 {
   "suggestedGasApiResponses": {
@@ -117,7 +115,6 @@ The mock server logs response statuses and bodies to help track mocked requests,
 
 ## Using Mock Testing Effectively
 
-
 ### When to Use Mocks:
 
 - For testing isolated features without relying on live data
@@ -126,13 +123,12 @@ The mock server logs response statuses and bodies to help track mocked requests,
 
 ### When Not to Use Mocks:
 
--	Stable Live Environments: When APIs and services are reliable, testing live ensures production-like accuracy.
+- Stable Live Environments: When APIs and services are reliable, testing live ensures production-like accuracy.
 - Integration Testing: Live tests validate interactions with third-party services, capturing real-world behaviour.
 - Performance Testing: Only live environments provide accurate latency and throughput metrics.
 - Dynamic Data Scenarios: Features relying on user data or complex workflows may reveal issues that mocks miss.
 
 There should be a mix of tests that verify real-life services and some that use mocks, when applicable, to achieve comprehensive coverage.
-
 
 ### Utilizing Fixtures with testSpecificMock
 
@@ -145,7 +141,8 @@ test.use({
   testSpecificMock: {
     GET: [
       {
-        urlEndpoint: 'https://gas.api.cx.metamask.io/networks/1/suggestedGasFees',
+        urlEndpoint:
+          'https://gas.api.cx.metamask.io/networks/1/suggestedGasFees',
         response: { status: 200, message: 'Custom Success Response' },
       },
     ],
