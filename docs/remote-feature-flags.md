@@ -2,8 +2,18 @@
 
 ## Overview
 
-This document outlines the process for adding and managing remote feature flags in MetaMask (Extension and Mobile). Remote feature flags allow us to control feature availability and behavior in production without requiring a new release. They are created on the Launch Darkly platform and distributed by our internal API [ClientConfigAPI](https://github.com/consensys-vertical-apps/mmwp-client-config-api). Please read the [Remote feature flags ADR](https://github.com/MetaMask/decisions/pull/43) for more details.
+This document outlines the process for adding and managing remote feature flags in MetaMask (Extension and Mobile). Remote feature flags allow us to control feature availability and behavior in production without requiring a new release. They are created on the LaunchDarkly platform and distributed by our internal API [ClientConfigAPI](https://github.com/consensys-vertical-apps/mmwp-client-config-api). Please read the [Remote feature flags ADR](https://github.com/MetaMask/decisions/pull/43) for more details.
 
+### Choosing the Right Feature Flag Type
+
+Choose the appropriate feature flag type based on your needs:
+
+- **Boolean flag**: Use when you need a simple ON/OFF toggle for a feature
+
+- **Object flag with scope based on "threshold"**: Use for:
+  - controlling % of users who see a feature
+  - A/B testing different feature variants
+  
 ## Implementation Guide
 
 ### 1. Creating a New Feature Flag
