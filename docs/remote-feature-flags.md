@@ -6,17 +6,88 @@ This document outlines the process for adding and managing remote feature flags 
 
 ### Choosing the Right Feature Flag Type
 
-Choose the appropriate feature flag type based on your needs:
+Choose the appropriate feature flag type based on your needs, and you can create a new feature flag with thresholds by adding a new feature flag in LaunchDarkly with the following JSON:
 
-- **Boolean flag**: Use when you need a simple ON/OFF toggle for a feature
+**1. Boolean flag**: Use when you need a simple ON/OFF toggle for a feature. In this example: `my-feature` is enabled for all users.
 
-- **Object flag with scope based on "threshold"**: Use for:
-  - controlling % of users who see a feature
-  - A/B testing different feature variants
-  
+```json
+{
+  "name": "my-feature",
+  "value": true
+}
+```
+
+**2. Object flag with scope based on "threshold"**: Use for:
+
+- controlling % of users who see a feature
+  In this example: the feature is enabled for 30% of users and disabled for 70% of users.
+
+```json
+[
+  {
+    "name": "feature is ON",
+    "scope": {
+      "type": "threshold",
+      "value": 0.3
+    },
+    "value": true
+  },
+  {
+    "name": "feature is OFF",
+    "scope": {
+      "type": "threshold",
+      "value": 1
+    },
+    "value": false
+  }
+]
+```
+
+- A/B testing different feature variants
+  In this configuration, the swap button will be blue for 25% of users, red for 25% of users, green for 25% of users, and yellow for 25% of users
+
+```json
+[[
+  {
+    "name": "blue",
+    "scope": {
+      "type": "threshold",
+      "value": 0.25
+    },
+    "value": "0000FF"
+  },
+  {
+    "name": "red",
+    "scope": {
+      "type": "threshold",
+      "value": 0.5
+    },
+    "value": "FF0000"
+  },
+  {
+    "name": "green",
+    "scope": {
+      "type": "threshold",
+      "value": 0.75
+    },
+    "value": "00FF00"
+  },
+  {
+    "name": "yellow",
+    "scope": {
+      "type": "threshold",
+      "value": 1
+    },
+    "value": "FFF500"
+  }
+]
+```
+
+The distribution is deterministic based on the user's `metametricsId`, ensuring consistent group assignment across sessions.
+
 ## Implementation Guide
 
-### 1. Creating a New Feature Flag
+### 1. Creating feature flag in LaunchDarkly.
 
 1. Name your flag with team prefix (e.g., `confirmations-blockaid`, `ramps-card`)
 2. Request LaunchDarkly access from TechOps. Here's a template email:
@@ -35,7 +106,7 @@ Thanks!
    - Mobile: "MetaMask Client Config API - Mobile"
 4. Create the flag following the [LaunchDarkly flag creation guide](https://docs.launchdarkly.com/home/flags/new)
 
-### 2. Using Remote Feature Flags in MetaMask
+### 2. Using Remote Feature Flags in MetaMask clients
 
 #### Extension
 
@@ -75,46 +146,7 @@ Your selector must include:
 > [!IMPORTANT]
 > Always use the specific feature flag selector when accessing values. Accessing feature flags directly from Redux state or the main selector bypasses fallback values and can cause crashes.
 
-### 3. Remote Feature Flags with thresholds
-
-#### Create a new feature flag with thresholds
-
-You can create a new feature flag with thresholds by adding a new feature flag in LaunchDarkly with the following JSON:
-
-```json
-[
-  {
-    "name": "groupA",
-    "scope": {
-      "type": "threshold",
-      "value": 0.3
-    },
-    "value": "valueA"
-  },
-  {
-    "name": "groupB",
-    "scope": {
-      "type": "threshold",
-      "value": 0.5
-    },
-    "value": "valueB"
-  },
-  {
-    "name": "groupC",
-    "scope": {
-      "type": "threshold",
-      "value": 1
-    },
-    "value": "valueC"
-  }
-]
-```
-
-#### Feature Flag Values with Scope Based on "metametricsId"
-
-When initializing the `RemoteFeatureFlag` controller, user would have to pass in `metetricsId` to the constructor. Based on the `metetricsId`, controller generates a deterministic random number between 0 and 1, and then compares the random number with the threshold value of each group. The group whose threshold value is greater than or equal to the random number will be selected.
-
-### 4. Testing Remote Feature Flags
+### 3. Testing Remote Feature Flags
 
 #### Extension
 
