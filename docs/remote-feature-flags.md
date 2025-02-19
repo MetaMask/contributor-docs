@@ -6,7 +6,7 @@ This document outlines the process for adding and managing remote feature flags 
 
 ### Choosing the Right Feature Flag Type
 
-Choose the appropriate feature flag type based on your needs, and you can create a new feature flag with thresholds by adding a new feature flag in LaunchDarkly with the following JSON:
+Choose the appropriate feature flag type based on your needs:
 
 **1. Boolean flag**: Use when you need a simple ON/OFF toggle for a feature. In this example: `my-feature` is enabled for all users.
 
