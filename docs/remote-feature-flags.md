@@ -47,7 +47,7 @@ Choose the appropriate feature flag type based on your needs:
   In this configuration, the swap button will be blue for 25% of users, red for 25% of users, green for 25% of users, and yellow for 25% of users
 
 ```json
-[[
+[
   {
     "name": "blue",
     "scope": {
@@ -189,12 +189,18 @@ Your selector must include:
 Add the customized value in your test configuration:
 
 ```typescript
-fixtures: new FixtureBuilder()
-  .withMetaMetricsController({
-    metaMetricsId: MOCK_META_METRICS_ID,
-    participateInMetaMetrics: true,
-  })
-  .build(),
+await withFixtures({
+  fixtures: new FixtureBuilder()
+    .withMetaMetricsController({
+      metaMetricsId: MOCK_META_METRICS_ID,
+      participateInMetaMetrics: true,
+    })
+    .build(),
+  manifestFlags: {
+    remoteFeatureFlags: MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
+  },
+  title: this.test?.fullTitle(),
+});
 ```
 
 #### Mobile
