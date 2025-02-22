@@ -616,7 +616,7 @@ exampleFunction('__proto__');
 ✅
 
 ```typescript
-// @ts-expect-error TODO: remove this annotation once the `Eip1193Provider` class is released, resolving thi provider misalignment issue.
+// @ts-expect-error TODO: remove this annotation once the `Eip1193Provider` class is released, resolving this provider misalignment issue.
 return new Web3Provider(provider);
 
 // TODO: Fix this by handling or eliminating the undefined case
