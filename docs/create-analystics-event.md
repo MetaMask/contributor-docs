@@ -137,7 +137,3 @@ The tracking system automatically respects user privacy settings:
 - Events are only tracked if the user has opted into MetaMetrics
 - Sensitive data is automatically anonymized
 - You don't need to check opt-in status before calling trackEvent
-
-### 3. Implement the Event in the Mobile App
-
-TODO: Add instructions for the mobile app
