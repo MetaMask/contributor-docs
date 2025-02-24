@@ -204,7 +204,7 @@ function myReducer(state = initialState, action) {
 
 As detailed in the [Official Redux Style Guide](https://redux.js.org/style-guide/#avoid-putting-form-state-in-redux) below is a lists of recommended patterns, best practices, and suggested approaches for writing Redux applications.
 
-These patters are split into 3 categories of rules
+These patterns are split into 3 categories of rules
 
 - **Priority A: Essential** - These rules help prevent errors, so learn and abide by them at all costs.
 - **Priority B: Strongly Recommended** - These rules have been found to improve readability and/or developer experience in most projects.
