@@ -91,7 +91,7 @@ async function mockAnalyticsEndpoint(mockServer) {
 }
 
 describe('YourNewEventName Analytics', () => {
-  it('should track the event with correct properties', async () => {
+  it('tracks the event with properties', async () => {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
