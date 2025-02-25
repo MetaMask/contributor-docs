@@ -226,3 +226,6 @@ endTrace({
 
 ...
 ```
+
+Once the traces you need are created, you can:
+- [Setup a dashboard, to visualise the evolution of a given performance metric over time.](./performance-dashboard.md)
