@@ -135,5 +135,8 @@ To validate your analytics event implementation:
 The tracking system automatically respects user privacy settings:
 
 - Events are only tracked if the user has opted into MetaMetrics
-- Sensitive data is automatically anonymized
+- Sensitive data (specified in sensitiveProperties) is tracked separately in an anonymous event
+  - When sensitive data is included in sensitiveProperties, the system creates two separate events:
+    1. An anonymous event that includes both regular and sensitive properties, sent only with an anonymousId
+    2. A regular event with just the normal properties, sent with the user's metaMetricsId
 - You don't need to check opt-in status before calling trackEvent
