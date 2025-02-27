@@ -34,7 +34,7 @@ Example: `UI Startup (Chrome)` or `UI Startup (Firefox)` or `UI Startup (iOS)` o
 
 ### 2. Choose your visualization
 
-Choose `Bar Chart` if you're interested in the evolution of your metric over time:
+Choose `Bar Chart` (our default choice), `Area Chart` or `Line Chart` if you're interested in the evolution of your metric over time:
 
 ![bar-chart](./images/performance-dashboard-bar-chart.png)
 
