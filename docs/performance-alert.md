@@ -2,7 +2,7 @@
 
 ## Overview
 
-Performance alerts can be created in Sentry to be notified in case a given performance metric regresses over time.
+Performance alerts can be created in Sentry to get notified in case a given performance metric regresses over time.
 
 ## Choose the trace you want to monitor
 
@@ -29,8 +29,8 @@ Leave this section unchanged, except the `p95` that you can change into `p75`.
 ### 2. Filter events
 
 Indicate the name of the project:
-- Choose `metasmask` project for Extension
-- Choose `metasmask-mobile` project for Mobile
+- Choose `metamask` project for Extension
+- Choose `metamask-mobile` project for Mobile
 
 Indicate the name of the environment: `production`.
 
@@ -88,6 +88,6 @@ Select `#metamask`.
 
 Click on "Save Rule".
 
-That's it. Your performance alert is now configured and will post this kind of messages the Slack channel you chose.
+That's it. Your performance alert is now configured and will post messages to the Slack channel you chose.
 
 ![performance-alert-slack-message](./images/performance-alert-slack-message.png)

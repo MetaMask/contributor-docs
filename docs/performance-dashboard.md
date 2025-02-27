@@ -12,11 +12,11 @@ The performance metric needed to monitor the performance of a given user flow ca
 
 Go to [Sentry dashboards page](https://metamask.sentry.io/dashboards/).
 
-From there, you can either create a new dashboard for you team, or update an existing one.
+From there, you can either create a new dashboard for your team, or update an existing one.
 
 If you create a new dasboard, you'll need to indicate the name of the project:
-- Choose `metasmask` project for Extension
-- Choose `metasmask-mobile` project for Mobile
+- Choose `metamask` project for Extension
+- Choose `metamask-mobile` project for Mobile
 
 Example:
 - [Extension Platform team dashboard](https://metamask.sentry.io/dashboard/115782/)
