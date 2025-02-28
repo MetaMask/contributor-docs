@@ -15,10 +15,12 @@ Go to [Sentry dashboards page](https://metamask.sentry.io/dashboards/).
 From there, you can either create a new dashboard for your team, or update an existing one.
 
 If you create a new dasboard, you'll need to indicate the name of the project:
+
 - Choose `metamask` project for Extension
 - Choose `metamask-mobile` project for Mobile
 
 Example:
+
 - [Extension Platform team dashboard](https://metamask.sentry.io/dashboard/115782/)
 - [Mobile Platform team dashboard](https://metamask.sentry.io/dashboard/115346/)
 
@@ -55,26 +57,31 @@ Replicate the following config:
 ### 5. Filter your results
 
 For Extension, if you want to filter for Chrome metrics only, use the following query format:
+
 ```
 transaction:"name-of-the-trace" browser.name:Chrome
 ```
 
 For Extension, if you want to filter for Firefox metrics only, use the following query format:
+
 ```
 transaction:"name-of-the-trace" browser.name:Firefox
 ```
 
 For Mobile, if you want to filter for iOS metrics only, use the following query format:
+
 ```
 transaction:"name-of-the-trace" release.package:io.metamask.MetaMask
 ```
 
 For Mobile, if you want to filter for Android metrics only, use the following query format:
+
 ```
 transaction:"name-of-the-trace" release.package:io.metamask
 ```
 
 Example filter:
+
 ```
 transaction:"UI Startup" browser.name:Chrome
 ```

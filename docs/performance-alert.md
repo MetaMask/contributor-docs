@@ -29,27 +29,32 @@ Leave this section unchanged, except the `p95` that you can change into `p75`.
 ### 2. Filter events
 
 Indicate the name of the project:
+
 - Choose `metamask` project for Extension
 - Choose `metamask-mobile` project for Mobile
 
 Indicate the name of the environment: `production`.
 
 For Extension, use the following query format:
+
 ```
 transaction:"name-of-the-trace"
 ```
 
 For Mobile, if you want to filter for iOS metrics only, use the following query format:
+
 ```
 transaction:"name-of-the-trace" release.package:io.metamask.MetaMask
 ```
 
 For Mobile, if you want to filter for Android metrics only, use the following query format:
+
 ```
 transaction:"name-of-the-trace" release.package:io.metamask
 ```
 
 Example filter:
+
 ```
 transaction:"UI Startup" release.package:io.metamask.MetaMask
 ```
@@ -57,6 +62,7 @@ transaction:"UI Startup" release.package:io.metamask.MetaMask
 ### 3. Set thresholds
 
 Select the following options:
+
 - Type: `Anomaly`
 - Level of responsiveness `Medium`
 - Direction of anomaly movement: `Above bounds only`
@@ -68,6 +74,7 @@ Select the following options:
 Click on "Add Action".
 
 Select the following options:
+
 - Action type: `Critical Status`
 - Channel type: `Slack - Consensys`
 - Slack channel name: `#your-slack-channel-name` (Example: #metamask-your-team-name-release-monitoring)
