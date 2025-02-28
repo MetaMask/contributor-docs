@@ -10,6 +10,8 @@ This is a living repository — nothing is set in stone! If you're member of Met
 - [Engineering Principles](./docs/engineering-principles.md)
 - [JavaScript Guidelines](./docs/javascript.md)
 - [Migrations Best Practices](./docs/migrations-guidelines.md)
+- [Performance Alert Guidelines](./docs/performance-alert.md)
+- [Performance Dashboard Guidelines](./docs/performance-dashboard.md)
 - [Performance Tracing Guidelines](./docs/performance-tracing.md)
 - [Pull Requests Guide](./docs/pull-requests.md)
 - [React Guidelines](./docs/react.md)
