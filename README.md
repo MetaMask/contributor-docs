@@ -14,6 +14,7 @@ This is a living repository — nothing is set in stone! If you're member of Met
 - [Pull Requests Guide](./docs/pull-requests.md)
 - [React Guidelines](./docs/react.md)
 - [Redux Guidelines](./docs/redux.md)
+- [Remote Feature Flags](./docs/remote-feature-flags.md)
 - [Secure Coding Guidelines](./docs/secure-coding-guidelines.md)
 - [Secure Development Lifecycle Policy](./docs/sdlc.md)
 - [Testing Guidelines](./docs/testing/overview.md)
