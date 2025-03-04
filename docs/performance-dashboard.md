@@ -14,7 +14,7 @@ Go to [Sentry dashboards page](https://metamask.sentry.io/dashboards/).
 
 From there, you can either create a new dashboard for your team, or update an existing one.
 
-If you create a new dasboard, you'll need to indicate the name of the project:
+If you create a new dashboard, you'll need to indicate the name of the project:
 
 - Choose `metamask` project for Extension
 - Choose `metamask-mobile` project for Mobile
@@ -30,7 +30,7 @@ Click on "Add widget".
 
 ### 1. Name your widget
 
-Choose a self explanatory name for your widget, like: `name-of-the-trace (type-of-application)`.
+Choose a self-explanatory name for your widget, like: `name-of-the-trace (type-of-application)`.
 
 Example: `UI Startup (Chrome)` or `UI Startup (Firefox)` or `UI Startup (iOS)` or `UI Startup (Android)`
 
@@ -40,7 +40,7 @@ Choose `Bar Chart` (our default choice), `Area Chart` or `Line Chart` if you're 
 
 ![bar-chart](./images/performance-dashboard-bar-chart.png)
 
-Choose `Table` if you're interested in the average value for you metric:
+Choose `Table` if you're interested in the average value for your metric:
 
 ![table](./images/performance-dashboard-table.png)
 
@@ -52,7 +52,7 @@ Select `Transactions`.
 
 Replicate the following config:
 
-![y-axis-congig](./images/performance-dashboard-y-axis-config.png)
+![y-axis-config](./images/performance-dashboard-y-axis-config.png)
 
 ### 5. Filter your results
 
