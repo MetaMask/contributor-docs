@@ -107,61 +107,66 @@ describe('when adding a token', () => {
 
 ## Use `it` to specify the desired behavior for the code under test
 
-As each test [should focus on a single aspect of that behavior](#keep-tests-focused), its description should describe that behavior. This description helps to anchor the purpose of the test, understand the intended behavior, and debug differences with the actual behavior that may occur down the road.
+As each test [has to focus on a single aspect of that behavior](#keep-tests-focused), its description must describe that behavior using these guidelines:
 
-Do not repeat the name of the function or method in the name of the test.
-
-Do not use "should" at the beginning of the test name. The official Jest documentation [omits this word from their examples](https://jestjs.io/docs/next/getting-started), and it creates noise when reviewing the list of tests printed after a run.
+1. Start with an active verb in present tense
+2. Focus on what is being tested, not how
+3. Be explicit about the context when needed
+4. Keep names concise but descriptive
+5. Avoid "should", "when", and other unnecessary words
+6. Do not state obvious successful outcomes ("works successfully", "correctly")
+7. Do not list test parameters; describe what they represent instead
 
 ### Examples
 
-🚫
+🚫 Don't
 
 ```typescript
-it('should not stop the block tracker', () => {
+it('should successfully add token when address is valid and decimals are set and symbol exists', () => {
+  // ...
+});
+
+it('should fail and show error message when invalid address is provided', () => {
+  // ...
+});
+
+it('works correctly when processing the transaction', () => {
+  // ...
+});
+
+it('should throw error when balance is insufficient and user tries to send tokens', () => {
   // ...
 });
 ```
 
-✅
+✅ Do
 
 ```typescript
-it('does not stop the block tracker', () => {
+it('stores valid token in state', () => {
+  // ...
+});
+
+it('displays invalid address error', () => {
+  // ...
+});
+
+it('processes transaction', () => {
+  // ...
+});
+
+it('prevents sending with insufficient balance', () => {
   // ...
 });
 ```
 
-🚫
+The test description should communicate the expected behavior clearly and directly. Avoid:
 
-```typescript
-describe('TokensController', () => {
-  it('addToken', () => {
-    // ...
-  });
-});
-```
-
-🚫
-
-```typescript
-describe('TokensController', () => {
-  it('adds a token', () => {
-    // ...
-  });
-});
-```
-
-✅
-
-```typescript
-describe('TokensController', () => {
-  describe('addToken', () => {
-    it('adds the given token to "tokens" in state', () => {
-      // ...
-    });
-  });
-});
-```
+- Repeating the name of the function or method being tested
+- Using "should" at the beginning of the test name
+- Including implementation details in the name
+- Stating obvious successful outcomes
+- Listing test parameters instead of what they represent
+- Using words like "fail", "error", or "throw" when the error is the expected behavior
 
 ### Read more
 
