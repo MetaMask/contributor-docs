@@ -1105,7 +1105,6 @@ A selector function that is derived via composition of input selectors should en
 🚫
 
 ```typescript
-function selectTodosAndUsers
 const selectPropA = (state: RootState) => state.sliceA.propA;
 const selectPropB = (state: RootState) => state.sliceB.propB;
 
