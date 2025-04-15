@@ -1075,20 +1075,24 @@ A selector function that directly queries state properties should define its inp
 
 ```typescript
 const selectTodos = (state: RootState) => {
-  const { todoSlice: { todosA, todosB } } = state;
+  const {
+    todoSlice: { todosA, todosB },
+  } = state;
   return { todosA, todosB };
-}
+};
 ```
 
 ✅
 
 ```typescript
-const selectTodos = (state: { 
-  todoSlice: Pick<RootState['todoSlice'], 'todosA' | 'todosB'>
+const selectTodos = (state: {
+  todoSlice: Pick<RootState['todoSlice'], 'todosA' | 'todosB'>;
 }) => {
-  const { todoSlice: { todosA, todosB } } = state;
+  const {
+    todoSlice: { todosA, todosB },
+  } = state;
   return { todosA, todosB };
-}
+};
 ```
 
 A selector function that is derived via composition of input selectors should ensure that the input state argument of the output function is defined by merging the input selectors' state argument types.
@@ -1106,21 +1110,21 @@ const selectPropA = (state: RootState) => state.sliceA.propA;
 const selectPropB = (state: RootState) => state.sliceB.propB;
 
 // As its first argument, `selectResult` expects a state object of type `RootState`
-const selectResult = 
+const selectResult =
   createSelector([selectPropA, selectPropB], (propA, propB) => ...);
 ```
 
 ✅
 
 ```typescript
-const selectPropA = (state: { sliceA: { propA: string } }) 
+const selectPropA = (state: { sliceA: { propA: string } })
   => state.sliceA.propA;
-const selectPropB = (state: { sliceB: { propB: number } }) 
+const selectPropB = (state: { sliceB: { propB: number } })
   => state.sliceA.propB;
 
 // As its first argument, `selectResult` expects a state object of the following type:
 // `{ sliceA: { propA: string } } & { sliceB: { propB: number } }`
-const selectResult = 
+const selectResult =
   createSelector([selectPropA, selectPropB], (propA, propB) => ...);
 ```
 
