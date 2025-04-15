@@ -1149,4 +1149,6 @@ Enabling composed selectors to accept different, even disjoint state types resol
 > [!NOTE]
 > At runtime, all selectors are passed the entire Redux state, which is always assignable to the narrower state argument type.
 >
-> Following this guideline does not affect selector memoization. As `Object.assign` and spread syntax perform a shallow copy operation, the references of nested composite data structures are not mutated when a state object is passed into a selector function. This makes cache invalidation a non-concern.
+> Following this guideline does not affect selector memoization. When background state updates are dispatched to the Redux store, the Redux state object is shallow copied. This does not mutate the references of nested composite data structures, which makes cache invalidation a non-concern.
+>
+> The only exception to this is an idempotent selector that returns the entire Redux state (e.g. `(state: RootState) => state`). This pattern should be avoided if possible, as it will cause a performance hit to any downstream selector.
