@@ -1141,7 +1141,7 @@ Paradoxically, selectors that only need access to very few properties end up nee
 
 When selectors are actually invoked, including in test files, it's not always practical to prepare and pass in a very large state object.
 
-It's both safer and more convenient to restrict the state being passed into the selector to the minimum size required for the selector to function.
+It's both safer and more convenient to restrict the state argument type of the selector to the minimum size required for the selector to function. Note that this does not prevent the selector from accepting a larger state object, but it does allow the selector to function with an incomplete state object, as long as it satisfies the input argument type.
 
 This requirement becomes incompatible with the composability requirement if all selectors must share a homogeneous state type.
 Enabling composed selectors to accept different, even disjoint state types resolves this issue.
