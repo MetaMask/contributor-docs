@@ -1064,3 +1064,91 @@ async function removeAccount(address: Hex): Promise<KeyringControllerState> {
   return this.fullUpdate();
 }
 ```
+
+#### For selector functions, define the input state argument with the narrowest type that preserves functionality
+
+A selector function that directly queries state properties should define its input state argument as a subtype of root state that only contains the required queried properties.
+
+**Example <a id="example-ef791329-ec32-477f-b17f-efeed019a42e"></a> ([🔗 permalink](#example-ef791329-ec32-477f-b17f-efeed019a42e)):**
+
+🚫
+
+```typescript
+const selectTodos = (state: RootState) => {
+  const {
+    todoSlice: { todosA, todosB },
+  } = state;
+  return { todosA, todosB };
+};
+```
+
+✅
+
+```typescript
+const selectTodos = (state: {
+  todoSlice: Pick<RootState['todoSlice'], 'todosA' | 'todosB'>;
+}) => {
+  const {
+    todoSlice: { todosA, todosB },
+  } = state;
+  return { todosA, todosB };
+};
+```
+
+A selector function that is derived via composition of input selectors should ensure that the input state argument of the output function is defined by merging the input selectors' state argument types.
+
+> [!TIP]
+> This is the default behavior of the `reselect` library, so there is no need to explicitly define a merged type for the result function when using the `createSelector` or `createDeepEqualSelector` methods.
+
+**Example <a id="example-85437d62-3d51-489a-80c9-cd7639ad6937"></a> ([🔗 permalink](#example-85437d62-3d51-489a-80c9-cd7639ad6937)):**
+
+🚫
+
+```typescript
+const selectPropA = (state: RootState) => state.sliceA.propA;
+const selectPropB = (state: RootState) => state.sliceB.propB;
+
+// As its first argument, `selectResult` expects a state object of type `RootState`
+const selectResult =
+  createSelector([selectPropA, selectPropB], (propA, propB) => ...);
+```
+
+✅
+
+```typescript
+const selectPropA = (state: { sliceA: { propA: string } })
+  => state.sliceA.propA;
+const selectPropB = (state: { sliceB: { propB: number } })
+  => state.sliceA.propB;
+
+// As its first argument, `selectResult` expects a state object of the following type:
+// `{ sliceA: { propA: string } } & { sliceB: { propB: number } }`
+const selectResult =
+  createSelector([selectPropA, selectPropB], (propA, propB) => ...);
+```
+
+Selectors must be both composable and atomic. If all input selectors are typed homogeneously, these can become conflicting objectives.
+
+- **Composable:**
+
+Without heterogeneous typing for selectors, the size of the state type for all selectors tends to inflate. This is because a selector's state must be a supertype of the intersection of all input selector state types, including selectors that are nested in the definitions of input selectors.
+
+Eventually, many selectors end up being defined with a state type that is close to or equal to the entire Redux state.
+
+Paradoxically, selectors that only need access to very few properties end up needing to have the widest state type, because they tend to be merged into the most selectors across several nested levels.
+
+- **Atomic:**
+
+When selectors are actually invoked, including in test files, it's not always practical to prepare and pass in a very large state object.
+
+It's both safer and more convenient to restrict the state argument type of the selector to the minimum size required for the selector to function. Note that this does not prevent the selector from accepting a larger state object, but it does allow the selector to function with an incomplete state object, as long as it satisfies the input argument type.
+
+This requirement becomes incompatible with the composability requirement if all selectors must share a homogeneous state type.
+Enabling composed selectors to accept different, even disjoint state types resolves this issue.
+
+> [!NOTE]
+> At runtime, all selectors are passed the entire Redux state, which is always assignable to the narrower state argument type.
+>
+> Following this guideline does not affect selector memoization. When background state updates are dispatched to the Redux store, the Redux state object is shallow copied. This does not mutate the references of nested composite data structures, which makes cache invalidation a non-concern.
+>
+> The only exception to this is an idempotent selector that returns the entire Redux state (e.g. `(state: RootState) => state`). This pattern should be avoided if possible, as it will cause a performance hit to any downstream selector.
