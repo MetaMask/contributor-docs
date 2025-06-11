@@ -548,3 +548,168 @@ it('add Gnosis network', async () => {
   await NetworkView.tapRpcNetworkAddButton();
 });
 ```
+
+## TypeScript Implementation Guidelines for E2E Tests
+
+The MetaMask Mobile e2e infrastructure supports TypeScript with a global types system that provides enhanced developer experience, type safety, and improved code maintainability.
+
+Global Types Architecture
+🎯 Global Type Definitions
+All Detox element types are globally available in e2e files without imports via e2e/types/detox.d.ts:
+```javascript
+// ✅ Available globally - no imports needed
+type DetoxElement = Promise<Detox.IndexableNativeElement | Detox.NativeElement | Detox.IndexableSystemElement>;
+type TappableElement = Promise<Detox.IndexableNativeElement | Detox.SystemElement>;
+type TypableElement = Promise<Detox.IndexableNativeElement>;
+
+// Individual element types for specific casting
+type IndexableNativeElement = Detox.IndexableNativeElement;
+type NativeElement = Detox.NativeElement;
+type SystemElement = Detox.SystemElement;
+
+// Configuration and matcher types
+type DeviceLaunchAppConfig = Detox.DeviceLaunchAppConfig;
+type DetoxMatcher = Detox.NativeMatcher;
+```
+
+Best Practices
+✅ Page Object Implementation
+```javascript
+// ✅ Good: Use global types without imports
+class RequestPaymentView {
+  get backButton(): TappableElement {
+    return Matchers.getElementByID(RequestPaymentViewSelectors.BACK_BUTTON_ID);
+  }
+
+  get amountInput(): TypableElement {
+    return Matchers.getElementByID(RequestPaymentViewSelectors.REQUEST_AMOUNT_INPUT_ID);
+  }
+
+  get containerElement(): DetoxElement {
+    return Matchers.getElementByID(RequestPaymentViewSelectors.CONTAINER_ID);
+  }
+}
+```
+
+✅ Selector Files with Const Assertions
+```javascript
+// ✅ Good: Use const assertions for better type inference
+export const RequestPaymentViewSelectorsIDs = {
+  BACK_BUTTON_ID: 'request-payment-back-button',
+  REQUEST_AMOUNT_INPUT_ID: 'request-amount-input',
+  CONTAINER_ID: 'request-payment-container',
+} as const;
+```
+
+✅ Test Specifications
+```javascript
+// ✅ Good: Proper async function typing
+describe('Request Token Flow', (): void => {
+  beforeAll(async (): Promise<void> => {
+    await TestHelpers.reverseServerPort();
+  });
+
+  it('should request DAI amount', async (): Promise<void> => {
+    await RequestPaymentView.tapOnToken();
+    await Assertions.checkIfVisible(RequestPaymentView.amountInput);
+  });
+});
+```
+
+Migration Guidelines
+
+🔄 Converting JavaScript Files to TypeScript
+-  File Extensions: Change .js to .ts
+-  Remove Explicit Type Imports: Global types eliminate the need for Detox type imports
+-  Add Return Types: Use DetoxElement, TappableElement, or TypableElement for getters
+-  Const Assertions: Add as const to selector objects
+Before (JavaScript):
+```javascript
+// ❌ Old approach
+import type { IndexableNativeElement } from 'detox/detox';
+
+class MyPageView {
+  get myButton() {
+    return Matchers.getElementByID('button-id');
+  }
+}
+
+export const Selectors = {
+  BUTTON_ID: 'button-id',
+};
+```
+After (TypeScript):
+```javascript
+// ✅ New approach - clean and type-safe
+class MyPageView {
+  get myButton(): TappableElement {
+    return Matchers.getElementByID('button-id');
+  }
+}
+
+export const Selectors = {
+  BUTTON_ID: 'button-id',
+} as const;
+```
+
+Developer Experience Benefits
+
+🚀 IntelliSense and Autocomplete
+-  Type Suggestions: Global types appear automatically when typing
+-  Method Autocomplete: Full Detox method suggestions on typed elements
+-  Error Prevention: Compile-time type checking prevents runtime errors
+-  Parameter Hints: Detailed method parameter information
+
+🔧 Enhanced Productivity
+```javascript
+// ✅ Full autocomplete available
+get myButton(): TappableElement {
+  return Matchers.getElementByID('button-id');
+}
+
+// When using myButton, you get autocomplete for:
+// - .tap()
+// - .longPress()
+// - .multiTap()
+// - All other Detox element methods
+```
+
+Type Safety Patterns
+
+✅ Explicit Type Casting When Needed
+```javascript
+// ✅ For specific element types
+await Assertions.checkIfElementToHaveText(
+  ActivitiesView.transactionStatus(FIRST_ROW) as Promise<IndexableNativeElement>,
+  'Confirmed',
+  30000,
+);
+```
+
+✅ Proper Async/Await Usage
+```javascript
+// ✅ Elements are promises, use await for interactions
+const button = RequestPaymentView.submitButton;
+await Gestures.waitAndTap(button);
+await Assertions.checkIfVisible(button);
+```
+
+Verification and Testing
+
+🧪 Type Checking
+```javascript
+# Verify TypeScript compilation
+npx tsc --noEmit --project tsconfig.json
+
+# Run e2e tests with TypeScript
+yarn test:e2e:ios:debug:run e2e/specs/wallet/request-token-flow.spec.ts
+```
+
+Contributing Guidelines
+
+When contributing TypeScript e2e tests:
+- Follow Global Types: Use the global type system instead of explicit imports
+- Maintain Compatibility: Ensure TypeScript files work alongside existing JavaScript files
+- Add Type Annotations: Provide return types for element getters and test functions
+- Use Const Assertions: Apply as const to selector objects for better type inference
+- Test Thoroughly: Verify both compilation and runtime behavior
