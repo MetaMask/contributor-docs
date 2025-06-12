@@ -1102,7 +1102,7 @@ describe('MyComponent', () => {
 
 ```ts
 describe('MyComponent', () => {
-  it('matches snapshot')
+  it('Matches rendered snapshot')
 ```
 
 Of course variants of this naming can be used to add some context, for instance:
