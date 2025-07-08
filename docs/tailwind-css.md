@@ -6,7 +6,7 @@ Tailwind CSS conventions and best practices for using Tailwind CSS effectively a
 
 ### Component-First Approach
 
-Always prefer components over raw JSX elements with Tailwind classes. Use component props to control variants and styles, but use `className`/`twClassname`/`tw` when no equivalent prop exists.
+Always prefer components over raw JSX elements with Tailwind classes. Use component props to control variants and styles, but use `className`/`twClassName`/`tw` when no equivalent prop exists.
 
 **React:**
 
