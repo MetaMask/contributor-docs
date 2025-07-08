@@ -13,19 +13,25 @@ Always prefer components over raw JSX elements with Tailwind classes. Use compon
 ✅ **Recommended**
 
 ```tsx
-import { Box, BoxBackgroundColor, BoxBorderRadius } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxBorderRadius,
+} from '@metamask/design-system-react';
 
-<Box backgroundColor={BoxBackgroundColor.BackgroundDefault} padding={4} borderRadius={BoxBorderRadius.Lg}>
+<Box
+  backgroundColor={BoxBackgroundColor.BackgroundDefault}
+  padding={4}
+  borderRadius={BoxBorderRadius.Lg}
+>
   Content
-</Box>
+</Box>;
 ```
 
 ❌ **Avoid**
 
 ```tsx
-<div className="bg-default p-4 rounded-lg">
-  Content
-</div>
+<div className="bg-default p-4 rounded-lg">Content</div>
 ```
 
 **React Native:**
@@ -33,19 +39,25 @@ import { Box, BoxBackgroundColor, BoxBorderRadius } from '@metamask/design-syste
 ✅ **Recommended**
 
 ```tsx
-import { Box, BoxBackgroundColor, BoxBorderRadius } from '@metamask/design-system-react-native';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxBorderRadius,
+} from '@metamask/design-system-react-native';
 
-<Box backgroundColor={BoxBackgroundColor.BackgroundDefault} padding={4} borderRadius={BoxBorderRadius.Lg}>
+<Box
+  backgroundColor={BoxBackgroundColor.BackgroundDefault}
+  padding={4}
+  borderRadius={BoxBorderRadius.Lg}
+>
   Content
-</Box>
+</Box>;
 ```
 
 ❌ **Avoid**
 
 ```tsx
-<View style={tw`bg-default p-4 rounded-lg`}>
-  Content
-</View>
+<View style={tw`bg-default p-4 rounded-lg`}>Content</View>
 ```
 
 ### Color and Typography
@@ -112,7 +124,7 @@ const styles = StyleSheet.create({
 
 <View style={styles.container}>
   <Text style={styles.title}>Title</Text>
-</View>
+</View>;
 ```
 
 ## Platform-Specific Guidelines
@@ -127,9 +139,13 @@ Leverage Tailwind's utility classes for styling via `className`.
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 
 // When no prop exists
-<Box tabIndex={0} backgroundColor={BoxBackgroundColor.BackgroundDefault} className="hover:bg-hover active:bg-pressed">
+<Box
+  tabIndex={0}
+  backgroundColor={BoxBackgroundColor.BackgroundDefault}
+  className="hover:bg-hover active:bg-pressed"
+>
   Content
-</Box>
+</Box>;
 ```
 
 ❌ **Avoid**
@@ -140,7 +156,7 @@ const styles = {
   padding: '16px',
 };
 
-<div style={styles}>Content</div>
+<div style={styles}>Content</div>;
 ```
 
 ### React Native Components
@@ -154,7 +170,7 @@ import { useTailwind } from '@metamask/design-system-twrnc-preset';
 
 const MyComponent = () => {
   const tw = useTailwind();
-  
+
   return (
     <Pressable style={tw`bg-default p-4`}>
       Content
@@ -210,13 +226,13 @@ import { ButtonBase, Icon, IconName } from '@metamask/design-system-react';
 <ButtonBase className="h-auto flex-1 flex-col justify-center rounded-lg bg-muted py-4 hover:bg-muted-hover active:bg-muted-pressed">
   <Icon name={IconName.Bank} className="mb-2" />
   Buy/Sell
-</ButtonBase>
+</ButtonBase>;
 ```
 
 **React Native - twClassName and tw usage:**
 
 ```tsx
-import { ButtonBase, Icon, IconName, Box, BoxFlexDirection, BoxAlignItems, BoxJustifyContent, Text, FontWeight,  } from '@metamask/design-system-react';
+import { ButtonBase, Icon, IconName, Box, BoxFlexDirection, BoxAlignItems, BoxJustifyContent, Text, FontWeight } from '@metamask/design-system-react';
 
 // Custom overrides with twClassName
 <ButtonBase twClassName="h-20 flex-1 rounded-lg bg-muted px-0 py-4">
@@ -283,10 +299,7 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 ❌ **Avoid**
 
 ```tsx
-<div 
-  className="bg-default p-4" 
-  style={{ marginTop: '16px' }}
->
+<div className="bg-default p-4" style={{ marginTop: '16px' }}>
   Content
 </div>
 ```
@@ -309,11 +322,7 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 ❌ **Avoid**
 
 ```tsx
-<View 
-  style={[tw`bg-default p-4`, { marginTop: 16 }]}
->
-  Content
-</View>
+<View style={[tw`bg-default p-4`, { marginTop: 16 }]}>Content</View>
 ```
 
 ✅ **Recommended**
@@ -331,4 +340,4 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 
 ---
 
-> This guide is a living document and will be updated as our design system evolves. For questions or suggestions, please reach out to the design system team. 
+> This guide is a living document and will be updated as our design system evolves. For questions or suggestions, please reach out to the design system team.
