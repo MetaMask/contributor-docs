@@ -95,7 +95,7 @@ import { Box, BoxBackgroundColor, BoxBorderRadius, Text, TextVariant, TextColor 
 ✅ **Recommended**
 
 ```tsx
-import { Box, BoxBackgroundColor, BoxBorderRadius, Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { Box, BoxBackgroundColor, BoxBorderRadius, Text, TextVariant, TextColor } from '@metamask/design-system-react-native';
 
 <Box backgroundColor={BoxBackgroundColor.PrimaryDefault} padding={4}>
   <Text variant={TextVariant.HeadingLg} color={TextColor.PrimaryInverse}>
@@ -159,7 +159,7 @@ const styles = {
 <div style={styles}>Content</div>;
 ```
 
-### React Native Components
+### React Native
 
 Use `useTailwind` hook from `@metamask/design-system-twrnc-preset` instead of importing `twrnc` directly. The preset automatically handles light/dark theme switching and design token integration.
 
@@ -232,7 +232,7 @@ import { ButtonBase, Icon, IconName } from '@metamask/design-system-react';
 **React Native - twClassName and tw usage:**
 
 ```tsx
-import { ButtonBase, Icon, IconName, Box, BoxFlexDirection, BoxAlignItems, BoxJustifyContent, Text, FontWeight } from '@metamask/design-system-react';
+import { ButtonBase, Icon, IconName, Box, BoxFlexDirection, BoxAlignItems, BoxJustifyContent, Text, FontWeight } from '@metamask/design-system-react-native';
 
 // Custom overrides with twClassName
 <ButtonBase twClassName="h-20 flex-1 rounded-lg bg-muted px-0 py-4">
@@ -277,7 +277,7 @@ Example [.vscode/settings.json](https://github.com/MetaMask/metamask-design-syst
 
 ### Code Formatting
 
-- **Eslint Integration**: Use the [tailwind eslint plugin](https://github.com/francoismassart/eslint-plugin-tailwindcss)
+- **ESLint Integration**: Use the [tailwind eslint plugin](https://github.com/francoismassart/eslint-plugin-tailwindcss)
 - **Consistent Ordering**: Maintain consistent class ordering through prettier-plugin-tailwindcss
 - **Multiple Configs**: Respect the different Tailwind configs for React and React Native
 
