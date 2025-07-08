@@ -340,4 +340,4 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 
 ---
 
-> This guide is a living document and will be updated as our design system evolves. For questions or suggestions, please reach out to the design system team.
+> This guide is a living document and will be updated as our design system evolves. For questions or suggestions, please reach out to the [Design System Engineers](https://github.com/orgs/MetaMask/teams/design-system-engineers).
