@@ -10,6 +10,12 @@ Always prefer components over raw JSX elements with Tailwind classes. Use compon
 
 **React:**
 
+❌ **Avoid**
+
+```tsx
+<div className="bg-default p-4 rounded-lg">Content</div>
+```
+
 ✅ **Recommended**
 
 ```tsx
@@ -28,13 +34,13 @@ import {
 </Box>;
 ```
 
+**React Native:**
+
 ❌ **Avoid**
 
 ```tsx
-<div className="bg-default p-4 rounded-lg">Content</div>
+<View style={tw`bg-default p-4 rounded-lg`}>Content</View>
 ```
-
-**React Native:**
 
 ✅ **Recommended**
 
@@ -54,17 +60,20 @@ import {
 </Box>;
 ```
 
-❌ **Avoid**
-
-```tsx
-<View style={tw`bg-default p-4 rounded-lg`}>Content</View>
-```
-
 ### Color and Typography
 
 Use only design token based classes that are generated from our design system. Never use Tailwind's default color palette, arbitrary colors like hex or rgb values or font sizes. Always use the `Text` component for text styling instead of Tailwind's typography classes.
 
 **React:**
+
+❌ **Avoid**
+
+```tsx
+<div className="bg-blue-500 text-[#FFFFFF] p-4 text-lg font-bold">
+  <h1 className="text-2xl">Title</h1>
+</div>
+<p className="text-gray-600">Content</p>
+```
 
 ✅ **Recommended**
 
@@ -81,31 +90,7 @@ import { Box, BoxBackgroundColor, BoxBorderRadius, Text, TextVariant, TextColor 
 </Text>
 ```
 
-❌ **Avoid**
-
-```tsx
-<div className="bg-blue-500 text-white p-4 text-lg font-bold">
-  <h1 className="text-2xl">Title</h1>
-</div>
-<p className="text-gray-600">Content</p>
-```
-
 **React Native:**
-
-✅ **Recommended**
-
-```tsx
-import { Box, BoxBackgroundColor, BoxBorderRadius, Text, TextVariant, TextColor } from '@metamask/design-system-react-native';
-
-<Box backgroundColor={BoxBackgroundColor.PrimaryDefault} padding={4}>
-  <Text variant={TextVariant.HeadingLg} color={TextColor.PrimaryInverse}>
-    Title
-  </Text>
-</Box>
-<Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-  Content
-</Text>
-```
 
 ❌ **Avoid**
 
@@ -127,26 +112,26 @@ const styles = StyleSheet.create({
 </View>;
 ```
 
+✅ **Recommended**
+
+```tsx
+import { Box, BoxBackgroundColor, BoxBorderRadius, Text, TextVariant, TextColor } from '@metamask/design-system-react-native';
+
+<Box backgroundColor={BoxBackgroundColor.PrimaryDefault} padding={4}>
+  <Text variant={TextVariant.HeadingLg} color={TextColor.PrimaryInverse}>
+    Title
+  </Text>
+</Box>
+<Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+  Content
+</Text>
+```
+
 ## Platform-Specific Guidelines
 
 ### React
 
 Leverage Tailwind's utility classes for styling via `className`.
-
-✅ **Recommended**
-
-```tsx
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-
-// When no prop exists
-<Box
-  tabIndex={0}
-  backgroundColor={BoxBackgroundColor.BackgroundDefault}
-  className="hover:bg-hover active:bg-pressed"
->
-  Content
-</Box>;
-```
 
 ❌ **Avoid**
 
@@ -159,42 +144,23 @@ const styles = {
 <div style={styles}>Content</div>;
 ```
 
-### React Native
-
-Use `useTailwind` hook from `@metamask/design-system-twrnc-preset` instead of importing `twrnc` directly. The preset automatically handles light/dark theme switching and design token integration.
-
 ✅ **Recommended**
 
 ```tsx
-import { useTailwind } from '@metamask/design-system-twrnc-preset';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 
-const MyComponent = () => {
-  const tw = useTailwind();
-
-  return (
-    <Pressable style={tw`bg-default p-4`}>
-      Content
-    </Pressable>
-  );
-};
-
-// Using Box component with twClassName
-<Box twClassName="h-[100px]">
-  Content
-</Box>
-
-// Interactive states with tw function
-<Pressable
-  style={({ pressed }) =>
-    tw.style(
-      'w-full flex-row items-center justify-between px-4 py-2',
-      pressed && 'bg-pressed',
-    )
-  }
+<Box
+  tabIndex={0}
+  backgroundColor={BoxBackgroundColor.BackgroundDefault}
+  className="hover:bg-hover active:bg-pressed" // When no prop exists
 >
-  Interactive Content
-</Pressable>
+  Content
+</Box>;
 ```
+
+### React Native
+
+Use `useTailwind` hook from `@metamask/design-system-twrnc-preset` instead of importing `twrnc` directly. The preset automatically handles light/dark theme switching and design token integration.
 
 ❌ **Avoid**
 
@@ -212,6 +178,39 @@ const styles = StyleSheet.create({
 const styles = tw`bg-default p-4`;
 ```
 
+✅ **Recommended**
+
+```tsx
+import { useTailwind } from '@metamask/design-system-twrnc-preset';
+
+const MyComponent = () => {
+  const tw = useTailwind();
+
+  return (
+    <Pressable style={tw`bg-default p-4`}>
+      Content
+    </Pressable>
+  );
+};
+
+// Using Box component with twClassName
+<Box twClassName="overflow-hidden">
+  Content
+</Box>
+
+// Interactive states with tw function
+<Pressable
+  style={({ pressed }) =>
+    tw.style(
+      'w-full flex-row items-center justify-between px-4 py-2',
+      pressed && 'bg-pressed',
+    )
+  }
+>
+  Interactive Content
+</Pressable>
+```
+
 ## Style Guidelines
 
 ### Platform-Specific Styling Patterns
@@ -221,8 +220,8 @@ const styles = tw`bg-default p-4`;
 ```tsx
 import { ButtonBase, Icon, IconName } from '@metamask/design-system-react';
 
-// Layout and spacing
-// Interactive states (react supports hover/active)
+// Use the className prop to override existing tailwind classnames when necessary
+// Example overriding the default size/shape, layout and interactive states
 <ButtonBase className="h-auto flex-1 flex-col justify-center rounded-lg bg-muted py-4 hover:bg-muted-hover active:bg-muted-pressed">
   <Icon name={IconName.Bank} className="mb-2" />
   Buy/Sell
@@ -288,17 +287,32 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 ### Anti-patterns to Avoid
 
 - **No Arbitrary Values**: Don't use `[]` syntax for arbitrary values unless absolutely necessary
+
 - **No Direct Styles**: Avoid inline `style` objects
 - **No @apply**: Don't use `@apply` in CSS files
 - **Avoid Style Mixing**: Try to avoid mixing Tailwind with other styling approaches like inline styles in the same component when not necessary. Style mixing may be necessary for custom animations or dynamic values that can't be achieved with Tailwind alone. However, combining component props with Tailwind classes via `className`/`twClassName`/`tw` is acceptable when no equivalent prop exists
-- **No Default Colors**: Never use Tailwind's default color palette
-- **No Direct Typography**: Never use typography classes directly
 
 **React:**
 
 ❌ **Avoid**
 
 ```tsx
+// Arbitrary values
+<button className="m-[16px] bg-[#FFFFFF] w-[100%] h-[100px]">Confirm</button>
+
+// Unnecessary inline styles
+<button style={{ marginTop: '16px'}}>Confirm</button>
+```
+
+```css
+/* Using @apply */
+.btn {
+  @apply px-5 py-2 rounded-full cursor-pointer border disabled:cursor-auto;
+}
+```
+
+```tsx
+// Style mixing
 <div className="bg-default p-4" style={{ marginTop: '16px' }}>
   Content
 </div>
@@ -307,14 +321,25 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 ✅ **Recommended**
 
 ```tsx
-<Box backgroundColor={BoxBackgroundColor.BackgroundDefault} padding={4} marginTop={4}>
-  Content
-</Box>
+// Use classes provided by Tailwind config and necessary arbitrary value
+<button className="m-4 bg-default w-full h-[100px]">Content</button>;
 
-// When no prop exists
-<Box backgroundColor={BoxBackgroundColor.BackgroundDefault} padding={4} className="hover:bg-hover">
-  Content with margin
-</Box>
+// Necessary inline styles only
+<button style={{ marginTop: dynamicValue }}>Confirm</button>;
+
+// Create components instead of using @apply
+import { twMerge } from '@metamask/design-system-react';
+
+const MyButton = ({ className }) => (
+  <button
+    className={twMerge(
+      'px-5 py-2 rounded-full cursor-pointer border disabled:cursor-auto',
+      className,
+    )}
+  >
+    Confirm
+  </button>
+);
 ```
 
 **React Native:**
@@ -322,20 +347,21 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 ❌ **Avoid**
 
 ```tsx
-<View style={[tw`bg-default p-4`, { marginTop: 16 }]}>Content</View>
+// Style mixing
+<Scrollable style={[tw`bg-default p-4`, { marginTop: 16 }]}>Content</Scrollable>
+
+// Arbitrary values
+<Pressable style={[tw`m-[16px] bg-[#FFFFFF] w-[100%] h-[100px]`]}>Confirm</Pressable>
 ```
 
 ✅ **Recommended**
 
 ```tsx
-<Box backgroundColor={BoxBackgroundColor.BackgroundDefault} padding={4} marginTop={4}>
-  Content
-</Box>
+// Use classes provided by Tailwind config
+<Scrollable style={tw`bg-default p-4 mt-4`}>Content</Scrollable>
 
-// When no prop exists
-<Box backgroundColor={BoxBackgroundColor.BackgroundDefault} padding={4} twClassName="my-2">
-  Content with margin
-</Box>
+// Use classes provided by Tailwind config and necessary arbitrary value
+<Pressable style={tw`m-4 bg-default w-full h-[100px]`} >Confirm</Pressable>
 ```
 
 ---
