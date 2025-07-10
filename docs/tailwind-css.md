@@ -301,7 +301,7 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 <button className="m-[16px] bg-[#FFFFFF] w-[100%] h-[100px]">Confirm</button>
 
 // Unnecessary inline styles
-<button style={{ marginTop: '16px'}}>Confirm</button>
+<button style={{ marginTop: '16px' }}>Confirm</button>
 ```
 
 ```css
