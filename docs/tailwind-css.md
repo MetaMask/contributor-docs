@@ -288,7 +288,7 @@ Example [eslint.config.mjs](https://github.com/MetaMask/metamask-design-system/b
 
 - **No Arbitrary Values**: Don't use `[]` syntax for arbitrary values unless absolutely necessary
 
-- **No Direct Styles**: Avoid inline `style` objects
+- **No Direct Styles**: Avoid inline `style` objects unless necessary for dynamic values or cases where Tailwind cannot achieve the desired styling (e.g., custom animations or dynamic values like `style={{ marginTop: dynamicValue }}`)
 - **No @apply**: Don't use `@apply` in CSS files
 - **Avoid Style Mixing**: Try to avoid mixing Tailwind with other styling approaches like inline styles in the same component when not necessary. Style mixing may be necessary for custom animations or dynamic values that can't be achieved with Tailwind alone. However, combining component props with Tailwind classes via `className`/`twClassName`/`tw` is acceptable when no equivalent prop exists
 
