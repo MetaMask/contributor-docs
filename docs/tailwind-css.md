@@ -62,7 +62,7 @@ import {
 
 ### Color and Typography
 
-Use only design token based classes that are generated from our design system. Never use Tailwind's default color palette, arbitrary colors like hex or rgb values or font sizes. Always use the `Text` component for text styling instead of Tailwind's typography classes.
+Use only design token based classes that are generated from our design system. Never use Tailwind's default color palette, arbitrary colors like hex or rgb values, or font sizes. Always use the `Text` component for text styling instead of Tailwind's typography classes.
 
 **React:**
 
