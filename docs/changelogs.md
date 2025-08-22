@@ -1,31 +1,15 @@
 # Guide to Changelogs
 
-Changelogs are invaluable for capturing and communicating releases made to projects over time. Maintaining changelogs effectively is undeniably a bit of an art, but a lot of science goes into it as well, and this document aims to guide engineers accordingly.
+Changelogs are essential at MetaMask for communicating changes in projects to end users, and it is important to understand how to write them well.
 
-## tl;dr
+## Essential principles
 
-- Every MetaMask project for which new versions are distributed publicly should have a changelog file, and it should be called `CHANGELOG.md`.
-- A changelog should be written primarily for consumers of the project, and as such, it should be valuable to them at all times.
-- A changelog is valuable when it clearly and concisely describes modifications that have been made to the surface area of the project at each version throughout time, highlighting special versions that require consumers to make changes to _their_ project to avoid problems or migrate to a different workflow to be able to continue to use the software effectively.
-- The surface area of a project include the parts of the API, CLI, and/or GUI that consumers can "see" and use, as well as the external code that it relies on.
-  - The API of a project covers exported code and data, and may include classes, methods, functions, constants, and types.
-  - The CLI of a project covers executables, and may include commands, options, and workflows.
-  - The GUI of a project covers applications, and may include screens, interactive components, and workflows.
-  - The external code of a project is its dependencies or peer dependencies.
+- Every MetaMask product, service, or library ("project") that follows a release process should have a "Keep a Changelog"-formatted changelog file called `CHANGELOG.md`.
+- Changelogs should be tailored for its primary audience, the people that use the project ("users").
+- For each release, a changelog should clearly and concisely describe changes that matter to the users of the project, and it should provide advice on how to use adjust to them.
+- Changelogs should be curated; they should be kept organized and free of noise.
 
-## Keep and enforce a changelog
-
-Projects that use a release process to deploy new versions of the project to a publicly accessible location such as NPM or GitHub Pages should include a file in the repo that captures those releases and the changes included in each release. This file should be called `CHANGELOG.md`.
-
-The changelog should follow a [standard format](#understand-the-format-of-the-changelog). The [`@metamask/auto-changelog`](https://github.com/MetaMask/auto-changelog) tool should be installed in the repo to ensure that the format is followed at all times:
-
-- A `lint:changelog` package script should be present which runs `auto-changelog validate`
-- A `lint` package script should be present which runs `lint:changelog`
-- CI should be configured to run `lint` on all branches and prevent a PR from being merged if `lint` does not pass
-
-See the [module template](https://github.com/MetaMask/metamask-module-template) for an example of a project that does this.
-
-## Understand the format and structure of the changelog
+## Format & structure
 
 All changelogs should be written in a format based on the ["Keep a Changelog"](https://keepachangelog.com/) specification. This format is enforced by [`@metamask/auto-changelog`](https://github.com/MetaMask/auto-changelog).
 
@@ -72,21 +56,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Broadly, the changelog has the following structure:
 
-1. Prelude, the top-level header and introduction
-2. Sections representing unpublished or published changes
-3. Link references for section headers
+1. Prelude (the top-level header and introduction)
+2. Unreleased changes
+3. Previously published versions and their changes
+4. Markdown link references for section headers
 
-The central sections begin with a header (either "Unreleased" or a version). Within each of these sections is set of categories. Although it is not necessary to provide every category, when present they must appear in the following order (enforced by `@auto-changelog` [here](https://github.com/MetaMask/auto-changelog/blob/ef3e86e15b0de7061856a53fd18c4f38e898f5e8/src/constants.ts)) (note that this diverges from the "Keep a Changelog" spec):
+Within each past or future release section, changes are placed into one of six categories (enforced by `@auto-changelog` [here](https://github.com/MetaMask/auto-changelog/blob/ef3e86e15b0de7061856a53fd18c4f38e898f5e8/src/constants.ts)):
 
-1. Uncategorized
-2. Added
-3. Changed
-4. Deprecated
-5. Removed
-6. Fixed
-7. Security
+1. Added
+2. Changed
+3. Deprecated
+4. Removed
+5. Fixed
+6. Security
 
 Finally, within each category section is a bulleted list of changelog entries. Each changelog entry must end with a link to the pull request that introduced the change. If necessary, another bulleted list may be placed under a changelog entry to explain its purpose and provide more details for usage or adoption.
+
+## Users and pertinent changes
+
+Products, services, and libraries have different kinds of users, and in order to tailor to the audience, their changelogs must focus on different things.
+
+### Apps and websites
+
+Apps and websites have non-developer users, and their changelogs should focus on:
+
+- New functionality
+- Changes to the UI, particularly those that may change a standard workflow (moving a button or dropdown, reworking part of a screen, etc.)
+- Fixes for bugs, security issues, etc.
+
+### Services (APIs)
+
+Services have developer users, and their changelogs should focus on:
+
+- New endpoints/routes
+- Changes in request or response data for existing endpoints/routes
+- Changes in behavior for existing endpoints/routes (different logic, new errors, etc.), particularly those that are surprising
+- Removed endpoints/routes
+- Fixes for bugs, security issues, etc.
+
+### Libraries or GitHub actions
+
+- The API of a project covers exported code and data, and may include classes, methods, functions, constants, and types.
+- The CLI of a project covers executables, and may include commands, options, and workflows.
+- The GUI of a project covers applications, and may include screens, interactive components, and workflows.
+- The external code of a project is its dependencies or peer dependencies.
+
+## Keep and enforce a changelog
+
+Projects that use a release process to deploy new versions of the project to a publicly accessible location such as NPM or GitHub Pages should include a file in the repo that captures those releases and the changes included in each release. This file should be called `CHANGELOG.md`.
+
+The changelog should follow a [standard format](#understand-the-format-of-the-changelog). The [`@metamask/auto-changelog`](https://github.com/MetaMask/auto-changelog) tool should be installed in the repo to ensure that the format is followed at all times:
+
+- A `lint:changelog` package script should be present which runs `auto-changelog validate`
+- A `lint` package script should be present which runs `lint:changelog`
+- CI should be configured to run `lint` on all branches and prevent a PR from being merged if `lint` does not pass
+
+See the [module template](https://github.com/MetaMask/metamask-module-template) for an example of a project that does this.
 
 ## List unreleased changes separately from released changes
 
