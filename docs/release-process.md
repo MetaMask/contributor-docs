@@ -3,7 +3,7 @@ This diagram below represents the release process for MetaMask Extension and Met
 
 Note:
 - The `stable` branch is currently called `master` on Extension repo, but it will be renamed soon.
-- The `release/x.y.z` branch is currently called `Version-vx.y.z` on Extension repo, but it will be renamed soon.
+- The `release/x.y.z` branches are currently called `Version-vx.y.z` on Extension repo, but they will be renamed soon.
 
 ```mermaid
 graph TD
