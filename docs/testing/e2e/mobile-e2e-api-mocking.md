@@ -68,7 +68,9 @@ export const DEFAULT_MOCKS = {
   ],
 };
 ```
+
 j
+
 ### Adding New Default Mocks
 
 To add default mocks that benefit all tests:
@@ -209,10 +211,10 @@ import { setupMockPostRequest } from '../api-mocking/helpers/mockHelpers';
 await setupMockPostRequest(
   mockServer,
   'https://api.example.com/validate',
-  { 
+  {
     method: 'transfer',
     amount: '1000000000000000000',
-    to: '0x742d35cc6634c0532925a3b8d0ea4405abf5adf3'
+    to: '0x742d35cc6634c0532925a3b8d0ea4405abf5adf3',
   }, // Expected request body
   { result: 'validated', txId: '0x123...' }, // Mock response
   {
@@ -232,7 +234,7 @@ await setupMockRequest(mockServer, {
   response: { data: 'secure-data' },
   responseCode: 200,
   headers: {
-    'Authorization': 'Bearer mock-token',
+    Authorization: 'Bearer mock-token',
     'Content-Type': 'application/json',
   },
 });
@@ -313,10 +315,14 @@ await setupRemoteFeatureFlagsMock(mockServer, {
 });
 
 // Environment-specific flags
-await setupRemoteFeatureFlagsMock(mockServer, {
-  devOnlyFeature: true,
-  prodOptimization: false,
-}, 'flask'); // Flask distribution
+await setupRemoteFeatureFlagsMock(
+  mockServer,
+  {
+    devOnlyFeature: true,
+    prodOptimization: false,
+  },
+  'flask',
+); // Flask distribution
 ```
 
 ## 🎭 Complete Mocking Examples
@@ -337,8 +343,9 @@ describe(SmokeE2E('Token Price Display'), () => {
         requestMethod: 'GET',
         url: 'https://price-api.metamask.io/v2/chains/1/spot-prices',
         response: {
-          '0x0000000000000000000000000000000000000000': { // ETH
-            price: 2500.50,
+          '0x0000000000000000000000000000000000000000': {
+            // ETH
+            price: 2500.5,
             currency: 'usd',
           },
         },
@@ -415,7 +422,9 @@ const setupSwapMocks = async (mockServer: Mockttp) => {
   await setupMockRequest(mockServer, {
     requestMethod: 'GET',
     url: 'https://price-api.metamask.io/v2/chains/1/spot-prices',
-    response: { /* price data */ },
+    response: {
+      /* price data */
+    },
     responseCode: 200,
   });
 
@@ -423,7 +432,9 @@ const setupSwapMocks = async (mockServer: Mockttp) => {
   await setupMockRequest(mockServer, {
     requestMethod: 'GET',
     url: /^https:\/\/swap-api\.metamask\.io\/networks\/1\/trades/,
-    response: { /* quote data */ },
+    response: {
+      /* quote data */
+    },
     responseCode: 200,
   });
 
@@ -431,7 +442,9 @@ const setupSwapMocks = async (mockServer: Mockttp) => {
   await setupMockRequest(mockServer, {
     requestMethod: 'GET',
     url: 'https://gas-api.metamask.io/networks/1/gasPrices',
-    response: { /* gas prices */ },
+    response: {
+      /* gas prices */
+    },
     responseCode: 200,
   });
 };
@@ -453,13 +466,13 @@ await withFixtures(
 
 ```typescript
 // ✅ Good - specific endpoint
-url: 'https://api.metamask.io/v2/chains/1/spot-prices'
+url: 'https://api.metamask.io/v2/chains/1/spot-prices';
 
 // ✅ Better - regex for dynamic parts
-url: /^https:\/\/api\.metamask\.io\/v2\/chains\/\d+\/spot-prices$/
+url: /^https:\/\/api\.metamask\.io\/v2\/chains\/\d+\/spot-prices$/;
 
 // ❌ Avoid - too broad, may interfere with other requests
-url: 'metamask.io'
+url: 'metamask.io';
 ```
 
 ### 2. Handle Request Bodies Properly
@@ -513,7 +526,6 @@ The mock server automatically tracks and logs:
 - **Request/response timing** information
 - **Feature flag configurations** applied
 
-
 ### Common Debugging Steps
 
 1. **Check test output** for mock-related warnings
@@ -542,10 +554,10 @@ Enable debug logging to see mock activity:
 
 ```typescript
 // ❌ Too specific - might miss query parameters
-url: 'https://api.example.com/data'
+url: 'https://api.example.com/data';
 
 // ✅ More flexible pattern
-url: /^https:\/\/api\.example\.com\/data(\?.*)?$/
+url: /^https:\/\/api\.example\.com\/data(\?.*)?$/;
 ```
 
 ### POST Body Validation Failing

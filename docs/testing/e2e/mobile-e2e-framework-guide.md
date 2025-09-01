@@ -25,7 +25,7 @@ MetaMask Mobile uses a modern TypeScript-based E2E testing framework built on De
 
 ```
 e2e/framework/                    # Modern TypeScript framework
-├── Assertions.ts                # Enhanced assertions with auto-retry  
+├── Assertions.ts                # Enhanced assertions with auto-retry
 ├── Gestures.ts                  # Robust user interactions
 ├── Matchers.ts                  # Type-safe element selectors
 ├── Utilities.ts                 # Core utilities with retry mechanisms
@@ -61,7 +61,7 @@ describe(SmokeE2E('Feature Name'), () => {
       },
       async () => {
         await loginToApp();
-        
+
         // Test implementation here
       },
     );
@@ -153,7 +153,7 @@ await Utilities.executeWithRetry(
     timeout: 30000,
     description: 'tap button and verify navigation',
     elemDescription: 'Submit Button',
-  }
+  },
 );
 
 // Element state checking utilities
@@ -170,56 +170,63 @@ await Utilities.checkElementReadyState(element, {
 
 ```typescript
 // Basic fixture
-new FixtureBuilder().build()
+new FixtureBuilder().build();
 
 // With popular networks
-new FixtureBuilder().withPopularNetworks().build()
+new FixtureBuilder().withPopularNetworks().build();
 
 // With Ganache network for local testing
-new FixtureBuilder().withGanacheNetwork().build()
+new FixtureBuilder().withGanacheNetwork().build();
 
 // With connected test dapp
 new FixtureBuilder()
   .withPermissionControllerConnectedToTestDapp(buildPermissions(['0x539']))
-  .build()
+  .build();
 
 // With pre-configured tokens and contacts
 new FixtureBuilder()
   .withAddressBookControllerContactBob()
   .withTokensControllerERC20()
-  .build()
+  .build();
 ```
 
 ### Advanced withFixtures Configuration
 
 ```typescript
-import { DappVariants, LocalNodeType, GanacheHardfork } from '../framework/fixtures/constants';
+import {
+  DappVariants,
+  LocalNodeType,
+  GanacheHardfork,
+} from '../framework/fixtures/constants';
 
 await withFixtures(
   {
     fixture: new FixtureBuilder().withGanacheNetwork().build(),
     restartDevice: true,
-    
+
     // Configure test dapps
     dapps: [
       { dappVariant: DappVariants.MULTICHAIN },
       { dappVariant: DappVariants.TEST_DAPP },
     ],
-    
+
     // Configure local blockchain nodes
-    localNodeOptions: [{
-      type: LocalNodeType.ganache,
-      options: {
-        hardfork: GanacheHardfork.london,
-        mnemonic: 'WORD1 WORD2 WORD3 WORD4 WORD5 WORD6 WORD7 WORD8 WORD9 WORD10 WORD11 WORD12'
-      }
-    }],
-    
+    localNodeOptions: [
+      {
+        type: LocalNodeType.ganache,
+        options: {
+          hardfork: GanacheHardfork.london,
+          mnemonic:
+            'WORD1 WORD2 WORD3 WORD4 WORD5 WORD6 WORD7 WORD8 WORD9 WORD10 WORD11 WORD12',
+        },
+      },
+    ],
+
     // Test-specific API mocks (see API Mocking Guide)
     testSpecificMock: async (mockServer) => {
       // Custom mocking logic
     },
-    
+
     // Additional launch arguments
     launchArgs: {
       fixtureServerPort: 8545,
@@ -244,7 +251,7 @@ class SendView {
   get sendButton() {
     return Matchers.getElementByID(SendViewSelectors.SEND_BUTTON);
   }
-  
+
   get amountInput() {
     return Matchers.getElementByID(SendViewSelectors.AMOUNT_INPUT);
   }
@@ -269,7 +276,7 @@ class SendView {
       description: 'send button should be visible',
     });
   }
-  
+
   // Complex interaction with retry
   async sendETHWithRetry(amount: string): Promise<void> {
     await Utilities.executeWithRetry(
@@ -284,7 +291,7 @@ class SendView {
       {
         timeout: 30000,
         description: 'complete send ETH transaction',
-      }
+      },
     );
   }
 }
@@ -336,8 +343,10 @@ await Gestures.tap(button, { description: 'tap submit button' });
 
 // ✅ Use framework retry mechanisms
 await Utilities.executeWithRetry(
-  async () => { /* operation */ },
-  { timeout: 30000, description: 'retry operation' }
+  async () => {
+    /* operation */
+  },
+  { timeout: 30000, description: 'retry operation' },
 );
 ```
 
@@ -346,6 +355,7 @@ await Utilities.executeWithRetry(
 ### Common Framework Issues
 
 #### "Element not enabled" Errors
+
 ```typescript
 // Solution: Skip enabled check for temporarily disabled elements
 await Gestures.tap(loadingButton, {
@@ -355,6 +365,7 @@ await Gestures.tap(loadingButton, {
 ```
 
 #### "Element moving/animating" Errors
+
 ```typescript
 // Solution: Enable stability checking for animated elements
 await Gestures.tap(animatedButton, {
@@ -364,6 +375,7 @@ await Gestures.tap(animatedButton, {
 ```
 
 #### Framework Migration Issues
+
 ```typescript
 // ❌ Old deprecated pattern
 await Assertions.checkIfVisible(element, 15000);
@@ -378,20 +390,23 @@ await Assertions.expectElementToBeVisible(element, {
 ## 🔄 Migration from Legacy Framework
 
 ### Migration Status
+
 Current migration phases from [`e2e/framework/README.md`](https://github.com/MetaMask/metamask-mobile/blob/main/e2e/framework/README.md):
 
 - ✅ Phase 0: TypeScript framework foundation
-- ✅ Phase 1: ESLint for E2E tests  
+- ✅ Phase 1: ESLint for E2E tests
 - ⏳ Phase 2: Legacy framework replacement
 - ⏳ Phase 3: Gradual test migration
 
 ### For New Tests
+
 - Use TypeScript framework exclusively
 - Import from `e2e/framework/index.ts`
 - Follow all patterns in this guide
 - Use `withFixtures` pattern
 
 ### For Existing Tests
+
 - Gradually migrate to TypeScript framework
 - Replace deprecated methods (check `@deprecated` tags)
 - Update imports to use framework entry point
@@ -399,13 +414,13 @@ Current migration phases from [`e2e/framework/README.md`](https://github.com/Met
 
 ### Common Migration Patterns
 
-| Legacy Pattern | Modern Framework Equivalent |
-|----------------|----------------------------|
-| `TestHelpers.delay(5000)` | `Assertions.expectElementToBeVisible(element, {timeout: 5000})` |
-| `checkIfVisible(element, 15000)` | `expectElementToBeVisible(element, {timeout: 15000, description: '...'})` |
-| `waitFor(element).toBeVisible()` | `expectElementToBeVisible(element, {description: '...'})` |
-| `tapAndLongPress(element)` | `longPress(element, {description: '...'})` |
-| `clearField(element); typeText(element, text)` | `typeText(element, text, {clearFirst: true, description: '...'})` |
+| Legacy Pattern                                 | Modern Framework Equivalent                                               |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| `TestHelpers.delay(5000)`                      | `Assertions.expectElementToBeVisible(element, {timeout: 5000})`           |
+| `checkIfVisible(element, 15000)`               | `expectElementToBeVisible(element, {timeout: 15000, description: '...'})` |
+| `waitFor(element).toBeVisible()`               | `expectElementToBeVisible(element, {description: '...'})`                 |
+| `tapAndLongPress(element)`                     | `longPress(element, {description: '...'})`                                |
+| `clearField(element); typeText(element, text)` | `typeText(element, text, {clearFirst: true, description: '...'})`         |
 
 ## 📚 Framework Resources
 

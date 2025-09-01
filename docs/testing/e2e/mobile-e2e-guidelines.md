@@ -214,9 +214,12 @@ To ensure consistency and reliability in our test scripts, we use MetaMask Mobil
 ```typescript
 import { Assertions, Gestures, Matchers } from '../framework';
 
-await Assertions.expectElementToBeVisible(SecurityAndPrivacy.metaMetricsToggle, {
-  description: 'MetaMetrics toggle should be visible',
-});
+await Assertions.expectElementToBeVisible(
+  SecurityAndPrivacy.metaMetricsToggle,
+  {
+    description: 'MetaMetrics toggle should be visible',
+  },
+);
 
 await Gestures.tap(button, {
   description: 'tap create wallet button',
@@ -378,11 +381,19 @@ it('create a new wallet', async () => {
 
 ```typescript
 class WalletView {
-  get sendButton() { /* ... */ }
-  get receiveButton() { /* ... */ }
-  
-  async tapSendButton(): Promise<void> { /* ... */ }
-  async initiateReceiveFlow(): Promise<void> { /* ... */ }
+  get sendButton() {
+    /* ... */
+  }
+  get receiveButton() {
+    /* ... */
+  }
+
+  async tapSendButton(): Promise<void> {
+    /* ... */
+  }
+  async initiateReceiveFlow(): Promise<void> {
+    /* ... */
+  }
 }
 ```
 
@@ -390,8 +401,12 @@ class WalletView {
 
 ```javascript
 class Screen2 {
-  get btn1() { /* ... */ }
-  get thing() { /* ... */ }
+  get btn1() {
+    /* ... */
+  }
+  get thing() {
+    /* ... */
+  }
 }
 ```
 
@@ -560,7 +575,9 @@ class NetworkView {
   }
 
   get customNetworkTab() {
-    return Matchers.getElementByText(NetworkViewSelectorsText.CUSTOM_NETWORK_TAB);
+    return Matchers.getElementByText(
+      NetworkViewSelectorsText.CUSTOM_NETWORK_TAB,
+    );
   }
 
   get rpcWarningBanner() {
@@ -674,14 +691,14 @@ describe(SmokeNetworks('Network Management'), () => {
         // Navigate and start adding network
         await NetworkView.tapAddNetworkButton();
         await NetworkView.switchToCustomNetworks();
-        
+
         // Enter network details with validation
         await NetworkView.typeInNetworkName('Gnosis Test Network');
-        
+
         // Test validation with incorrect RPC URL
         await NetworkView.typeInRpcUrl('invalid-url');
         await NetworkView.verifyRpcWarningVisible();
-        
+
         // Clear and enter correct RPC URL
         await NetworkView.clearRpcInputBox();
         await NetworkView.typeInRpcUrl('https://rpc.gnosischain.com');
@@ -698,16 +715,19 @@ describe(SmokeNetworks('Network Management'), () => {
 ### Test Atomicity and Coupling
 
 #### When to Isolate Tests:
+
 - Testing specific functionality of a single component or feature
 - When you need to pinpoint exact failure causes
 - For basic unit-level behaviors
 
 #### When to Combine Tests:
+
 - For multi-step user flows that represent real user behavior
 - When testing how different parts of the application work together
 - When the setup for multiple tests is time-consuming and identical
 
 #### Guidelines:
+
 - Each test should run with a dedicated app instance and controlled environment
 - Use `withFixtures` to create test prerequisites and clean up afterward
 - Control application state programmatically rather than through UI interactions
@@ -716,12 +736,14 @@ describe(SmokeNetworks('Network Management'), () => {
 ### Controlling State
 
 #### Best Practices:
+
 - Control application state through fixtures rather than UI interactions
 - Use `FixtureBuilder` to set up test prerequisites instead of UI steps
 - Minimize UI interactions to reduce potential breaking points
 - Improve test stability by reducing timing and synchronization issues
 
 #### Example:
+
 ```typescript
 // ✅ Good: Use fixture to set up prerequisites
 const fixture = new FixtureBuilder()
@@ -756,24 +778,28 @@ await withFixtures({ fixture: new FixtureBuilder().build() }, async () => {
 ## 🎯 Test Quality Principles
 
 ### Reliability
+
 - Tests should consistently produce the same results
 - Use controlled environments and mocked external dependencies
 - Implement proper retry mechanisms through the framework
 - Handle expected failures gracefully
 
 ### Maintainability
+
 - Follow Page Object Model pattern consistently
 - Use descriptive naming throughout
 - Keep tests focused on specific behaviors
 - Minimize code duplication through reusable page objects
 
 ### Readability
+
 - Write tests that tell a story of user behavior
 - Use meaningful descriptions in all framework calls
 - Structure tests logically with clear arrange-act-assert patterns
 - Document complex test scenarios with comments when necessary
 
 ### Speed
+
 - Use `withFixtures` for efficient test setup
 - Minimize unnecessary UI interactions
 - Leverage framework optimizations (like `checkStability: false` by default)
