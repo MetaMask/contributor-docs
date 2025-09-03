@@ -49,8 +49,8 @@ subgraph Current [Current release branch: 'release/x.y.z']
     CURRENT1 --> CURRENT2[GitHub Action creates x.y.z release PR]
     CURRENT2 -->|every time a commit is added to 'release/x.y.z' branch| CURRENT3[Release build is automatically created and posted on the x.y.z release PR]
     CURRENT3 --> CURRENT4[Release Engineer creates and merges stable sync PR into 'release/x.y.z branch']
-    PREVIOUS2 -->|every time a release is merged into 'stable'| CURRENT4
-    HOTFIX2 -->|every time a release is merged into 'stable'| CURRENT4
+    PREVIOUS1 -->|every time a release is merged into 'stable'| CURRENT4
+    HOTFIX1 -->|every time a release is merged into 'stable'| CURRENT4
     CURRENT4 --> CURRENT5[Changelog is added]
     CURRENT5 --> CURRENT6[Release is tested by all teams]
     CURRENT7[Release Engineer cherry-picks fixes on 'release/x.y.z' branch]
