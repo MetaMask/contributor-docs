@@ -883,7 +883,7 @@ export class ComposableController<
 
 ### Type-Only Dependencies
 
-If package `a` imports only types from `b`, `b` be a dev or production dependency of `a`?
+If package `a` imports only types from `b`, should `b` be a dev or production dependency of `a`?
 This depends on whether types from `b` are imported in the published `.d.ts` files of `a`.
 This occurs if e.g. `a` exports a function that uses a type from `b` in its signature.
 See the [TypeScript handbook](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#dependencies) on this topic for more details.
