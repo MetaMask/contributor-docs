@@ -1,4 +1,4 @@
-# MetaMask Contributor Documentation
+p# MetaMask Contributor Documentation
 
 Welcome! Here you can find the principles, policies, and practices which are followed by MetaMask engineers in building MetaMask. These resources are designed to enable all builders, whether internal or external, in making meaningful contributions to any part of the MetaMask ecosystem.
 
