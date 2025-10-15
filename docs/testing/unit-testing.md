@@ -119,54 +119,136 @@ As each test [has to focus on a single aspect of that behavior](#keep-tests-focu
 
 ### Examples
 
-🚫 Don't
+🚫 **Using "should" unnecessarily**
 
 ```typescript
 it('should successfully add token when address is valid and decimals are set and symbol exists', () => {
   // ...
 });
-
-it('should fail and show error message when invalid address is provided', () => {
-  // ...
-});
-
-it('works correctly when processing the transaction', () => {
-  // ...
-});
-
-it('should throw error when balance is insufficient and user tries to send tokens', () => {
-  // ...
-});
 ```
 
-✅ Do
+✅ **Describe the behavior directly**
 
 ```typescript
 it('stores valid token in state', () => {
   // ...
 });
+```
 
+---
+
+🚫 **Listing implementation details and parameters**
+
+```typescript
+it('should fail and show error message when invalid address is provided', () => {
+  // ...
+});
+```
+
+✅ **Focus on what is being tested**
+
+```typescript
 it('displays invalid address error', () => {
   // ...
 });
+```
 
+---
+
+🚫 **Stating obvious successful outcomes**
+
+```typescript
+it('works correctly when processing the transaction', () => {
+  // ...
+});
+```
+
+✅ **Be specific about the behavior**
+
+```typescript
 it('processes transaction', () => {
   // ...
 });
+```
 
+---
+
+🚫 **Describing implementation instead of behavior**
+
+```typescript
+it('calls redirectTo("/login") when session expires', () => {
+  // ...
+});
+```
+
+✅ **Describe the expected outcome**
+
+```typescript
+it('redirects to login when session expires', () => {
+  // ...
+});
+```
+
+---
+
+🚫 **Using vague error language**
+
+```typescript
+it('throws an error when balance is insufficient', () => {
+  // ...
+});
+```
+
+✅ **Be precise about the expected behavior**
+
+```typescript
 it('prevents sending with insufficient balance', () => {
+  // ...
+});
+```
+
+Or, when the specific error type is the key behavior:
+
+```typescript
+it('throws InvalidPayloadError on malformed request', () => {
+  // ...
+});
+```
+
+---
+
+🚫 **Missing or unclear description**
+
+```typescript
+it('test', () => {
+  // ...
+});
+
+it('edge case', () => {
+  // ...
+});
+```
+
+✅ **Clear, descriptive names**
+
+```typescript
+it('returns empty array when input is empty', () => {
+  // ...
+});
+
+it('accepts transaction up to maximum amount limit', () => {
   // ...
 });
 ```
 
 The test description should communicate the expected behavior clearly and directly. Avoid:
 
-- Repeating the name of the function or method being tested
+- Repeating the name of the function or method being tested that is already in the "describe" section.
 - Using "should" at the beginning of the test name
-- Including implementation details in the name
-- Stating obvious successful outcomes
+- Including implementation details (like function calls or internal methods)
+- Stating obvious successful outcomes ("works correctly", "successfully" or "gracefully")
 - Listing test parameters instead of what they represent
-- Using words like "fail", "error", or "throw" when the error is the expected behavior
+- Using vague terms like "fail", "error", or "throw" without being specific about the exact behavior (error type)
 
 ### Read more
 
@@ -1102,12 +1184,12 @@ describe('MyComponent', () => {
 
 ```ts
 describe('MyComponent', () => {
-  it('Matches rendered snapshot')
+  it('matches rendered snapshot')
 ```
 
 Of course variants of this naming can be used to add some context, for instance:
 
 ```ts
 describe('MyComponent', () => {
-   it('render matches snapshot when not enabled'
+   it('matches rendered snapshot when not enabled')
 ```
