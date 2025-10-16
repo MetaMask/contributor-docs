@@ -2,7 +2,7 @@
 
 ## Use Jest
 
-[Jest](https://jestjs.io/) is the testing framework of choice for unit tests at MetaMask. It offers a more comprehensive set of features out of the box over Mocha or Tape that make writing tests for production code very easy. Some of the useful features are:
+[Jest](https://jestjs.io/) is the testing framework for unit tests at MetaMask. Jest includes many built-in features that make it easier to write tests. Useful features include:
 
 - [Module mocks](https://jestjs.io/docs/next/mock-functions#mocking-modules)
 - [Timer mocks](https://jestjs.io/docs/next/timer-mocks)
@@ -12,7 +12,7 @@
 
 ## Colocate test files with implementation files
 
-Test files are much easier to find when they sit next to the code they test.
+Place test files next to the code they test. This makes test files easier to find.
 
 🚫
 
@@ -33,7 +33,10 @@ src/
 
 ## Use `describe` to group tests for the same function/method
 
-Wrapping tests for the same function or method in a `describe` makes it easier to spot them in a large test file and makes it possible to run them on their own (using `.only`). It also helps to establish the subject of each test (the "it") and therefore keeps it well described and focused.
+Wrap tests for the same function or method in a `describe` block. This provides three benefits:
+- Tests are easier to find in large test files
+- You can run only these tests using `.only`
+- The test subject (the "it") is clear and focused
 
 🚫
 
@@ -69,7 +72,7 @@ describe('KeyringController', () => {
 
 ## 💡 Use `describe` to group tests under scenarios
 
-If you have many tests that verify the behavior of a piece of code under a particular condition, you might find it helpful to wrap them with a `describe` block so you only need to specify that condition once. Use a phrase starting with `if ...` or `when ...` so as to form a sentence when combined with the test description.
+When multiple tests verify behavior under the same condition, wrap them in a `describe` block. This way, you specify the condition only once. Start the description with `if ...` or `when ...` to form a complete sentence with each test description.
 
 1️⃣
 
@@ -107,15 +110,12 @@ describe('when adding a token', () => {
 
 ## Use `it` to specify the desired behavior for the code under test
 
-As each test [has to focus on a single aspect of that behavior](#keep-tests-focused), its description must describe that behavior using these guidelines:
+As each test [has to focus on a single aspect of that behavior](#keep-tests-focused), its description must describe that behavior clearly:
 
-1. Start with an active verb in present tense
-2. Focus on what is being tested, not how
-3. Be explicit about the context when needed
-4. Keep names concise but descriptive
-5. Avoid "should", "when", and other unnecessary words
-6. Do not state obvious successful outcomes ("works successfully", "correctly")
-7. Do not list test parameters; describe what they represent instead
+1. Start with an active verb in present tense (e.g., "returns", "displays", "prevents")
+2. State the expected outcome or behavior directly
+3. Add contextual conditions only when necessary for clarity (e.g., "when session expires")
+4. Keep descriptions concise but complete
 
 ### Examples
 
@@ -241,14 +241,14 @@ it('accepts transaction up to maximum amount limit', () => {
 });
 ```
 
-The test description should communicate the expected behavior clearly and directly. Avoid:
+Based on the examples above, avoid these common pitfalls:
 
-- Repeating the name of the function or method being tested that is already in the "describe" section.
-- Using "should" at the beginning of the test name
-- Including implementation details (like function calls or internal methods)
-- Stating obvious successful outcomes ("works correctly", "successfully" or "gracefully")
-- Listing test parameters instead of what they represent
-- Using vague terms like "fail", "error", or "throw" without being specific about the exact behavior (error type)
+- **Filler words**: "should", "correctly", "successfully", "gracefully", "properly"
+- **Vague descriptions**: "test", "edge case", "works", "handles"
+- **Implementation details**: Describing function calls (e.g., "calls redirectTo") instead of behavior (e.g., "redirects to login")
+- **Generic error language**: "throws an error" instead of specific behavior (e.g., "throws InvalidPayloadError" or "prevents sending")
+- **Parameter lists**: Listing conditions instead of describing what they mean
+- **Redundancy**: Repeating the function name already in the `describe` block
 
 ### Read more
 
@@ -256,9 +256,9 @@ The test description should communicate the expected behavior clearly and direct
 
 ## Keep tests focused
 
-Tests are easier to reason about and maintain when they cover only one aspect of the intended behavior.
+Tests are easier to understand and maintain when they cover only one aspect of behavior.
 
-If you are using "and" in a test description, this could indicate the test is too large and may need to be broken up.
+If you use "and" in a test description, the test is probably too large. Split it into separate tests.
 
 🚫
 
@@ -282,15 +282,17 @@ it('returns the block number', () => {
 
 ## Don't directly test private code
 
-Private code is a part of an interface that is not intended to be used by consumers of that interface. This could mean:
+Private code is not intended for consumers of an interface. Private code includes:
 
-- a function or class not exported from a module
-- a method whose name starts with `#` (the syntax for [ECMAScript private fields](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields))
-- a method whose name starts with `_` (an informal approach popular prior to private fields)
-- a method preceded by the `private` keyword in TypeScript
-- a function or method tagged with the `@private` JSDoc tag
+- Functions or classes not exported from a module
+- Methods that start with `#` ([ECMAScript private fields](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields))
+- Methods that start with `_` (older convention before private fields)
+- Methods with the `private` keyword in TypeScript
+- Functions or methods tagged with `@private` in TSDoc
 
-Test code marked as private as though it were directly part of the public interface where it is executed. For instance, although you might write the following:
+**Do not test private code directly.** Instead, test the public methods that call the private code. Write tests as if the private code is part of the public method.
+
+For example, you might write this code:
 
 ```typescript
 // block-tracker.ts
@@ -324,7 +326,7 @@ export class BlockTracker extends EventEmitter {
 }
 ```
 
-this is what consumers see:
+Consumers (and your tests) can only see the public interface, which behaves as if the private methods were inlined:
 
 ```typescript
 // block-tracker.ts
@@ -350,7 +352,7 @@ export class BlockTracker extends EventEmitter {
 }
 ```
 
-and as a result, this is how the method ought to be tested:
+Therefore, test the public `stop` method by verifying all the behaviors that result from calling it, including the effects of the private methods:
 
 ```typescript
 describe('BlockTracker', () => {
@@ -376,16 +378,16 @@ describe('BlockTracker', () => {
 
 ## 💡 Highlight the "exercise" phase
 
-A test can be subdivided into up to four kinds of actions, also called ["phases"](http://xunitpatterns.com/Four%20Phase%20Test.html):
+A test has up to four ["phases"](http://xunitpatterns.com/Four%20Phase%20Test.html):
 
-1. **Setup:** Configuring the environment required to execute the code under test
-2. **Exercise:** Executing the code under test
-3. **Verify:** Confirming that the code under test behaves in an expected manner
-4. **Teardown:** Returning the environment to a clean slate
+1. **Setup:** Configure the environment to run the code under test
+2. **Exercise:** Execute the code under test
+3. **Verify:** Confirm that the code behaves as expected
+4. **Teardown:** Return the environment to a clean state
 
-Be aware of the way that a test moves through these phases. It can assist readers in following the flow by making judicious use of line breaks to separate phases visually.
+Use empty lines to separate these phases visually. This helps readers understand the test flow.
 
-For instance, the placement of empty lines in this test makes it a bit difficult to discern the relationships between different parts of the test. Which part executes the code under test, which part confirms the desired behavior, and which part just sets it up?
+In this example, the empty lines make it hard to see the relationships between parts. Which part executes the code? Which part confirms the behavior? Which part sets up the test?
 
 1️⃣
 
@@ -420,7 +422,7 @@ describe('KeyringController', () => {
 });
 ```
 
-Now the different phases of this test are unmistakable, because all of the setup code is grouped together visually:
+This version is clearer. All setup code is grouped together visually, making the phases easy to identify:
 
 2️⃣
 
@@ -460,22 +462,22 @@ describe('KeyringController', () => {
 
 ## Keep tests isolated
 
-A test must pass whether it is run individually or whether it is run alongside other tests (in any order).
+A test must pass when running alone or with other tests (in any order).
 
-To achieve this, tests must be performed in a clean room. If a test makes changes to any part of the environment defined outside of itself, it must undo those changes before completing in order to prevent contaminating other tests.
+Tests must run in a clean environment. If a test changes any part of the environment, it must undo those changes before finishing. This prevents the test from affecting other tests.
 
-Here are ways to do this:
+Ways to keep tests isolated:
 
 ### Restore function mocks after each test
 
-Set Jest's [`resetMocks`](https://jestjs.io/docs/configuration#resetmocks-boolean) and [`restoreMocks`](https://jestjs.io/docs/configuration#restoremocks-boolean) configuration options to `true`. This instructs Jest to reset the state of all mock functions and return them to their original implementations after each test. (This option is set in MetaMask's [module template](https://github.com/MetaMask/metamask-module-template).)
+Set Jest's [`resetMocks`](https://jestjs.io/docs/configuration#resetmocks-boolean) and [`restoreMocks`](https://jestjs.io/docs/configuration#restoremocks-boolean) configuration options to `true`. Jest will then reset all mock functions and return them to their original implementations after each test. (MetaMask's [module template](https://github.com/MetaMask/metamask-module-template) includes this setting.)
 
 <details><summary><b>Read more</b></summary>
 <br/>
 
-Care must be taken to ensure that mock functions that are visible to multiple tests in a test file are properly reset, otherwise the state of those mock functions can bleed over into other tests.
+Mock functions that are visible to multiple tests must be reset properly. Otherwise, their state will affect other tests.
 
-In this example, there are two tests. The second assumes that the spy on `getNetworkStatus` in the first test is removed, but that doesn't happen:
+This example has two tests. The second test assumes the spy on `getNetworkStatus` from the first test is removed, but it is not:
 
 🚫
 
@@ -501,7 +503,7 @@ describe('token-utils', () => {
 });
 ```
 
-Minimally, you can save the spy to a variable and then call `mockRestore` on it before the test ends:
+You can save the spy to a variable and call `mockRestore` on it before the test ends:
 
 ```typescript
 const optionsMock = {
@@ -527,22 +529,22 @@ describe('token-utils', () => {
 });
 ```
 
-But it is better to let Jest take care of this for you by setting `resetMocks` and `restoreMocks` in your Jest configuration.
+However, the better approach is to set `resetMocks` and `restoreMocks` in your Jest configuration. Jest will then handle this automatically.
 
 </details>
 
 ### Reset global variables
 
-Create a helper function that wraps the code under test to ensure that changes to globals get undone after they are used.
+Create a helper function that wraps the code under test. This ensures changes to global variables are undone after use.
 
-Where it makes sense, use [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) to pass globals to the code under test so that a mock implementation can be passed in tests.
+When possible, use [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) to pass globals to the code under test. This lets you pass mock implementations in tests.
 
 <details><summary><b>Read more</b></summary>
 <br/>
 
-Global variables are equivalent to properties of the global context (usually `global`). Changing these variables will naturally affect every test in a test file.
+Global variables are properties of the global context (usually `global`). Changes to these variables affect every test in a test file.
 
-If the global you want to change is a function, it is best to mock the function using `jest.spyOn` so that it is easy to undo it later (note: this guideline is best paired with the above guideline so that you can make this happen automatically):
+If the global is a function, mock it using `jest.spyOn`. This makes it easy to undo later. (Combine this with the previous guideline to handle it automatically.)
 
 🚫
 
@@ -604,7 +606,7 @@ describe('NftDetails', () => {
 });
 ```
 
-Now say the global you want to change is not a function:
+If the global is not a function:
 
 🚫
 
@@ -629,7 +631,7 @@ describe('interpretMethodData', () => {
 });
 ```
 
-[Instead of using hooks](#avoid-before-each-and-after-each), one idea is to create a function wrapping your test which captures the current value of the global beforehand and restores the global to this value afterward:
+[Instead of using hooks](#avoid-before-each-and-after-each), create a function that wraps your test. This function captures the current global value before the test and restores it afterward:
 
 1️⃣
 
@@ -663,7 +665,7 @@ describe('interpretMethodData', () => {
 });
 ```
 
-Even better, however, is to make use of [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) to eliminate the need for a global. This allows you to create a fake version of the value in question within your test:
+A better approach is to use [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) to remove the need for a global variable. This lets you create a fake value within your test:
 
 2️⃣
 
@@ -694,9 +696,9 @@ Use helper functions instead of variables to define data shared between tests.
 <details><summary><b>Read more</b></summary>
 <br/>
 
-Variables declared outside of tests are not reset automatically between tests. Thus, changes made to these variables in tests can affect later tests, breaking test isolation.
+Variables declared outside of tests are not reset automatically between tests. Changes to these variables in one test can affect other tests. This breaks test isolation.
 
-For example:
+Example:
 
 🚫
 
@@ -725,7 +727,7 @@ describe("interpretMethodData", () => {
 });
 ```
 
-It is tempting to reach for `beforeEach` to correct this:
+Using `beforeEach` might seem like a solution:
 
 🚫
 
@@ -759,7 +761,7 @@ describe("interpretMethodData", () => {
 });
 ```
 
-[Instead of using hooks](#avoid-before-each-and-after-each), however, use a factory function which defines defaults and allows them to be overridden where they are needed:
+[Instead of using hooks](#avoid-before-each-and-after-each), use a factory function. This function defines default values and lets you override them when needed:
 
 ✅
 
@@ -804,7 +806,7 @@ describe('interpretMethodData', () => {
 
 ## Avoid the use of `beforeEach`
 
-Extract setup steps shared among multiple tests to functions instead of lumping them into a `beforeEach` hook:
+Extract shared setup steps into functions instead of putting them in a `beforeEach` hook:
 
 🚫
 
@@ -902,14 +904,14 @@ function buildTokenDetectionController({
 <details><summary><b>Read more</b></summary>
 <br/>
 
-When writing tests that need to be set up in a similar way, it may be tempting to use a `beforeEach` hook. However, this strategy ends up increasing the long-term maintenance cost of tests for a couple of reasons:
+Using a `beforeEach` hook might seem convenient for similar tests. However, this approach increases maintenance costs for two reasons:
 
-- It makes tests harder to read. Tests that run under different scenarios may require different ways of being set up, but using a `beforeEach` hook unnecessarily assigns the same importance to all setup steps listed there. This forces the reader to peruse all of the setup code in order to distinguish the signal from the noise.
-- It makes writing tests for new scenarios difficult. The setup steps specified in the `beforeEach` section may not perfectly apply to future tests that cover different scenarios. In these cases, the author may be forced to take on a complex refactor to remove the `beforeEach` steps that don't apply or pursue workarounds which decrease consistency and readability.
+- **Makes tests harder to read.** Different tests may need different setup, but `beforeEach` assigns equal importance to all setup steps. Readers must read all the setup code to find what matters for each test.
+- **Makes writing new tests difficult.** The `beforeEach` setup may not fit new test scenarios. You may need complex refactoring to remove steps that don't apply, or use workarounds that hurt consistency and readability.
 
-Setup helper functions serve the same purpose as hooks without causing these problems. In this way, tests that need setup data for specific scenarios can specify them easily by passing options to the function, which communicates their importance to readers over other kinds of setup data in the context of the test. Plus, managing setup code becomes easier, as it can be refactored more easily if necessary.
+Setup helper functions solve these problems. Tests can pass options to the function to specify the setup they need. This shows readers what is important for each test. Setup code is also easier to refactor when needed.
 
-The functional pattern presented above can not only be applied to setup code but also teardown code. In that case, your helper becomes a wrapper by taking another function:
+You can apply this pattern to teardown code too. In this case, your helper function wraps another function:
 
 🚫
 
@@ -1031,9 +1033,9 @@ describe('TokensController', () => {
 
 ## Keep critical data in the test
 
-A test may involve data that is essential for the test to set up a scenario and/or verify the intended behavior.
+Tests often use data that is essential for setup or verification.
 
-Keeping this data inside of the test instead of spread out across the file or project makes the "story" that the test is telling easier to follow.
+Keep this data inside the test instead of spreading it across the file or project. This makes the test easier to understand.
 
 🚫
 
@@ -1152,26 +1154,23 @@ describe('TokensController', () => {
 
 ## Use Jest's mock functions instead of Sinon
 
-Jest incorporates most of the features of Sinon with a slimmer API:
+Jest includes most of Sinon's features with a simpler API:
 
-- `jest.fn()` can be used in place of `sinon.stub()`.
-- `jest.spyOn(object, method)` can be used in place of `sinon.spy(object, method)` or `sinon.stub(object, method)` (with the caveat that the method being spied upon will still be called by default).
-- `jest.useFakeTimers()` can be used in place of `sinon.useFakeTimers()` (though note that Jest's "clock" object had fewer features than Sinon's prior to Jest v29.5).
+- Use `jest.fn()` instead of `sinon.stub()`.
+- Use `jest.spyOn(object, method)` instead of `sinon.spy(object, method)` or `sinon.stub(object, method)`. (Note: The spied method will still be called by default.)
+- Use `jest.useFakeTimers()` instead of `sinon.useFakeTimers()`. (Note: Jest's "clock" object had fewer features than Sinon's before Jest v29.5.)
 
-## Avoid general manual mocks:
+## Avoid general manual mocks
 
-According to Jest's documentation `Manual mocks are defined by writing a module in a __mocks__/ subdirectory immediately`. These types of mocks are automatically picked up by Jest for all tests. We should be very careful when writing this types of mocks as they will be shared across all tests (including UI integration tests).
+Jest's documentation states: "Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately". Jest automatically picks up these mocks for all tests. Be very careful when writing manual mocks because they are shared across all tests (including UI integration tests).
 
 ## Snapshots
 
-Jest snapshots are not testing the validity of the value tested against a snapshot.
-It only checks for changes since last snapshot generation.
+Jest snapshots do not test whether a value is valid. They only check for changes since the last snapshot was created.
 
-Never consider that rendering a component and matching the snapshot is a test of the component:
-It will only check that the component render worked.
-It may be an error screen and not the actual component.
+Do not consider snapshot matching as a full test of a component. Snapshots only verify that the component rendered without errors. The snapshot might show an error screen instead of the actual component.
 
-To make this clear, name your snapshot test cases by the following rules:
+Name your snapshot test cases clearly:
 
 🚫 Wrong naming
 
@@ -1187,7 +1186,7 @@ describe('MyComponent', () => {
   it('matches rendered snapshot')
 ```
 
-Of course variants of this naming can be used to add some context, for instance:
+You can use variants of this naming to add context. For example:
 
 ```ts
 describe('MyComponent', () => {
