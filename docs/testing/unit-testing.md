@@ -34,6 +34,7 @@ src/
 ## Use `describe` to group tests for the same function/method
 
 Wrap tests for the same function or method in a `describe` block. This provides three benefits:
+
 - Tests are easier to find in large test files
 - You can run only these tests using `.only`
 - The test subject (the "it") is clear and focused
