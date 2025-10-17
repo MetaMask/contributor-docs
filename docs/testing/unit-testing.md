@@ -1160,7 +1160,7 @@ Jest includes most of Sinon's features with a simpler API:
 - Use `jest.spyOn(object, method)` instead of `sinon.spy(object, method)` or `sinon.stub(object, method)`. (Note: The spied method will still be called by default.)
 - Use `jest.useFakeTimers()` instead of `sinon.useFakeTimers()`. (Note: Jest's "clock" object had fewer features than Sinon's before Jest v29.5.)
 
-## Avoid general manual mocks
+## General manual mocks
 
 Jest's documentation states: "Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately". Jest automatically picks up these mocks for all tests. Be very careful when writing manual mocks because they are shared across all tests (including UI integration tests).
 
