@@ -1,4 +1,5 @@
 # Release process
+
 This diagram below represents the release process for MetaMask Extension and MetaMask Mobile clients.
 
 ```mermaid
@@ -68,3 +69,4 @@ subgraph Next [Next release branch: 'release/x.y+1.z']
     style Next fill:#08084d,stroke:#000,stroke-width:2px,color:#fff
     STABLE2 --> NEXT1[Runway automatically creates a new release branch from main, called 'release/x.y+1.z']
 end
+```
