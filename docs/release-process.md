@@ -31,7 +31,7 @@ end
 subgraph HotFix [Hotfix release branch: 'release/x.y-1.z+1']
     style HotFix fill:#08084d,stroke:#000,stroke-width:2px,color:#fff
     HOTFIX1[Hot fix release is merged into 'stable' branch]
-    HOTFIX1 --> HOTFIX2['Stable Branch Sync' GitHun Action creates stable sync PR]
+    HOTFIX1 --> HOTFIX2['Stable Branch Sync' GitHub Action creates stable sync PR]
     HOTFIX2 -->|create PR| HOTFIX3[Release engineer reviews and merges stable sync PR]
     HOTFIX3 -->|merge PR| MAIN1
 end
