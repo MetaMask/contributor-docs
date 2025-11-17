@@ -27,7 +27,7 @@ https://link.metamask.io/swap?sig=AWqgclBcX7wDKXJ-ZbABoRU2pzVS7xQAA5UsIuWEzKVchv
 
 ```mermaid
 ---
-title: Examole user flow diagram for deep linking to swaps page
+title: Example user flow diagram for deep linking to swaps page
 displayMode: compact
 ---
 graph TD
@@ -35,10 +35,10 @@ graph TD
   B -->|Yes| C{Is the Link Signed?}
   B -->|No| D[Take User to metamask.io/download]
 
-  C -->|Yes| E[Skip Interstitial Warning Page\n and show link info page once]
-  C -->|No| F[Show Interstitial Warning Page]
+  C -->|Yes| E[Show interstitial page with link information]
+  C -->|No| F[Show interstitial page with warning]
 
-  E --> G[Take User to Swap Page]
+  E --> |User Confirms| G[Take User to Swap Page]
   F -->|User Confirms| G
 ```
 
@@ -49,10 +49,10 @@ There are several steps that need to be taken to register a deep link in the Met
 #### 1. Construct a deep link and sign it.
 
 For deep link construction we use `branch.io` features.
-Branch service is configured and automatically capable of linking any path to the extension route, if the route is registered.
+Branch service is configured and automatically capable of linking to any path registered within the extension as a deep link route.
 So, adding `/home` or `/swap` at the end of `link.metamask.io` would be enough, and there is no need for additional configurations on the Branch side.
 
-Internal deep links are supposed to be signed and skip interstitial (warning page).
+Signed deep links will skip the interstitial warning page and show the link information interstitial instead.
 Links are signed with a protected dedicated link signer, so additional access is required (ask internally for link signer application and access).
 
 Example:
@@ -70,7 +70,7 @@ import { DEFAULT_ROUTE, Route } from './route';
 
 export default new Route({
   pathname: '/home',
-  getTitle: (_: URLSearchParams) => 'deepLink_theHomePage',
+  getTitle: (_: URLSearchParams) => 'deepLink_theHomePage', // deepLink_theHomePage is a translation constant from messages.json
   handler: function handler(_: URLSearchParams) {
     return { path: DEFAULT_ROUTE, query: new URLSearchParams() };
   },
@@ -91,12 +91,14 @@ addRoute(home);
 
 - Deep link route definition consists of:
   - `pathname` - Route path identifier (e.g., `/home`, `/swaps`, `/notifications`)
-  - `getTitle` - Callback function that should return title of the deep link page. This is usually represented by the translation constant (e.g., `deepLink_theHomePage`).
+  - `getTitle` - Callback function that should return title of the deep link page. This is represented by the translation constant (e.g., `deepLink_theHomePage` from `messages.json`).
   - `handler` - Callback function that should return an object with `path` and `query` properties.
     - `path` - Exact path of the route used in extension. Taken from the existing routes definitions (e.g., `DEFAULT_ROUTE`, `NOTIFICATIONS_ROUTE`).
     - `query` - URL query params. Constructed using `URLSearchParams` constructor function.
 - Make sure that the route exists and return it from a handler under `path` key.
 - Handler function can transform query parameters if necessary.
+  - Handler function must be synchronous.
+  - Handler function must not change anything. Deep links are read-only, and all actions/changes must be confirmed by the user in the UI layer.
 - For a deeper understanding of the route definitions and their properties, [check router implementation and its types](https://github.com/MetaMask/metamask-extension/blob/main/shared/lib/deep-links/routes/route.ts#L18).
 
 ## Architecture
@@ -195,9 +197,11 @@ classDiagram
     RouteRegistry --> Route : registers and stores
 ```
 
-Deep Link Router is instantiated in service worker ([background.js](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/background.js#L757)).
+Deep Link Router is instantiated in the background script ([background.js](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/background.js#L757)).
 
 ## Security
 
-Internal deep links are supposed to be signed and signed links will skip interstitial (warning page).
+It is recommended that deep links provided by MetaMask are signed. 
+Signed links will skip the interstitial warning page and show the link information interstitial instead.
+Link information interstitial can be skipped next time if a user checks the "Don't remind me again" option.
 By signing links, it is ensured that there is a distinction between what MetaMask provides and what is coming from a community outside.
