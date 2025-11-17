@@ -201,7 +201,7 @@ Deep Link Router is instantiated in the background script ([background.js](https
 
 ## Security
 
-It is recommended that deep links provided by MetaMask are signed. 
+It is recommended that deep links provided by MetaMask are signed.
 Signed links will skip the interstitial warning page and show the link information interstitial instead.
 Link information interstitial can be skipped next time if a user checks the "Don't remind me again" option.
 By signing links, it is ensured that there is a distinction between what MetaMask provides and what is coming from a community outside.
