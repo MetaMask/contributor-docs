@@ -935,10 +935,14 @@ interface CartItem {
   color?: string; // Optional color
 
 // Omit color if quantity is 1
-const singleItemPayload = Omit<CartItem, "color" extends string ? "color" : never>;
+type SingleItemPayload<T extends CartItem> = T extends { quantity: 1 }
+  ? Omit<T, 'color'>
+  : T
 
-// Omit color for all items if quantity is always 1
-const cartPayload: singleItemPayload[] = [];
+// Omit color for all items when quantity is 1
+const cartPayload: SingleItemPayload<CartItem & { quantity: 1 }>[] = [
+  { productId: 123, quantity: 1 },
+];
 ```
 
 ## Interfaces
