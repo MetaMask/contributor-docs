@@ -152,8 +152,6 @@ it('displays invalid address error', () => {
 });
 ```
 
----
-
 🚫 **Stating obvious successful outcomes**
 
 ```typescript
