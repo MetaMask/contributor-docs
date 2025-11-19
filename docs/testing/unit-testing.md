@@ -210,8 +210,6 @@ it('throws InvalidPayloadError on malformed request', () => {
 });
 ```
 
----
-
 🚫 **Missing or unclear description**
 
 ```typescript
