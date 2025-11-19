@@ -136,8 +136,6 @@ it('stores valid token in state', () => {
 });
 ```
 
----
-
 🚫 **Listing implementation details and parameters**
 
 ```typescript
