@@ -186,8 +186,6 @@ it('redirects to login when session expires', () => {
 });
 ```
 
----
-
 🚫 **Using vague error language**
 
 ```typescript
