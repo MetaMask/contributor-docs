@@ -52,7 +52,9 @@ For deep link construction we use `branch.io` features.
 Branch service is configured and automatically capable of linking to any path registered within the extension as a deep link route.
 So, adding `/home` or `/swap` at the end of `link.metamask.io` would be enough, and there is no need for additional configurations on the Branch side.
 
-Signed deep links will skip the interstitial warning page and show the link information interstitial instead.
+Signed deep links will skip the interstitial warning page and show the link information interstitial instead. 
+For more information, please refer to the [ADR](https://github.com/MetaMask/decisions/blob/dcb42a5395507928e87c183dd1809c83d9cb408d/decisions/core/0007-deep-linking-into-wallet.md).
+
 Links are signed with a protected dedicated link signer, so additional access is required (ask internally for link signer application and access).
 
 Example:
