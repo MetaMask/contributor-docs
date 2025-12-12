@@ -85,6 +85,79 @@ Choose the appropriate feature flag type based on your needs:
 
 The distribution is deterministic based on the user's `metametricsId`, ensuring consistent group assignment across sessions.
 
+**3. Object flag with version-based scope**: Use for:
+
+- Rolling out features progressively across app versions
+- Providing different feature configurations per version
+- Maintaining backward compatibility while introducing new features
+
+In this example: users get different UI configurations based on their app version, with the system selecting the closest lower or equal version match.
+
+```json
+{
+  "newConfirmationsFeature": {
+    "versions": {
+      "13.0.0": { "ui": "legacy" },
+      "13.1.0": { "ui": "improved" },
+      "13.2.0": { "ui": "modern", "animations": true }
+    }
+  }
+}
+```
+
+- v13.0.5 → `{ "ui": "legacy" }` (closest lower or equal version)
+- v13.1.8 → `{ "ui": "improved" }`
+- v13.2.1 → `{ "ui": "modern", "animations": true }`
+- v12.9.0 → Feature excluded (no matching versions)
+
+The version matching is deterministic and uses semantic version comparison to find the highest version that is less than or equal to the current app version.
+
+**4. Composing version-based scope with threshold scope**: Use when you need to control both version targeting and user percentage rollout simultaneously.
+
+In this example: the feature is rolled out to 30% of users on v13.0.0+, and 100% of users on v13.2.0+.
+
+```json
+{
+  "newFeature": {
+    "versions": {
+      "13.0.0": [
+        {
+          "name": "gradual rollout",
+          "scope": {
+            "type": "threshold",
+            "value": 0.3
+          },
+          "value": { "enabled": true }
+        },
+        {
+          "name": "disabled",
+          "scope": {
+            "type": "threshold",
+            "value": 1
+          },
+          "value": { "enabled": false }
+        }
+      ],
+      "13.2.0": [
+        {
+          "name": "full rollout",
+          "scope": {
+            "type": "threshold",
+            "value": 1
+          },
+          "value": { "enabled": true }
+        }
+      ]
+    }
+  }
+}
+```
+
+- v13.0.5 user in 30% bucket → `{ "enabled": true }`
+- v13.0.5 user in 70% bucket → `{ "enabled": false }`
+- v13.2.1 user (any bucket) → `{ "enabled": true }` (100% rollout)
+- v12.9.0 user → Feature excluded (no matching versions)
+
 ## Implementation Guide
 
 ### 1. Creating feature flag in LaunchDarkly.
