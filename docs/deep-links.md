@@ -102,6 +102,7 @@ addRoute(home);
   - Handler function must be synchronous.
   - Handler function must not change anything. Deep links are read-only, and all actions/changes must be confirmed by the user in the UI layer.
 - For a deeper understanding of the route definitions and their properties, [check router implementation and its types](https://github.com/MetaMask/metamask-extension/blob/main/shared/lib/deep-links/routes/route.ts#L18).
+- For a link to work as a deferred deep link, it needs to be added to the branch.io _LinkHub_. For more information check [deferred deep links section below](#deferred-deep-links).
 
 ## Architecture
 
@@ -200,6 +201,22 @@ classDiagram
 ```
 
 Deep Link Router is instantiated in the background script ([background.js](https://github.com/MetaMask/metamask-extension/blob/main/app/scripts/background.js#L757)).
+
+### Deferred deep links
+
+Deferred deep links are used to navigate a user to a deep link route after the extension is installed. 
+For deferred deep link to work, it is required to add the specific link with its path to the branch.io _LinkHub_.
+
+The extension receives deferred deep link data from the MetaMask website, which collects that data via the integrated Branch.io SDK.
+
+Deferred deep link flow:
+1. When a user lands on the MetaMask website download page, the website stores the deferred deep link inside cookie.
+2. When the user installs MetaMask extension, the extension reads and stores the cookie from the MetaMask website.
+3. Then extension navigates the user to the deferred deep link after successful onboarding.
+
+Notes:
+- Deferred deep link is stored in the extension's local storage immediately after installation.
+- User is navigated to the deferred deep link only if they completed the onboarding process within the two hours after installation.
 
 ## Security
 
