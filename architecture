@@ -1,0 +1,104 @@
+workspace "MetaMask Extension Architecture" "Architecture diagram of the MetaMask Extension codebase" {
+
+    !identifiers hierarchical
+
+    model {
+        core = softwareSystem "Core Wallet" {
+            messenger = container "Messenger"
+
+            rpcService = container "RPC Service"
+            rpcService -> messenger
+
+            networkController = container "Network Controller"
+            networkController -> messenger
+            networkController -> rpcService
+            keyringController = container "Keyring Controller"
+            keyringController -> messenger
+            accountsController = container "Accounts Controller"
+            accountsController -> messenger
+
+            rpcPipeline = container "Wallet API RPC Pipeline"
+            rpcPipeline -> networkController
+            rpcPipeline -> keyringController
+        }
+
+
+
+        extensionBackground = softwareSystem "Extension Background" {
+            persistedStore = container "Persisted store"
+            persistedStore -> core.messenger
+
+            memoryStore = container "Memory store"
+            memoryStore -> core.messenger
+
+            appStateController = container "App State Controller"
+            appStateController -> core.messenger
+
+            controllerApi = container "Controller API"
+            controllerApi -> core.messenger
+
+            controllerStream = container "Controller stream"
+            controllerStream -> controllerApi
+            controllerStream -> memoryStore
+
+            providerStream = container "Provider stream"
+            providerStream -> core.rpcPipeline
+        }
+
+        extensionUi = softwareSystem "Extension UI" {
+            redux = container "Redux store"
+
+            metamaskSlice = container "MetaMask Redux slice"
+            metamaskSlice -> extensionBackground.controllerStream
+            metamaskSlice -> redux
+
+            sendSlice = container "MetaMask Send slice"
+            sendSlice -> redux
+
+            gasSlice = container "MetaMask Gas slice"
+            gasSlice -> redux
+
+            provider = container "Ethereum Provider"
+            provider -> extensionBackground.providerStream
+
+            backgroundApi = container "Background API"
+            backgroundApi -> extensionBackground.controllerStream
+        }
+    }
+
+    views {
+        systemContext core "Diagram1" {
+            include *
+            autolayout lr
+        }
+
+        container core "Diagram2" {
+            include element.parent==core element.parent==extensionBackground element.parent==extensionUi
+            autolayout lr
+        }
+
+        styles {
+            element "Element" {
+                color #ffffff
+            }
+            element "Person" {
+                background #741eba
+                shape person
+            }
+            element "Software System" {
+                background #8723d9
+            }
+            element "Container" {
+                background #9a28f8
+            }
+            element "Database" {
+                shape cylinder
+            }
+        }
+    }
+
+    configuration {
+        scope none
+    }
+
+}
