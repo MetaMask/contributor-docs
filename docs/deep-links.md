@@ -5,11 +5,11 @@
 MetaMask deep links are smart URLs that dynamically route users to the most relevant point in their journey—based
 on their device, app status, and the action we want them to take.
 Deep links help reduce friction, personalize the journey, and drive higher conversion.
-For a link to be a deeplink, it needs to have logic baked in.
+For a link to be a deep link, it needs to have logic baked in.
 
 ### Example
 
-For more clarity on how deep links work, here is an example of a deep link which links to a swaps feature MetaMask extension.
+Here is an example of a deep link which links to a swaps feature MetaMask extension.
 https://link.metamask.io/swap?sig=AWqgclBcX7wDKXJ-ZbABoRU2pzVS7xQAA5UsIuWEzKVchvqyYos_w0At4zR33_0wJdFAypIJM4VgboiU3ghhUQ
 
 - Clicking on the deep link above would have the following behavior:
@@ -49,7 +49,7 @@ There are several steps that need to be taken to register a deep link in the Met
 #### 1. Construct a deep link and sign it.
 
 For deep link construction we use `branch.io` features.
-Branch service is configured and automatically capable of linking to any path registered within the extension as a deep link route.
+The Branch service is configured and automatically capable of linking to any path registered within the extension as a deep link route.
 So, adding `/home` or `/swap` at the end of `link.metamask.io` would be enough, and there is no need for additional configurations on the Branch side.
 
 Signed deep links will skip the interstitial warning page and show the link information interstitial instead.
