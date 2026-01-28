@@ -10,29 +10,29 @@ Performance anti-patterns have propagated across the MetaMask Extension codebase
 
 ### 🔴 Critical Priority (P0) — Fix Immediately
 
-| Anti-Pattern | Count | Impact | Tracking |
-|--------------|-------|--------|----------|
-| `useSelector(selector, isEqual)` | 59 | Deep comparison on EVERY render = 5,900+ comparisons/sec | [#6536](https://github.com/MetaMask/MetaMask-planning/issues/6536) |
-| `JSON.stringify` in useEffect deps | 15+ | Expensive serialization on EVERY render | [#6545](https://github.com/MetaMask/MetaMask-planning/issues/6545) |
-| Unnecessary `createDeepEqualSelector` | 141 | `isEqual` runs on every selector evaluation | [#6537](https://github.com/MetaMask/MetaMask-planning/issues/6537) |
+| Anti-Pattern                          | Count | Impact                                                   | Tracking                                                           |
+| ------------------------------------- | ----- | -------------------------------------------------------- | ------------------------------------------------------------------ |
+| `useSelector(selector, isEqual)`      | 59    | Deep comparison on EVERY render = 5,900+ comparisons/sec | [#6536](https://github.com/MetaMask/MetaMask-planning/issues/6536) |
+| `JSON.stringify` in useEffect deps    | 15+   | Expensive serialization on EVERY render                  | [#6545](https://github.com/MetaMask/MetaMask-planning/issues/6545) |
+| Unnecessary `createDeepEqualSelector` | 141   | `isEqual` runs on every selector evaluation              | [#6537](https://github.com/MetaMask/MetaMask-planning/issues/6537) |
 
 ### 🟠 High Priority (P1) — Fix in Current Sprint
 
-| Anti-Pattern | Count | Impact | Tracking |
-|--------------|-------|--------|----------|
-| `key={index}` on dynamic lists | 72 | Reconciliation bugs, state corruption | [#6523](https://github.com/MetaMask/MetaMask-planning/issues/6523) |
-| `Object.values().find()` | 52+ | O(n) search on every call | [#6539](https://github.com/MetaMask/MetaMask-planning/issues/6539) |
-| Multiple `useSelector` calls | 200+ | Redundant subscriptions | [#6524](https://github.com/MetaMask/MetaMask-planning/issues/6524) |
-| Routes not lazy-loaded | 15+ | Large initial bundle, slow LCP | [#6547](https://github.com/MetaMask/MetaMask-planning/issues/6547) |
+| Anti-Pattern                   | Count | Impact                                | Tracking                                                           |
+| ------------------------------ | ----- | ------------------------------------- | ------------------------------------------------------------------ |
+| `key={index}` on dynamic lists | 72    | Reconciliation bugs, state corruption | [#6523](https://github.com/MetaMask/MetaMask-planning/issues/6523) |
+| `Object.values().find()`       | 52+   | O(n) search on every call             | [#6539](https://github.com/MetaMask/MetaMask-planning/issues/6539) |
+| Multiple `useSelector` calls   | 200+  | Redundant subscriptions               | [#6524](https://github.com/MetaMask/MetaMask-planning/issues/6524) |
+| Routes not lazy-loaded         | 15+   | Large initial bundle, slow LCP        | [#6547](https://github.com/MetaMask/MetaMask-planning/issues/6547) |
 
 ### Expected Core Web Vitals Impact
 
-| Metric | Current | Target | Improvement |
-|--------|---------|--------|-------------|
-| **INP** (Token Search) | 200-400ms | 30-60ms | **85%** |
-| **INP** (Swap Quotes) | 300-600ms | 100-200ms | **65%** |
-| **LCP** (Popup Open) | 800-1200ms | &lt;500ms | **50%** |
-| **CLS** (List Scroll) | 0.1-0.3 | &lt;0.05 | **80%** |
+| Metric                 | Current    | Target    | Improvement |
+| ---------------------- | ---------- | --------- | ----------- |
+| **INP** (Token Search) | 200-400ms  | 30-60ms   | **85%**     |
+| **INP** (Swap Quotes)  | 300-600ms  | 100-200ms | **65%**     |
+| **LCP** (Popup Open)   | 800-1200ms | &lt;500ms | **50%**     |
+| **CLS** (List Scroll)  | 0.1-0.3    | &lt;0.05  | **80%**     |
 
 ---
 
@@ -60,6 +60,7 @@ Understanding propagation prevents future issues:
 ```
 
 **Prevention:**
+
 - ESLint rule to flag `useSelector(..., isEqual)` ([#6565](https://github.com/MetaMask/MetaMask-planning/issues/6565))
 - Performance baselines in CI ([#6566](https://github.com/MetaMask/MetaMask-planning/issues/6566))
 - Code review guidelines ([#6567](https://github.com/MetaMask/MetaMask-planning/issues/6567))
@@ -996,11 +997,11 @@ const TokenBalance = () => {
 
 **When to Use Each Approach:**
 
-| Approach                    | Use When                                    | Pros                                 | Cons                  |
-| --------------------------- | ------------------------------------------- | ------------------------------------ | --------------------- |
-| **useEqualityCheck**        | Objects/arrays from props or external state | Simple, reusable, handles edge cases | Requires hook import  |
-| **useRef + isEqual**        | One-off cases, custom logic needed          | Full control, no extra hook          | More boilerplate      |
-| **Normalize to primitives** | Can extract stable IDs/values               | Most performant, clear dependencies  | Not always possible   |
+| Approach                    | Use When                                    | Pros                                 | Cons                 |
+| --------------------------- | ------------------------------------------- | ------------------------------------ | -------------------- |
+| **useEqualityCheck**        | Objects/arrays from props or external state | Simple, reusable, handles edge cases | Requires hook import |
+| **useRef + isEqual**        | One-off cases, custom logic needed          | Full control, no extra hook          | More boilerplate     |
+| **Normalize to primitives** | Can extract stable IDs/values               | Most performant, clear dependencies  | Not always possible  |
 
 **Key Principles:**
 
@@ -1740,6 +1741,7 @@ const MyComponent = () => {
 ```
 
 **Impact:**
+
 - 59 occurrences × 100 renders/sec = **5,900+ deep object traversals/sec**
 - Each `isEqual` traverses the entire object tree
 - Blocks main thread during swap/bridge quote flows
