@@ -139,14 +139,17 @@ Understanding propagation prevents future issues:
 
 ---
 
+# Chapter 1: Rendering Performance
+
 ## Optimizing Lists and Large Datasets
 
 > **Tracking:** [Epic #6523: Fix Array Index Keys](https://github.com/MetaMask/MetaMask-planning/issues/6523)
 
 ### Use Proper Keys
 
-```typescript
 ❌ WRONG: Using array index as key
+
+```tsx
 const TokenList = ({ tokens }: TokenListProps) => {
   return (
     &lt;div&gt;
@@ -156,8 +159,11 @@ const TokenList = ({ tokens }: TokenListProps) => {
     &lt;/div&gt;
   );
 };
+```
 
 ✅ CORRECT: Use unique, stable identifiers
+
+```tsx
 const TokenList = ({ tokens }: TokenListProps) => {
   return (
     &lt;div&gt;
@@ -180,8 +186,9 @@ const TokenList = ({ tokens }: TokenListProps) => {
 
 Using array index as key breaks React's reconciliation when lists can be reordered, filtered, or items added/removed.
 
-```typescript
 ❌ WRONG: Index keys break reconciliation
+
+```tsx
 const TokenList = ({ tokens }: TokenListProps) => {
   // If tokens can be reordered/filtered, this breaks React's reconciliation
   return (
@@ -192,8 +199,11 @@ const TokenList = ({ tokens }: TokenListProps) => {
     &lt;/div&gt;
   );
 };
+```
 
 ✅ CORRECT: Use unique, stable identifiers
+
+```tsx
 const TokenList = ({ tokens }: TokenListProps) => {
   return (
     &lt;div&gt;
@@ -220,8 +230,9 @@ const TokenList = ({ tokens }: TokenListProps) => {
 
 For lists with 100+ items, use virtualization to only render visible items.
 
-```typescript
 ❌ WRONG: Rendering 1000+ items at once
+
+```tsx
 const TransactionList = ({ transactions }: TransactionListProps) => {
   return (
     &lt;div className="transaction-list"&gt;
@@ -231,8 +242,11 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
     &lt;/div&gt;
   );
 };
+```
 
 ✅ CORRECT: Use virtualization library
+
+```tsx
 import { FixedSizeList } from 'react-window';
 
 const TransactionList = ({ transactions }: TransactionListProps) => {
@@ -255,8 +269,9 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 };
 ```
 
-```typescript
 ✅ GOOD: Virtual scrolling for 1000+ assets
+
+```tsx
 import { FixedSizeList } from 'react-window';
 
 const AssetList = ({ assets }: AssetListProps) => {
@@ -281,15 +296,16 @@ const AssetList = ({ assets }: AssetListProps) => {
 
 **Recommended libraries:**
 
-- `react-window` - Lightweight, recommended for most use cases
-- `react-virtualized` - More features, larger bundle size
+- `@tanstack/react-virtual` - Framework-agnostic, actively maintained, used for the Tokens list
+- `react-window` - Lightweight alternative for simpler use cases
 
 ### Pagination and Infinite Scroll
 
 For very large datasets, load data in chunks.
 
-```typescript
 ✅ GOOD: Paginated data loading
+
+```tsx
 const TransactionList = () => {
   const [page, setPage] = useState(1);
   const { transactions, hasMore, isLoading } = useTransactionsPaginated(page);
@@ -315,8 +331,9 @@ const TransactionList = () => {
 };
 ```
 
-```typescript
 ❌ WRONG: Load all assets at once
+
+```tsx
 const AssetList = ({ accountId }: AssetListProps) => {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -333,8 +350,9 @@ const AssetList = ({ accountId }: AssetListProps) => {
 };
 ```
 
-```typescript
 ✅ CORRECT: Progressive pagination
+
+```tsx
 const AssetList = ({ accountId }: AssetListProps) => {
   const [assets, setAssets] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -382,8 +400,9 @@ const AssetList = ({ accountId }: AssetListProps) => {
 
 ### Use React.lazy for Route-Based Splitting
 
-```typescript
 ❌ WRONG: Import all pages upfront
+
+```tsx
 import Settings from './pages/Settings';
 import Tokens from './pages/Tokens';
 import Activity from './pages/Activity';
@@ -397,8 +416,11 @@ const App = () => {
     &lt;/Routes&gt;
   );
 };
+```
 
 ✅ CORRECT: Lazy load pages
+
+```tsx
 import { lazy, Suspense } from 'react';
 
 const Settings = lazy(() => import('./pages/Settings'));
@@ -420,8 +442,9 @@ const App = () => {
 
 ### Lazy Load Heavy Components
 
-```typescript
 ✅ GOOD: Lazy load modals and heavy components
+
+```tsx
 const QRCodeScanner = lazy(() => import('./components/QRCodeScanner'));
 
 const SendToken = () => {
@@ -444,42 +467,115 @@ const SendToken = () => {
 };
 ```
 
-```typescript
+```tsx
 ✅ GOOD: Lazy load asset images
 const AssetCard = ({ asset }: AssetCardProps) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const imgRef = useRef&lt;HTMLImageElement&gt;(null);
+  const [imageSrc, setImageSrc] = useState&lt;string | null&gt;(null);
+  const placeholderRef = useRef&lt;HTMLDivElement&gt;(null);
 
   useEffect(() => {
-    if (!imgRef.current) return;
+    const placeholder = placeholderRef.current;
+    if (!placeholder) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setImageLoaded(true);
+          setImageSrc(asset.imageUrl); // Start loading when visible
           observer.disconnect();
         }
       },
       { rootMargin: '50px' } // Start loading 50px before visible
     );
 
-    observer.observe(imgRef.current);
+    observer.observe(placeholder);
 
     return () => observer.disconnect();
-  }, []);
+  }, [asset.imageUrl]);
 
   return (
     &lt;div&gt;
       &lt;div&gt;{asset.name}&lt;/div&gt;
-      {imageLoaded ? (
-        &lt;img src={asset.imageUrl} alt={asset.name} /&gt;
+      {imageSrc ? (
+        &lt;img src={imageSrc} alt={asset.name} /&gt;
       ) : (
-        &lt;div className="placeholder"&gt;Loading image...&lt;/div&gt;
+        &lt;div ref={placeholderRef} className="placeholder"&gt;Loading image...&lt;/div&gt;
       )}
     &lt;/div&gt;
   );
 };
 ```
+
+### ❌ Anti-Pattern: Inline Style Objects
+
+Creating inline style objects in JSX causes new object references on every render, triggering unnecessary re-renders in child components.
+
+❌ WRONG: Inline style creates new object on every render
+
+```tsx
+const TokenDisplay = ({ token, isMuted }: TokenDisplayProps) => {
+  return (
+    &lt;Text style={{ opacity: isMuted ? 0.5 : 1 }}&gt;
+      {token.symbol}
+    &lt;/Text&gt;
+  );
+};
+```
+
+**Problems:**
+
+- New object created on every render
+- Breaks memoization of child components
+- Causes unnecessary re-renders, especially in lists
+
+✅ CORRECT: Extract to constant or memoize
+
+```tsx
+// Option 1: Extract to constant when values are static
+const STYLES = {
+  muted: { opacity: 0.5 },
+  normal: { opacity: 1 },
+};
+
+const TokenDisplay = ({ token, isMuted }: TokenDisplayProps) => {
+  return (
+    &lt;Text style={isMuted ? STYLES.muted : STYLES.normal}&gt;
+      {token.symbol}
+    &lt;/Text&gt;
+  );
+};
+
+// Option 2: useMemo for dynamic values
+const TokenDisplay = ({ token, isMuted, customOpacity }: TokenDisplayProps) => {
+  const style = useMemo(
+    () => ({ opacity: isMuted ? customOpacity : 1 }),
+    [isMuted, customOpacity]
+  );
+
+  return (
+    &lt;Text style={style}&gt;
+      {token.symbol}
+    &lt;/Text&gt;
+  );
+};
+
+// Option 3: Use CSS/SCSS classes (most performant)
+const TokenDisplay = ({ token, isMuted }: TokenDisplayProps) => {
+  return (
+    &lt;Text className={isMuted ? 'token-muted' : 'token-normal'}&gt;
+      {token.symbol}
+    &lt;/Text&gt;
+  );
+};
+```
+
+**Best Practices:**
+
+- ✅ Extract static styles to constants outside component
+- ✅ Use `useMemo` for dynamic style objects that depend on props/state
+- ✅ Prefer CSS/SCSS classes over inline styles for best performance
+- ❌ Avoid inline style objects in components that render frequently (lists, animations)
+
+---
 
 ## Memoization and Offloading of Computations
 
@@ -718,7 +814,7 @@ function useDebouncedValue&lt;T&gt;(value: T, delay: number): T {
 
 ---
 
----
+# Chapter 2: Hooks & Effects
 
 ## Hook Optimizations
 
@@ -1621,7 +1717,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 
 ---
 
----
+# Chapter 3: State Management
 
 ## 🔴 CRITICAL: Never Use useSelector with isEqual Comparator
 
@@ -2180,7 +2276,7 @@ const selectAccountByAddress = createSelector(
 
 ---
 
----
+# Chapter 4: React Compiler
 
 ## React Compiler Considerations
 
@@ -2205,7 +2301,7 @@ React Compiler assumes your code:
 - ✅ Tests nullable/optional values before accessing (e.g., enable `strictNullChecks` in TypeScript)
 - ✅ Follows the [Rules of React](https://react.dev/reference/rules)
 
-React Compiler can verify many Rules of React statically and will **skip compilation** when it detects errors. Install [eslint-plugin-react-compiler](https://www.npmjs.com/package/eslint-plugin-react-compiler) to see compilation errors.
+React Compiler can verify many Rules of React statically and will **skip compilation** when it detects errors. The [eslint-plugin-react-compiler](https://www.npmjs.com/package/eslint-plugin-react-compiler) is already installed in the project and will surface compilation errors in your editor.
 
 ### React Compiler Limitations
 
@@ -2228,8 +2324,7 @@ React Compiler can verify many Rules of React statically and will **skip compila
 
 - ✅ **Keep existing `useMemo()` and `useCallback()` calls** - Especially for effect dependencies to ensure behavior doesn't change
 - ✅ **Write new code without `useMemo`/`useCallback`** - Let React Compiler handle it automatically
-- ⚠️ React Compiler will statically validate that auto-memoization matches existing manual memoization
-- ⚠️ If it can't prove they're the same, the component/hook is safely skipped over
+- ⚠️ React Compiler will statically validate that auto-memoization matches existing manual memoization, and if it can't prove they're the same, the component/hook is safely skipped over
 
 ### When Manual Memoization is Still Required
 
