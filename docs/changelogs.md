@@ -17,7 +17,7 @@ This guide covers why changelogs are important, what they look like, how to add 
 
 Why do products needs changelogs?
 
-A changelog answers the following questions that your users will probably have when a new release of your product is issued:
+A changelog answers the following questions that users of your project will probably have when you make a new release:
 
 - What can I use now that I couldn't use before?
 - What changed about something that I may use now?
@@ -29,7 +29,7 @@ In addition, a changelog also answers the following questions that you will prob
 - In which version was this change or fix introduced?
 - Where was the code commit or pull request that introduced the change?
 
-## What changelogs are not
+### What changelogs are not
 
 Changelogs are not a list of commits to a codebase.
 
@@ -104,7 +104,7 @@ Different kinds of products are used differently, and in order to be useful, the
 
 <!--Changes that are invisible to users (refactors, changes to CI or build tools, etc.) should be omitted.-->
 
-### UI-based products (apps, websites, graphical tools, etc.)
+#### UI-based products (apps, websites, graphical tools, etc.)
 
 Changelogs for these products should at least mention:
 
@@ -112,7 +112,7 @@ Changelogs for these products should at least mention:
 - Changes to the UI, particularly those that may interrupt a standard workflow (moving a button or dropdown to another screen, reworking part of a screen, etc.)
 - Fixes for bugs, security issues, etc.
 
-### CLIs
+#### CLIs
 
 Changelogs for command-line tools should at least mention:
 
@@ -120,7 +120,7 @@ Changelogs for command-line tools should at least mention:
 - Changes to existing commands, options, or workflows
 - Fixes for bugs, security issues, etc
 
-### HTTP APIs
+#### HTTP APIs
 
 Changelogs for APIs accessible via HTTP should at least mention:
 
@@ -130,7 +130,7 @@ Changelogs for APIs accessible via HTTP should at least mention:
 - Removed endpoints/routes
 - Fixes for bugs, security issues, etc.
 
-### Libraries
+#### Libraries
 
 Changelogs for libraries should at least mention:
 
@@ -140,7 +140,7 @@ Changelogs for libraries should at least mention:
 - Removed exports or symbols in existing exports
 - Fixes for bugs, security issues, etc.
 
-### GitHub actions/workflows
+#### GitHub actions/workflows
 
 Yes, public actions and workflows should have changelogs too! They should at least mention:
 
@@ -149,7 +149,7 @@ Yes, public actions and workflows should have changelogs too! They should at lea
 - Removed options
 - Fixes for bugs, security issues, etc.
 
-## Adding a changelog
+### Adding a changelog
 
 If you want to add a changelog to a new or existing repo:
 
