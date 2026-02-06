@@ -1,15 +1,53 @@
-# Guide to Changelogs
+# Changelogs
 
-Changelogs are essential at MetaMask for communicating changes in projects to end users, and it is important to understand how to write them well.
+Changelogs are essential at MetaMask for communicating changes in products to end users.
 
-## Essential principles
+This guide covers why changelogs are important, what they look like, how to add them to products, and how to write them well.
 
-- Every MetaMask product, service, or library ("project") that follows a release process should have a "Keep a Changelog"-formatted changelog file called `CHANGELOG.md`.
-- Changelogs should be tailored for its primary audience, the people that use the project ("users").
-- For each release, a changelog should clearly and concisely describe changes that matter to the users of the project, and it should provide advice on how to use adjust to them.
-- Changelogs should be curated; they should be kept organized and free of noise.
+## Guide
 
-## Format & structure
+### Summary
+
+- Every MetaMask app, API, library, or tool ("product") that is publicly available and released in versions should have a "Keep a Changelog"-formatted changelog file called `CHANGELOG.md`.
+- Changelogs should be tailored for its primary audience, the people that use the product ("users").
+- For each release, a changelog should clearly and concisely describe changes to publicly usable parts of the product, and it should provide advice for users on how to adjust to unexpected changes.
+- Changelogs should be curated for humans to read; they should be kept organized and free of noise.
+
+### The purpose of a changelog
+
+Why do products needs changelogs?
+
+A changelog answers the following questions that your users will probably have when a new release of your product is issued:
+
+- What can I use now that I couldn't use before?
+- What changed about something that I may use now?
+- I am used to using the product this way, do I need to use it a different way now?
+- What was broken before that is now fixed?
+
+In addition, a changelog also answers the following questions that you will probably have in the future:
+
+- In which version was this change or fix introduced?
+- Where was the code commit or pull request that introduced the change?
+
+## What changelogs are not
+
+Changelogs are not a list of commits to a codebase.
+
+Some opensource projects copy and paste the direct output of `git log` for their changelogs. But commit messages can be cryptic, and they often contain implementation details which may be useful for engineers but are irrelevant for end users.
+
+## Adding a changelog
+
+If you want to add a changelog to a new or existing repo:
+
+1. Ensure that you have a JavaScript package manager installed, and you've added a `package.json` to the root.
+2. Add `@metamask/auto-changelog` to `devDependencies`.
+3. Add a `lint:changelog` package script which runs `auto-changelog validate`.
+4. Configure CI to reject PRs and pushes to `main` if `lint:changelog` does not pass.
+5. Generate an initial changelog by running `yarn auto-changelog init` or `npm auto-changelog init`.
+
+See the [module template](https://github.com/MetaMask/metamask-module-template) for an example of a repo that has an existing changelog.
+
+### Format & structure
 
 All changelogs should be written in a format based on the ["Keep a Changelog"](https://keepachangelog.com/) specification. This format is enforced by [`@metamask/auto-changelog`](https://github.com/MetaMask/auto-changelog).
 
@@ -47,7 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release
+- Initial release ([#100](https://github.com/MetaMask/logger/pull/100))
 
 [Unreleased]: https://github.com/MetaMask/logger/compare/v1.1.0...HEAD
 [1.1.0]: https://github.com/MetaMask/logger/compare/v1.0.0...v1.1.0
@@ -61,7 +99,7 @@ Broadly, the changelog has the following structure:
 3. Previously published versions and their changes
 4. Markdown link references for section headers
 
-Within each past or future release section, changes are placed into one of six categories (enforced by `@auto-changelog` [here](https://github.com/MetaMask/auto-changelog/blob/ef3e86e15b0de7061856a53fd18c4f38e898f5e8/src/constants.ts)):
+Within each past or future release section, changes are placed into one of six categories (enforced by `@metamask/auto-changelog` [here](https://github.com/MetaMask/auto-changelog/blob/ef3e86e15b0de7061856a53fd18c4f38e898f5e8/src/constants.ts)):
 
 1. Added
 2. Changed
@@ -72,64 +110,78 @@ Within each past or future release section, changes are placed into one of six c
 
 Finally, within each category section is a bulleted list of changelog entries. Each changelog entry must end with a link to the pull request that introduced the change. If necessary, another bulleted list may be placed under a changelog entry to explain its purpose and provide more details for usage or adoption.
 
-## Users and pertinent changes
+### Pertinent changes
 
-Products, services, and libraries have different kinds of users, and in order to tailor to the audience, their changelogs must focus on different things.
+Different kinds of products are used differently, and in order to be useful, their changelogs must be tailored to the kinds of things users can see and interact with.
 
-### Apps and websites
+<!--Changes that are invisible to users (refactors, changes to CI or build tools, etc.) should be omitted.-->
 
-Apps and websites have non-developer users, and their changelogs should focus on:
+### UI-based products (apps, websites, graphical tools, etc.)
 
-- New functionality
-- Changes to the UI, particularly those that may change a standard workflow (moving a button or dropdown, reworking part of a screen, etc.)
+Changelogs for these products should at least mention:
+
+- New features (e.g., a new tab on the home page, a new setting, etc.)
+- Changes to the UI, particularly those that may interrupt a standard workflow (moving a button or dropdown to another screen, reworking part of a screen, etc.)
 - Fixes for bugs, security issues, etc.
 
-### Services (APIs)
+### CLIs
 
-Services have developer users, and their changelogs should focus on:
+Changelogs for command-line tools should at least mention:
+
+- New commands, options, or workflows
+- Changes to existing commands, options, or workflows
+- Fixes for bugs, security issues, etc
+
+### HTTP APIs
+
+Changelogs for APIs accessible via HTTP should at least mention:
 
 - New endpoints/routes
 - Changes in request or response data for existing endpoints/routes
-- Changes in behavior for existing endpoints/routes (different logic, new errors, etc.), particularly those that are surprising
+- Changes in behavior for existing endpoints/routes (different logic, new errors, etc.), particularly those that are unexpected
 - Removed endpoints/routes
 - Fixes for bugs, security issues, etc.
 
-### Libraries or GitHub actions
+### Libraries
 
-- The API of a project covers exported code and data, and may include classes, methods, functions, constants, and types.
-- The CLI of a project covers executables, and may include commands, options, and workflows.
-- The GUI of a project covers applications, and may include screens, interactive components, and workflows.
-- The external code of a project is its dependencies or peer dependencies.
+Changelogs for libraries should at least mention:
 
-## Keep and enforce a changelog
+- New exports (classes, functions, types, constants, etc.)
+- Extensions to existing types or values (options, properties, methods, values within type unions, etc.)
+- Changes in behavior, particularly those that are unexpected
+- Removed exports or symbols in existing exports
+- Fixes for bugs, security issues, etc.
 
-Projects that use a release process to deploy new versions of the project to a publicly accessible location such as NPM or GitHub Pages should include a file in the repo that captures those releases and the changes included in each release. This file should be called `CHANGELOG.md`.
+### GitHub actions/workflows
 
-The changelog should follow a [standard format](#understand-the-format-of-the-changelog). The [`@metamask/auto-changelog`](https://github.com/MetaMask/auto-changelog) tool should be installed in the repo to ensure that the format is followed at all times:
+Yes, public actions and workflows should have changelogs too! They should at least mention:
 
-- A `lint:changelog` package script should be present which runs `auto-changelog validate`
-- A `lint` package script should be present which runs `lint:changelog`
-- CI should be configured to run `lint` on all branches and prevent a PR from being merged if `lint` does not pass
+- New options
+- Changes in behavior, particularly those that are unexpected
+- Removed options
+- Fixes for bugs, security issues, etc.
 
-See the [module template](https://github.com/MetaMask/metamask-module-template) for an example of a project that does this.
+## Best practices
 
-## List unreleased changes separately from released changes
+### List unreleased changes separately from released changes
 
 Entries for changes that have not been released should be filed under a section at the top of the file called "Unreleased". (When a new release is issued, the entries here will automatically be moved to a new section by `@metamask/auto-changelog`.)
 
-## Place changes into categories
+### Place changes into categories
 
 Before adding a new changelog entry, determine which category it belongs to, adding a new header for the category if it does not exist. Do not leave changes in "Uncategorized".
 
 Consult the [format](#understand-the-format-and-structure-of-the-changelog) for the available list of change categories and the order in which they should appear.
 
-### Added
+#### Added
 
-A change should be filed under this category if it enables consumers to do or use something with the project that they couldn't before.
+A change should be filed under this category if the project provides a new "feature", an extension of the product that users they couldn't do or use before.
 
 Most additions are non-breaking, but see ["Highlight breaking changes"](#highlight-breaking-changes) for exceptions.
 
-This could include:
+<details><summary>Examples</summary>
+
+"Added" changes could include:
 
 - Adding a new package export (e.g., a new class, function, method, or type) ✅
 - Adding a new method to an exported class ✅
@@ -139,7 +191,7 @@ This could include:
 - Adding a new executable entirely ✅
 - Adding a new screen or workflow to a GUI ✅
 
-Notably, this does not include:
+"Added" changes do not include:
 
 - Adding a new "production" or peer dependency (since consumers can't use dependencies directly) ❌
   - This should be filed under "Changed"
@@ -153,8 +205,9 @@ Notably, this does not include:
   - This should be filed under "Changed"
 - Adding a new class, function, method, etc. that is not being exported ❌
   - This should be excluded from the changelog entirely, since only developers can "see" it
+</details>
 
-### Removed
+#### Removed
 
 A change should be filed under this category if it removes an ability for consumers to do or use something with the project that they previously had.
 
@@ -185,7 +238,7 @@ Notably, this does not include:
 - Removing a class, function, method, etc. that is not being exported ❌
   - This should be excluded from the changelog entirely, since only developers can "see" it
 
-### Fixed
+#### Fixed
 
 A change should be filed under this category if it corrects a problem that was introduced in a previous version.
 
@@ -200,17 +253,17 @@ Notably, this does not include:
 - Upgrading a dependency to patch a security vulnerability
   - This should be filed under "Security"
 
-### Deprecated
+#### Deprecated
 
 A change should be filed under this category if it adds a warning for a part of the API that is planned to be removed in a future version (but has not been removed yet).
 
-### Security
+#### Security
 
 A change should be filed under this category if it patches a publicly known security vulnerability (usually one that has been assigned a ID in the CVE database and highlighted by GitHub's security auditing tools).
 
 Some changes fix vulnerabilities that are sensitive in nature, where exposure may pose a danger to Consensys, MetaMask, or community at large. These changes should be omitted entirely. (If in doubt, reach out to the MetaMask Security team.)
 
-### Changed
+#### Changed
 
 A change should be filed under this category when it does not belong to any other category.
 
@@ -230,7 +283,7 @@ Notably, the Changed category does not include:
 - Adding or removing a development dependency ❌
   - This should be excluded from the changelog, since it is only relevant for developers
 
-## Highlight breaking changes
+### Highlight breaking changes
 
 A change is "breaking" if it forces the consumer to take some kind of action after upgrading to prevent or handle one of the following:
 
@@ -271,11 +324,11 @@ The following changes may or may not be breaking, depending on whether types are
 - Widening the TypeScript type of an argument in a function or method ❓
 - Narrowing the return type of function or method ❓
 
-### Read more
+#### Read more
 
 - ["Breaking Changes" in "Semantic Versioning for TypeScript Types"](https://www.semver-ts.org/formal-spec/2-breaking-changes.html)
 
-## Omit non-consumer-facing changes
+### Omit non-consumer-facing changes
 
 Since changelogs should be geared toward consumers, any other changes that do not have a material effect on the usable parts of a package should be omitted from the changelog.
 
@@ -286,7 +339,7 @@ This includes:
 - Adding new tests ❌
 - Adding tooling, CI checks, or making other infrastructure changes that only benefit developers ❌
 
-## Describe changes to the surface area of the project
+### Describe changes to the surface area of the project
 
 It is tempting when leaving a changelog entry to simply reuse the message for the commit that introduced the change. Projects like [`release-please`](https://github.com/googleapis/release-please) or [`semantic-release`](https://github.com/semantic-release/semantic-release) have certainly popularized this practice. Due to character length requirements, however, commit messages can be rather cryptic, and so they are not as helpful in practice as they could be.
 
@@ -308,7 +361,7 @@ Be exact even when [linking out to a pull request](#include-links-to-pull-reques
 
 It may be desirable to couch new changes in terms of features that they enable in consuming projects. If so, consider [describing the specific interface differences underneath the broad description](#-use-a-nested-list-to-provide-context-or-details-about-a-change) (although be careful not to [group too many things together](#split-disparate-changes-from-the-same-pull-request-into-multiple-entries-if-necessary) so they can be categorized appropriately).
 
-## 💡 Use a nested list to provide context or details about a change
+### 💡 Use a nested list to provide context or details about a change
 
 Sometimes it is desirable to provide details for a change, such as context, purpose, consequences, or instructions for the consumer to follow, but it would be unwieldy to incorporate that information on the same line as the change itself.
 
@@ -349,7 +402,7 @@ After [providing a description of changes to the surface area](#describe-changes
 - Make `fetch` argument for `fetchTokens` and `fetchTopAssets` optional, defaulting to a cached version ([#111](https://github.com/MetaMask/sample-project/pull/111), [#222](https://github.com/MetaMask/sample-project/pull/222))
 ```
 
-## Combine like changes from multiple pull requests into a single entry if necessary
+### Combine like changes from multiple pull requests into a single entry if necessary
 
 There is no requirement that each changelog entry map to exactly one commit. A changelog is not the same thing as a commit history, and sometimes it makes more sense to group together similar changes across multiple commits into one entry.
 
@@ -368,7 +421,7 @@ When doing so, make sure to include all relevant pull request links on the same 
 - Bump `@metamask/utils` from `^0.9.7` to `^2.0.0` ([#111](https://github.com/MetaMask/sample-project/pull/111), [#222](https://github.com/MetaMask/sample-project/pull/222))
 ```
 
-## Split disparate changes from the same pull request into multiple entries if necessary
+### Split disparate changes from the same pull request into multiple entries if necessary
 
 Often, a commit contains distinct changes across different areas of the codebase. Although it is tempting to group changes by "feature", it can be easier for consumers looking for specific changes if specific changes to the surface area of the project are listed separately.
 
@@ -416,7 +469,7 @@ If it is desirable to preserve context for the new changes, [use a nested list](
   - Remove deprecated `fetchLegacyFeatureFlags` method
 ```
 
-## Remove reverted changes
+### Remove reverted changes
 
 Sometimes changes show up in the commit history and are then later reverted. Since consumers will never see those changes, there is no need to list them in the changelog:
 
