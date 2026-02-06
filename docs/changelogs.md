@@ -6,7 +6,7 @@ This guide covers why changelogs are important, what they look like, how to add 
 
 ## Guide
 
-### Summary
+### tl;dr
 
 - Every MetaMask app, API, library, or tool ("product") that is publicly available and released in versions should have a "Keep a Changelog"-formatted changelog file called `CHANGELOG.md`.
 - Changelogs should be tailored for its primary audience, the people that use the product ("users").
@@ -34,18 +34,6 @@ In addition, a changelog also answers the following questions that you will prob
 Changelogs are not a list of commits to a codebase.
 
 Some opensource projects copy and paste the direct output of `git log` for their changelogs. But commit messages can be cryptic, and they often contain implementation details which may be useful for engineers but are irrelevant for end users.
-
-## Adding a changelog
-
-If you want to add a changelog to a new or existing repo:
-
-1. Ensure that you have a JavaScript package manager installed, and you've added a `package.json` to the root.
-2. Add `@metamask/auto-changelog` to `devDependencies`.
-3. Add a `lint:changelog` package script which runs `auto-changelog validate`.
-4. Configure CI to reject PRs and pushes to `main` if `lint:changelog` does not pass.
-5. Generate an initial changelog by running `yarn auto-changelog init` or `npm auto-changelog init`.
-
-See the [module template](https://github.com/MetaMask/metamask-module-template) for an example of a repo that has an existing changelog.
 
 ### Format & structure
 
@@ -160,6 +148,18 @@ Yes, public actions and workflows should have changelogs too! They should at lea
 - Changes in behavior, particularly those that are unexpected
 - Removed options
 - Fixes for bugs, security issues, etc.
+
+## Adding a changelog
+
+If you want to add a changelog to a new or existing repo:
+
+1. Ensure that you have a JavaScript package manager installed, and you've added a `package.json` to the root.
+2. Add `@metamask/auto-changelog` to `devDependencies`.
+3. Add a `lint:changelog` package script which runs `auto-changelog validate`.
+4. Configure CI to reject PRs and pushes to `main` if `lint:changelog` does not pass.
+5. Generate an initial changelog by running `yarn auto-changelog init` or `npm auto-changelog init`.
+
+See the [module template](https://github.com/MetaMask/metamask-module-template) for an example of a repo that has an existing changelog.
 
 ## Best practices
 
