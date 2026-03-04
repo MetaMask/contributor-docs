@@ -223,6 +223,8 @@ Your selector must include:
 
 #### Extension
 
+In production, MetaMask Extension fetches remote flags from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod) at runtime. During E2E tests, a global mock server (`test/e2e/mock-e2e.js`) reads from the [feature flag registry](https://github.com/MetaMask/metamask-extension/blob/main/test/e2e/feature-flags/feature-flag-registry.ts) instead of calling the real API. Each registry entry stores the flag's production default value, so tests reflect real-world behavior unless a specific test explicitly overrides a flag.
+
 ##### Local Feature Flag Override
 
 - Developers can override `remoteFeatureFlag` values by defining them in `.manifest-overrides.json` and enable `MANIFEST_OVERRIDES=.manifest-overrides.json` in the `.metamaskrc.dist` locally.
@@ -259,22 +261,7 @@ Your selector must include:
 
 ##### B. E2E Test
 
-Add the customized value in your test configuration:
-
-```typescript
-await withFixtures({
-  fixtures: new FixtureBuilder()
-    .withMetaMetricsController({
-      metaMetricsId: MOCK_META_METRICS_ID,
-      participateInMetaMetrics: true,
-    })
-    .build(),
-  manifestFlags: {
-    remoteFeatureFlags: MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
-  },
-  title: this.test?.fullTitle(),
-});
-```
+For detailed guidelines on handling remote (and build-time) feature flags in E2E tests — including the feature flag registry, override patterns, and general principles — see [Feature flags in E2E tests](testing/e2e-testing.md#feature-flags-in-e2e-tests).
 
 #### Mobile
 
