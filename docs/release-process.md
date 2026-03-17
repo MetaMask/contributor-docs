@@ -54,14 +54,14 @@ subgraph Current [Current release branch: 'release/x.y.z']
     CURRENT6 --> CURRENT8[Release is approved by all teams]
     CURRENT7 --> CURRENT8
     CURRENT8 --> CURRENT9[Release is approved by Release Engineer, Release QA, and Release Manager]
-    CURRENT9 --> CURRENT10['Tag Release Branch' GitHub Action is triggered by Release Engineer]
-    CURRENT10 --> CURRENT11[Release tag is added on the release branch]
+    CURRENT9 --> CURRENT10[Release Engineer manually triggers 'publish-release-from-release-head' workflow on the release branch]
+    CURRENT10 --> CURRENT11[Production build, tag, and GitHub release are created from release branch HEAD]
     CURRENT11 --> CURRENT12[Release engineer merges x.y.z release PR into 'stable' branch]
 end
 
 subgraph Stable [Stable branch: 'stable']
     style Stable fill:#26084d,stroke:#000,stroke-width:2px,color:#fff
-    CURRENT12 -->|merge PR| STABLE1[A new production build is automatically created and posted on the repo's releases page]
+    CURRENT12 -->|merge PR| STABLE1[Release branch is merged into 'stable' branch]
     STABLE1 --> STABLE2[Release Engineer submits x.y.z production build to the store]
 end
 
