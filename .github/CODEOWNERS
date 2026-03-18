@@ -2,3 +2,6 @@
 # Each line is a file pattern followed by one or more owners.
 
 * @MetaMask/core-platform
+
+# Docs folder is not owned by any specific team.
+/docs
