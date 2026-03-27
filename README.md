@@ -29,3 +29,4 @@ This is a living repository — nothing is set in stone! If you're member of Met
   - [UI Integration Testing Guidelines](./docs/testing/ui-integration-testing.md)
   - [E2E Testing Guidelines](./docs/testing/e2e-testing.md)
 - [TypeScript Guidelines](./docs/typescript.md)
+- [Deep links Guidelines](./docs/deep-links.md)

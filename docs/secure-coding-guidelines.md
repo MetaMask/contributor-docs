@@ -121,7 +121,9 @@ The guidelines in this policy were gathered primarily from the [OWASP Top 10](ht
 
 #### Dependency Integrity
 
-- Use a lockfile or pinned dependencies to maintain control over which version of each dependency is used
+- Use a lockfile to maintain control over which version of each dependency is used
+- Do not use `npx` or `yarn dlx`
+  - These commands do not update the lockfile, so we have no control over which versions are installed. This leaves us vulnerable to supply-chain attacks.
 
 #### Avoid Deprecated and Unmaintained Packages
 
