@@ -1,4 +1,9 @@
-p# MetaMask Contributor Documentation
+# 🇹🇭 ภาษาไทย (Thai Version)
+อ่านเอกสารฉบับภาษาไทยได้ที่นี่: [แนวทางการมีส่วนร่วม (Contributing)](./translations/CONTRIBUTING-TH.md)
+
+---
+
+MetaMask Contributor Documentation
 
 Welcome! Here you can find the principles, policies, and practices which are followed by MetaMask engineers in building MetaMask. These resources are designed to enable all builders, whether internal or external, in making meaningful contributions to any part of the MetaMask ecosystem.
 
