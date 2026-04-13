@@ -881,6 +881,99 @@ export class ComposableController<
   const controllerMessenger = ControllerMessenger<any, any>;
   ```
 
+#### `any` is required for callback parameter types pinned by bidirectional assignment
+
+Under `--strictFunctionTypes`, function parameters are checked _contravariantly_: `(arg: A) => R` is assignable to `(arg: B) => R` only when `B extends A`. Parameter types flow in the _reverse_ direction of the assignment, so widening a parameter makes the function _narrower_ as a whole, and narrowing a parameter makes the function _wider_.
+
+This creates an impossible constraint for a callback (or a `Record`/collection of callbacks) that must simultaneously participate in **both** directions of assignability against _other_ function types:
+
+1. **As an assignable** — the callback is assigned into a slot typed by another function type. The outer function type is wider, so the callback must be narrower, which (by contravariance) means its parameters must be _wider_. `unknown` works here; `never` does not.
+
+2. **As an assignee** — another function value is assigned into the callback's slot. The outer function type is narrower, so the callback must be wider, which (by contravariance) means its parameters must be _narrower_. `never` works here; `unknown` does not.
+
+If the callback appears in only one of these directions, `unknown` or `never` (or something in between) is safe. When both apply to the _same_ parameter position at once, no single concrete type satisfies both — the parameter would have to be simultaneously wider and narrower than the same external type. `any` is the only inhabitant of both the top and the bottom of the assignability lattice, and is the only escape:
+
+| Parameter type | As assignable (param must be wider) | As assignee (param must be narrower) |
+| -------------- | ------------------------------------ | ------------------------------------- |
+| `unknown`      | ✓                                    | ✗                                     |
+| `never`        | ✗                                    | ✓                                     |
+| `any`          | ✓                                    | ✓                                     |
+
+Only parameters need `any`; _return_ types remain covariant and can stay `unknown`.
+
+**Example <a id="example-f2a3b7d1-9e4c-4f8a-b6c2-1d8e5a3c9f7b"></a> ([🔗 permalink](#example-f2a3b7d1-9e4c-4f8a-b6c2-1d8e5a3c9f7b)):**
+
+A bridging `Callback` (or a `Record<string, Callback>`) sits between two external APIs that each own their own function type. The two outer types pin the bridging type's parameter from opposite directions:
+
+```typescript
+// --- Two external types, owned by different APIs ---
+
+// API A consumes the bridging value. It accepts a wide callback shape.
+//   `WideParam` is whatever the consumer documents as "any input".
+type WideCallback = (value: WideParam) => WideResult;
+declare function consume(callback: WideCallback): void;
+
+// API B produces a value that flows into the bridging slot. It emits a
+// narrow callback shape.
+//   `NarrowParam` is a concrete type the producer guarantees.
+type NarrowCallback = (value: NarrowParam) => NarrowResult;
+declare const produced: NarrowCallback;
+
+// --- The bridging type ---
+type BridgeCallback = (value: ???) => unknown;
+declare let bridge: BridgeCallback;
+
+// Direction 1 — `bridge` is ASSIGNABLE into `consume`'s parameter (WideCallback).
+//   Contravariance: BridgeCallback's param must be WIDER than `WideParam`.
+//   `unknown` ✓   `never` ✗
+consume(bridge);
+
+// Direction 2 — `produced` (NarrowCallback) is ASSIGNED INTO `bridge`.
+//   Contravariance: BridgeCallback's param must be NARROWER than `NarrowParam`.
+//   `never` ✓   `unknown` ✗
+bridge = produced;
+```
+
+With both directions active on the same parameter position, `value` would need to be simultaneously a supertype of `WideParam` _and_ a subtype of `NarrowParam`. No concrete type satisfies both unless `NarrowParam extends WideParam`, which external APIs rarely guarantee.
+
+🚫 `unknown` parameter — satisfies Direction 1, fails Direction 2
+
+```typescript
+let bridge: (value: unknown) => unknown;
+bridge = produced;
+// Error: Type '(value: NarrowParam) => NarrowResult' is not assignable to
+//        type '(value: unknown) => unknown'.
+//   Types of parameters 'value' and 'value' are incompatible.
+//     Type 'unknown' is not assignable to type 'NarrowParam'.
+```
+
+🚫 `never` parameter — satisfies Direction 2, fails Direction 1
+
+```typescript
+let bridge: (value: never) => unknown;
+consume(bridge);
+// Error: Argument of type '(value: never) => unknown' is not assignable to
+//        parameter of type 'WideCallback'.
+//   Types of parameters 'value' and 'value' are incompatible.
+//     Type 'WideParam' is not assignable to type 'never'.
+```
+
+✅ `any` parameter — satisfies both directions
+
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let bridge: (value: any) => unknown;
+bridge = produced; // OK
+consume(bridge); // OK
+```
+
+This shape appears whenever a callback value is pinned on both sides of an assignment by _different_ external function types. Real-world instances:
+
+- A `coerces` map bridging a library signature and a caller's own config — see [`metamask-extension#41104 (r3045807022)`](https://github.com/MetaMask/metamask-extension/pull/41104#discussion_r3045807022).
+- A messenger's `registerActionHandler` slot typed `(...args: any[]) => any`: it both receives strongly-typed handler callbacks at registration (Direction 2) _and_ is called with strongly-typed argument tuples at dispatch (Direction 1). `unknown[]` fails registration; `never[]` fails dispatch.
+
+> **Note:** The `eslint-disable` comment is intentional. `any` here is scoped to the parameter position of a single bridging callback type, not leaked to callers — the enclosing external APIs re-impose their own parameter types at each use site, so type safety is preserved where values actually flow. Prefer `unknown` or `never` whenever only one direction of assignability applies; reach for `any` only when both apply to the same parameter position.
+
 ### Type-Only Dependencies
 
 If package `a` imports only types from `b`, should `b` be a dev or production dependency of `a`?
