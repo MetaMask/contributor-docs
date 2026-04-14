@@ -885,8 +885,8 @@ export class ComposableController<
 
 This shape arises whenever a callback value is constrained on both sides of an assignment by _different_ external function types. Real-world instances:
 
-- A `coerces` map sitting between a library signature and a caller's own config — see [`metamask-extension#41104 (r3045807022)`](https://github.com/MetaMask/metamask-extension/pull/41104#discussion_r3045807022).
 - A messenger's `registerActionHandler` slot typed `(...args: any[]) => any`: it receives strongly-typed handler callbacks inward at registration _and_ is invoked with strongly-typed argument tuples outward at dispatch. `unknown[]` fails registration; `never[]` fails dispatch.
+- A `coerces` map sitting between a library signature and a caller's own config — see [`metamask-extension#41104 (r3045807022)`](https://github.com/MetaMask/metamask-extension/pull/41104#discussion_r3045807022).
 
 Under `--strictFunctionTypes`, function parameters are checked _contravariantly_: `(arg: A) => R` is assignable to `(arg: B) => R` only when `B extends A`. Parameter types flow in the _reverse_ direction of the assignment.
 
