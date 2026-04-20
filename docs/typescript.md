@@ -883,25 +883,7 @@ export class ComposableController<
 
 #### `any` is required for callback parameter types constrained by bidirectional assignment
 
-This shape arises whenever a callback value is constrained on both sides of an assignment by _different_ external function types. Real-world instances:
-
-- A messenger's `registerActionHandler` slot typed `(...args: any[]) => any`: it receives strongly-typed handler callbacks inward at registration _and_ is invoked with strongly-typed argument tuples outward at dispatch. `unknown[]` fails registration; `never[]` fails dispatch.
-- A `coerces` map sitting between a library signature and a caller's own config — see [`metamask-extension#41104 (r3045807022)`](https://github.com/MetaMask/metamask-extension/pull/41104#discussion_r3045807022).
-
-Under `--strictFunctionTypes`, function parameters are checked _contravariantly_: `(arg: A) => R` is assignable to `(arg: B) => R` only when `B extends A`. Parameter types flow in the _reverse_ direction of the assignment.
-
-A callback (or a `Record` of callbacks) hits an impossible constraint when its parameter position is constrained by _two different_ external function types at once:
-
-1. **Outward** — the callback flows into a slot of another function type. Contravariance requires its parameter to be a _supertype_ of that slot's parameter. `unknown` ✓, `never` ✗.
-2. **Inward** — another function value is assigned into the callback's slot. Contravariance requires its parameter to be a _subtype_ of the incoming value's parameter. `never` ✓, `unknown` ✗.
-
-When both directions apply to the same parameter position, no concrete type satisfies both unless one external param already extends the other — which external APIs rarely guarantee. `any` is the only inhabitant of both the top and bottom of the assignability lattice, and is the only escape. Return types remain covariant and can stay `unknown`.
-
-| Parameter type | Outward (supertype of outer param) | Inward (subtype of outer param) |
-| -------------- | ---------------------------------- | ------------------------------- |
-| `unknown`      | ✓                                  | ✗                               |
-| `never`        | ✗                                  | ✓                               |
-| `any`          | ✓                                  | ✓                               |
+This shape arises whenever a callback value is constrained _on both sides_ by assignment to different external function types. 
 
 **Example <a id="example-f2a3b7d1-9e4c-4f8a-b6c2-1d8e5a3c9f7b"></a> ([🔗 permalink](#example-f2a3b7d1-9e4c-4f8a-b6c2-1d8e5a3c9f7b)):**
 
@@ -932,6 +914,26 @@ f3 = givesNarrow; // ✓
 ```
 
 > **Note:** The `eslint-disable` is intentional. `any` here is _not_ infectious: it is scoped to a single callback's parameter position and does not propagate to callers. The enclosing external APIs re-impose their own parameter types at each use site, so type safety is preserved where values actually flow. Prefer `unknown` or `never` when only one direction applies; reach for `any` only when both apply to the same parameter position.
+
+Real-world instances:
+
+- A messenger's `registerActionHandler` slot typed `(...args: any[]) => any`: it receives strongly-typed handler callbacks inward at registration _and_ is invoked with strongly-typed argument tuples outward at dispatch. `unknown[]` fails registration; `never[]` fails dispatch.
+- A `coerces` map sitting between a library signature and a caller's own config — see [`metamask-extension#41104 (r3045807022)`](https://github.com/MetaMask/metamask-extension/pull/41104#discussion_r3045807022).
+
+Under `--strictFunctionTypes`, function parameters are checked _contravariantly_: `(arg: A) => R` is assignable to `(arg: B) => R` only when `B extends A`. Parameter types flow in the _reverse_ direction of the assignment.
+
+A callback (or a `Record` of callbacks) hits an impossible constraint when its parameter position is constrained by _two different_ external function types at once:
+
+1. **Outward** — the callback flows into a slot of another function type. Contravariance requires its parameter to be a _supertype_ of that slot's parameter. `unknown` ✓, `never` ✗.
+2. **Inward** — another function value is assigned into the callback's slot. Contravariance requires its parameter to be a _subtype_ of the incoming value's parameter. `never` ✓, `unknown` ✗.
+
+When both directions apply to the same parameter position, no concrete type satisfies both unless one external param already extends the other — which external APIs rarely guarantee. `any` is the only inhabitant of both the top and bottom of the assignability lattice, and is the only escape. Return types remain covariant and can stay `unknown`.
+
+| Parameter type | Outward (supertype of outer param) | Inward (subtype of outer param) |
+| -------------- | ---------------------------------- | ------------------------------- |
+| `unknown`      | ✓                                  | ✗                               |
+| `never`        | ✗                                  | ✓                               |
+| `any`          | ✓                                  | ✓                               |
 
 ### Type-Only Dependencies
 
