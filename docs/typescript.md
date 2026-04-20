@@ -883,7 +883,7 @@ export class ComposableController<
 
 #### `any` is required for callback parameter types constrained by bidirectional assignment
 
-If a callback needs to be a valid _assignee_ of a narrower callback type, while also being _assignable_ to a wider callback type, its parameters must be typed with `any`. 
+If a callback needs to be a valid _assignee_ of a narrower callback type, while also being _assignable_ to a wider callback type, its parameters must be typed with `any`.
 
 **Example <a id="example-f2a3b7d1-9e4c-4f8a-b6c2-1d8e5a3c9f7b"></a> ([🔗 permalink](#example-f2a3b7d1-9e4c-4f8a-b6c2-1d8e5a3c9f7b)):**
 
