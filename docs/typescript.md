@@ -881,13 +881,38 @@ export class ComposableController<
   const controllerMessenger = ControllerMessenger<any, any>;
   ```
 
-#### `any` is required for callback parameter types constrained by bidirectional assignment
+#### `any` is acceptable for callback parameters caught between two irresolvable function-type constraints
 
-If a callback needs to be a valid _assignee_ of a narrower callback type, while also being _assignable_ to a wider callback type, its parameters must be typed with `any`.
+A callback's parameters may be typed as `any` if three conditions all hold:
+
+1. **Bivariant position:** The callback must be _assignable_ to a wider function type and an _assignee_ of a narrower function type.
+2. **Irresolvable constraints:** No concrete type satisfies both directions, because the "wider" function type is not a supertype of the "narrower" function type, which creates a paradox.
+3. **Fixed constraints:** Neither constraint can be redesigned without affecting downstream callers or introducing semantic or structural inaccuracies.
+
+🚫 When the constraints are redesignable, the contravariance error should not be suppressed with `any`, as it legitimately signals a broken design:
+
+**Example <a id="example-a3c5e7f1-8b2d-4a6c-9e0f-1b3d5e7a9c2b"></a> ([🔗 permalink](#example-a3c5e7f1-8b2d-4a6c-9e0f-1b3d5e7a9c2b)):**
+
+```typescript
+// 🚫 Both constraints are internal. `any` masks a fixable design
+type Slot = (handler: (event: unknown) => void) => void;
+type Handler = (event: { kind: 'a' }) => void;
+
+declare const accept: Slot;
+declare const onA: Handler;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const bridge: (event: any) => void = onA;
+accept(bridge);
+
+// ✅ Fix: parametrize the slot so the bivariant pressure disappears
+declare const acceptGeneric: <E>(handler: (event: E) => void) => void;
+acceptGeneric(onA); // no `any` needed
+```
+
+✅ When the constraints are fixed and irresolvable, `Wide` and `Narrow` stand in for function types you cannot redesign:
 
 **Example <a id="example-f2a3b7d1-9e4c-4f8a-b6c2-1d8e5a3c9f7b"></a> ([🔗 permalink](#example-f2a3b7d1-9e4c-4f8a-b6c2-1d8e5a3c9f7b)):**
-
-A callback's parameter constrained from both sides — outward by a wider external type, inward by a narrower one:
 
 ```typescript
 type Wide = (x: string) => void;
@@ -907,33 +932,42 @@ f2 = givesNarrow; // ✓
 takesWide(f2); // ✗ 'string' not assignable to 'never'
 
 // ✅ `any` — satisfies both directions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Bivariant position with irresolvable, fixed constraints
 let f3: (x: any) => void;
 takesWide(f3); // ✓
 f3 = givesNarrow; // ✓
 ```
 
-> **Note:** The `eslint-disable` is intentional. `any` here is _not_ infectious: it is scoped to a single callback's parameter position and does not propagate to callers. The enclosing external APIs re-impose their own parameter types at each use site, so type safety is preserved where values actually flow. Prefer `unknown` or `never` when only one direction applies; reach for `any` only when both apply to the same parameter position.
+The `eslint-disable` is intentional. `any` here is _not_ infectious: it is scoped to a single callback's parameter position and does not propagate to callers. Both constraint types re-impose their own signatures at each use site, so type safety is preserved where values actually flow. Annotate `eslint-disable` directives with a comment naming the conditions, so reviewers can evaluate the override against the criteria above.
+
+The safety claim is conditional on the constraint types being accurate. If a fixed constraint is imprecise (a library type that uses `any` internally, or an internal type with embedded assertions), the bridge `any` is still mechanically necessary, but type safety is not fully preserved at use sites because the constraints do not enforce what they claim.
 
 Real-world instances:
 
-- A messenger's `registerActionHandler` slot typed `(...args: any[]) => any`: it receives strongly-typed handler callbacks inward at registration _and_ is invoked with strongly-typed argument tuples outward at dispatch. `unknown[]` fails registration; `never[]` fails dispatch.
-- A `coerces` map sitting between a library signature and a caller's own config — see [`metamask-extension#41104 (r3045807022)`](https://github.com/MetaMask/metamask-extension/pull/41104#discussion_r3045807022).
+- A messenger's `registerActionHandler` slot typed `(...args: any[]) => any`: it receives strongly-typed handler callbacks inward at registration _and_ is invoked with strongly-typed argument tuples outward at dispatch. `unknown[]` fails registration. `never[]` fails dispatch. The slot encodes [rank-N polymorphism](https://www.microsoft.com/en-us/research/publication/practical-type-inference-for-arbitrary-rank-types/) (`∀α. (α) => R`) via `any` because TypeScript lacks first-class universal quantification. The registry's heterogeneity requirement makes the wide slot structurally fixed regardless of ownership.
+- A `coerces` map sitting between a library signature and a caller's own config (see [`metamask-extension#41104 (r3045807022)`](https://github.com/MetaMask/metamask-extension/pull/41104#discussion_r3045807022)).
+
+<details>
+<summary>Why bivariant pressure forces <code>any</code> (contravariance derivation)</summary>
 
 Under `--strictFunctionTypes`, function parameters are checked _contravariantly_: `(arg: A) => R` is assignable to `(arg: B) => R` only when `B extends A`. Parameter types flow in the _reverse_ direction of the assignment.
 
-A callback (or a `Record` of callbacks) hits an impossible constraint when its parameter position is constrained by _two different_ external function types at once:
+Bivariant pressure on a parameter creates two contravariant requirements at once:
 
-1. **Outward** — the callback flows into a slot of another function type. Contravariance requires its parameter to be a _supertype_ of that slot's parameter. `unknown` ✓, `never` ✗.
-2. **Inward** — another function value is assigned into the callback's slot. Contravariance requires its parameter to be a _subtype_ of the incoming value's parameter. `never` ✓, `unknown` ✗.
+1. **Outward** — the callback flows into another function-type slot. The callback's parameter must be a _supertype_ of that slot's parameter (`unknown` ✓, `never` ✗).
+2. **Inward** — another function value is assigned into the callback's slot. The callback's parameter must be a _subtype_ of the incoming value's parameter (`never` ✓, `unknown` ✗).
 
-When both directions apply to the same parameter position, no concrete type satisfies both unless one external param already extends the other — which external APIs rarely guarantee. `any` is the only inhabitant of both the top and bottom of the assignability lattice, and is the only escape. Return types remain covariant and can stay `unknown`.
+A concrete type T satisfies both only when `WideParam extends T extends NarrowParam`, which requires `WideParam extends NarrowParam`. When the two constraint types do not stand in this subtype relationship (the irresolvable case), no concrete T works. `any` is the only inhabitant of both the top and bottom of the assignability lattice, and is the only escape. Return types remain covariant and can stay `unknown`.
 
 | Parameter type | Outward (supertype of outer param) | Inward (subtype of outer param) |
 | -------------- | ---------------------------------- | ------------------------------- |
 | `unknown`      | ✓                                  | ✗                               |
 | `never`        | ✗                                  | ✓                               |
 | `any`          | ✓                                  | ✓                               |
+
+</details>
+
+Bivariant pressure can occur for any type, but it is especially relevant for callback parameters. Other invariant positions (e.g., a `ReadWrite<T>` container used in both read and write contexts) can usually be dissolved by introducing a generic, so irresolvability rarely occurs.
 
 ### Type-Only Dependencies
 
