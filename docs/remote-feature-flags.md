@@ -277,3 +277,33 @@ OVERRIDE_REMOTE_FEATURE_FLAGS=TRUE
    - Modify the default values in your feature flag selector
    - Run the application to verify behavior with different values
    - Remember to test both override and non-override scenarios
+  
+## Archiving and Deleting a Feature Flag
+
+Archiving a flag removes it from the active **Flags** list in LaunchDarkly without permanently deleting it, while deleting a flag removes it permanently. This is the recommended process to follow once a feature is fully launched or a flag is no longer needed.
+
+### Cleanup Checklist
+
+Follow this order to safely retire a flag:
+
+**1. Remove all code references first**
+
+Remove all feature flag logic and references from the codebase. If an archived flag is still evaluated in code, LaunchDarkly will serve the [fallback value](https://launchdarkly.com/docs/home/getting-started/vocabulary#fallback-value) - not the last configured value, so it is important to ensure fallback values handle the flag's absence gracefully, as users on older versions may still be running code that evaluates the flag after it has been archived.
+
+**2. Update the registry and remove selectors**
+
+Do this in the same PR as your code removal.
+
+**Extension:** Remove the flag's entry from [`test/e2e/feature-flags/feature-flag-registry.ts`](https://github.com/MetaMask/metamask-extension/blob/main/test/e2e/feature-flags/feature-flag-registry.ts). If the flag is of type `FeatureFlagType.Build`, also remove it from the relevant build config (`.metamaskrc` / `builds.yml`). Remove any E2E test overrides using `manifestFlags.remoteFeatureFlags` or `FixtureBuilder.withRemoteFeatureFlags` that reference the flag.
+
+**Mobile:** Remove the flag's entry from [`tests/feature-flags/feature-flag-registry.ts`](https://github.com/MetaMask/metamask-mobile/blob/main/tests/feature-flags/feature-flag-registry.ts) and its selector under `app/selectors/featureFlagsController/`. Remove any E2E test overrides using `setupRemoteFeatureFlagsMock` or `createRemoteFeatureFlagsMock` that reference the flag.
+
+**3. Archive the flag in LaunchDarkly**
+
+LaunchDarkly will automatically mark a flag as "Ready to archive" once it meets the configured [lifecycle criteria](https://launchdarkly.com/docs/home/flags/flag-lifecycle-settings), or you can manually mark it as ready to archive yourself. Flags ready to archive are found under the **Cleanup** shortcut in the **Flags** list. Before archiving, confirm the flag has no prerequisite dependencies blocking the archive and is no longer being requested - LaunchDarkly will warn you if it has been evaluated within the last seven days. Note that archiving removes the flag from **all environments** in the project.
+
+Archived flags remain visible by filtering the **Flags** list by **Lifecycle → Archived** and can be restored if needed. Once you are confident the flag is no longer needed, it can be permanently deleted from the archived list. Deletion is irreversible, so step 4 is only necessary when you are certain the flag will not be needed again.
+
+**4. Permanently delete**
+
+From the archived **Flags** list, permanently delete the flag. Deletion is irreversible.
