@@ -83,6 +83,60 @@ Choose the appropriate feature flag type based on your needs:
 ]
 ```
 
+Threshold entries without `thresholdVersion` use the legacy output shape. After the controller selects the matching threshold entry, the processed flag is:
+
+```json
+{
+  "name": "feature is ON",
+  "value": true
+}
+```
+
+Use this shape when selectors read the selected flag data from `.value`.
+
+#### Direct-value threshold entries
+
+Use `thresholdVersion: 2` when a threshold-based flag should expose the selected `value` directly, matching the shape of a non-threshold object flag. This is useful when converting an existing object flag to threshold rollout and existing selectors read root-level fields such as `flag.enabled`.
+
+```json
+[
+  {
+    "thresholdName": "feature is ON",
+    "thresholdVersion": 2,
+    "scope": {
+      "type": "threshold",
+      "value": 0.3
+    },
+    "value": {
+      "enabled": true,
+      "minimumVersion": "13.10.0"
+    }
+  },
+  {
+    "thresholdName": "feature is OFF",
+    "thresholdVersion": 2,
+    "scope": {
+      "type": "threshold",
+      "value": 1
+    },
+    "value": {
+      "enabled": false
+    }
+  }
+]
+```
+
+If the first entry is selected, the processed flag is:
+
+```json
+{
+  "enabled": true,
+  "minimumVersion": "13.10.0"
+}
+```
+
+Existing non-threshold object flags do not need `thresholdVersion`. This property is only used on entries inside threshold arrays.
+
 The distribution is deterministic based on the user's `metametricsId`, ensuring consistent group assignment across sessions.
 
 **3. Object flag with version-based scope**: Use for:
@@ -112,6 +166,8 @@ In this example: users get different UI configurations based on their app versio
 
 The version matching is deterministic and uses semantic version comparison to find the highest version that is less than or equal to the current app version.
 
+`thresholdVersion` is not used for this flag type. The selected version value is returned as-is.
+
 **4. Composing version-based scope with threshold scope**: Use when you need to control both version targeting and user percentage rollout simultaneously.
 
 In this example: the feature is rolled out to 30% of users on v13.0.0+, and 100% of users on v13.2.0+.
@@ -122,7 +178,8 @@ In this example: the feature is rolled out to 30% of users on v13.0.0+, and 100%
     "versions": {
       "13.0.0": [
         {
-          "name": "gradual rollout",
+          "thresholdName": "gradual rollout",
+          "thresholdVersion": 2,
           "scope": {
             "type": "threshold",
             "value": 0.3
@@ -130,7 +187,8 @@ In this example: the feature is rolled out to 30% of users on v13.0.0+, and 100%
           "value": { "enabled": true }
         },
         {
-          "name": "disabled",
+          "thresholdName": "disabled",
+          "thresholdVersion": 2,
           "scope": {
             "type": "threshold",
             "value": 1
@@ -140,7 +198,8 @@ In this example: the feature is rolled out to 30% of users on v13.0.0+, and 100%
       ],
       "13.2.0": [
         {
-          "name": "full rollout",
+          "thresholdName": "full rollout",
+          "thresholdVersion": 2,
           "scope": {
             "type": "threshold",
             "value": 1
@@ -157,6 +216,8 @@ In this example: the feature is rolled out to 30% of users on v13.0.0+, and 100%
 - v13.0.5 user in 70% bucket → `{ "enabled": false }`
 - v13.2.1 user (any bucket) → `{ "enabled": true }` (100% rollout)
 - v12.9.0 user → Feature excluded (no matching versions)
+
+When composing version-based and threshold scopes, place `thresholdVersion: 2` inside each threshold entry under the relevant version. Without `thresholdVersion: 2`, the selected threshold entry uses the legacy `{ "name": "...", "value": ... }` wrapper shape.
 
 ## Implementation Guide
 
