@@ -98,6 +98,8 @@ Use this shape when selectors read the selected flag data from `.value`.
 
 Use `thresholdVersion: 2` when a threshold-based flag should expose the selected `value` directly, matching the shape of a non-threshold object flag. This is useful when converting an existing object flag to threshold rollout and existing selectors read root-level fields such as `flag.enabled`.
 
+When using `thresholdVersion: 2`, use `thresholdName` instead of `name` to label the threshold entry. `thresholdName` is metadata for configuration readability and is not included in the processed feature flag value. Because the selected entry resolves directly to its `value`, this avoids confusion or collisions with any `name` field inside the value object itself. `thresholdName` is recommended for clarity, but the controller selects entries using `scope` and returns `value`.
+
 ```json
 [
   {
