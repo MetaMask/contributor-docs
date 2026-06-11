@@ -22,21 +22,21 @@ Think of it as a grid: three distributions × three environments = nine LaunchDa
 
 ### Distributions (which product)
 
-| Distribution | Who uses it | Install from |
-| ------------ | ----------- | ------------ |
-| **main** | General public | [MetaMask on Chrome Web Store](https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn) |
-| **flask** | Developers and early adopters testing unstable APIs | [MetaMask Flask](https://chromewebstore.google.com/detail/metamask-flask-developmen/ljfoeinjpaedjfecbmggjgodbgkmjkjk) |
-| **beta** | Beta testers before a wider release | [MetaMask Beta](https://chromewebstore.google.com/detail/metamask-beta/pbbkamfgmaedccnfkmjcofcecjhfgldn) |
+| Distribution | Who uses it                                         | Install from                                                                                                          |
+| ------------ | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **main**     | General public                                      | [MetaMask on Chrome Web Store](https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)    |
+| **flask**    | Developers and early adopters testing unstable APIs | [MetaMask Flask](https://chromewebstore.google.com/detail/metamask-flask-developmen/ljfoeinjpaedjfecbmggjgodbgkmjkjk) |
+| **beta**     | Beta testers before a wider release                 | [MetaMask Beta](https://chromewebstore.google.com/detail/metamask-beta/pbbkamfgmaedccnfkmjcofcecjhfgldn)              |
 
 Each distribution has its **own set of flags**. Turning a flag on for `main` does not automatically turn it on for `flask` or `beta`.
 
 ### Environments (which release stage)
 
-| Environment | Typical users | When to use it |
-| ----------- | ------------- | -------------- |
-| **dev** | Internal builds, local testing, pre-release validation | Safe place to experiment before wider exposure |
-| **rc** (release candidate) | Builds in the final testing phase before production | Validate behavior on near-production builds |
-| **prod** (production) | Public store installs | Live users. Changes here affect real customers |
+| Environment                | Typical users                                          | When to use it                                 |
+| -------------------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| **dev**                    | Internal builds, local testing, pre-release validation | Safe place to experiment before wider exposure |
+| **rc** (release candidate) | Builds in the final testing phase before production    | Validate behavior on near-production builds    |
+| **prod** (production)      | Public store installs                                  | Live users. Changes here affect real customers |
 
 The same distribution can be on different environments at the same time. For example, engineers may test on `main - dev` while customers run `main - prod`.
 
@@ -44,21 +44,21 @@ The same distribution can be on different environments at the same time. For exa
 
 In the LaunchDarkly UI, environments are labeled `{distribution} - {environment}`. Use this table to find the right one:
 
-|  | **dev** | **rc** | **prod** |
-| -- | ------- | ------ | -------- |
-| **main** | main - dev | main - rc | main - prod |
+|           | **dev**     | **rc**     | **prod**     |
+| --------- | ----------- | ---------- | ------------ |
+| **main**  | main - dev  | main - rc  | main - prod  |
 | **flask** | flask - dev | flask - rc | flask - prod |
-| **beta** | beta - dev | beta - rc | beta - prod |
+| **beta**  | beta - dev  | beta - rc  | beta - prod  |
 
 #### Quick reference: who sees my change?
 
-| I want to affect… | Set the flag in LaunchDarkly to… |
-| ----------------- | -------------------------------- |
-| All public MetaMask users | **main - prod** |
-| MetaMask users on a release candidate build | **main - rc** |
-| Internal / engineering MetaMask builds | **main - dev** |
-| Flask users on the public store | **flask - prod** |
-| Beta testers | **beta - prod** (or **beta - rc** / **beta - dev** for earlier stages) |
+| I want to affect…                           | Set the flag in LaunchDarkly to…                                       |
+| ------------------------------------------- | ---------------------------------------------------------------------- |
+| All public MetaMask users                   | **main - prod**                                                        |
+| MetaMask users on a release candidate build | **main - rc**                                                          |
+| Internal / engineering MetaMask builds      | **main - dev**                                                         |
+| Flask users on the public store             | **flask - prod**                                                       |
+| Beta testers                                | **beta - prod** (or **beta - rc** / **beta - dev** for earlier stages) |
 
 Always double-check both the distribution and the environment before saving a flag change. A common mistake is toggling **main - dev** when the goal is **main - prod**.
 
