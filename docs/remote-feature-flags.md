@@ -83,7 +83,143 @@ Choose the appropriate feature flag type based on your needs:
 ]
 ```
 
+Threshold entries without `thresholdVersion` use the legacy output shape. After the controller selects the matching threshold entry, the processed flag is:
+
+```json
+{
+  "name": "feature is ON",
+  "value": true
+}
+```
+
+Use this shape when selectors read the selected flag data from `.value`.
+
+#### Direct-value threshold entries
+
+Use `thresholdVersion: 2` when a threshold-based flag should expose the selected `value` directly, matching the shape of a non-threshold object flag. This is useful when converting an existing object flag to threshold rollout and existing selectors read root-level fields such as `flag.enabled`.
+
+When using `thresholdVersion: 2`, use `thresholdName` instead of `name` to label the threshold entry. `thresholdName` is metadata for configuration readability and is not included in the processed feature flag value. Because the selected entry resolves directly to its `value`, this avoids confusion or collisions with any `name` field inside the value object itself. `thresholdName` is recommended for clarity, but the controller selects entries using `scope` and returns `value`.
+
+```json
+[
+  {
+    "thresholdName": "feature is ON",
+    "thresholdVersion": 2,
+    "scope": {
+      "type": "threshold",
+      "value": 0.3
+    },
+    "value": {
+      "enabled": true,
+      "minimumVersion": "13.10.0"
+    }
+  },
+  {
+    "thresholdName": "feature is OFF",
+    "thresholdVersion": 2,
+    "scope": {
+      "type": "threshold",
+      "value": 1
+    },
+    "value": {
+      "enabled": false
+    }
+  }
+]
+```
+
+If the first entry is selected, the processed flag is:
+
+```json
+{
+  "enabled": true,
+  "minimumVersion": "13.10.0"
+}
+```
+
+Existing non-threshold object flags do not need `thresholdVersion`. This property is only used on entries inside threshold arrays.
+
 The distribution is deterministic based on the user's `metametricsId`, ensuring consistent group assignment across sessions.
+
+**3. Object flag with version-based scope**: Use for:
+
+- Rolling out features progressively across app versions
+- Providing different feature configurations per version
+- Maintaining backward compatibility while introducing new features
+
+In this example: users get different UI configurations based on their app version, with the system selecting the closest lower or equal version match.
+
+```json
+{
+  "newConfirmationsFeature": {
+    "versions": {
+      "13.0.0": { "ui": "legacy" },
+      "13.1.0": { "ui": "improved" },
+      "13.2.0": { "ui": "modern", "animations": true }
+    }
+  }
+}
+```
+
+- v13.0.5 → `{ "ui": "legacy" }` (closest lower or equal version)
+- v13.1.8 → `{ "ui": "improved" }`
+- v13.2.1 → `{ "ui": "modern", "animations": true }`
+- v12.9.0 → Feature excluded (no matching versions)
+
+The version matching is deterministic and uses semantic version comparison to find the highest version that is less than or equal to the current app version.
+
+`thresholdVersion` is not used for this flag type. The selected version value is returned as-is.
+
+**4. Composing version-based scope with threshold scope**: Use when you need to control both version targeting and user percentage rollout simultaneously.
+
+In this example: the feature is rolled out to 30% of users on v13.0.0+, and 100% of users on v13.2.0+.
+
+```json
+{
+  "newFeature": {
+    "versions": {
+      "13.0.0": [
+        {
+          "thresholdName": "gradual rollout",
+          "thresholdVersion": 2,
+          "scope": {
+            "type": "threshold",
+            "value": 0.3
+          },
+          "value": { "enabled": true }
+        },
+        {
+          "thresholdName": "disabled",
+          "thresholdVersion": 2,
+          "scope": {
+            "type": "threshold",
+            "value": 1
+          },
+          "value": { "enabled": false }
+        }
+      ],
+      "13.2.0": [
+        {
+          "thresholdName": "full rollout",
+          "thresholdVersion": 2,
+          "scope": {
+            "type": "threshold",
+            "value": 1
+          },
+          "value": { "enabled": true }
+        }
+      ]
+    }
+  }
+}
+```
+
+- v13.0.5 user in 30% bucket → `{ "enabled": true }`
+- v13.0.5 user in 70% bucket → `{ "enabled": false }`
+- v13.2.1 user (any bucket) → `{ "enabled": true }` (100% rollout)
+- v12.9.0 user → Feature excluded (no matching versions)
+
+When composing version-based and threshold scopes, place `thresholdVersion: 2` inside each threshold entry under the relevant version. Without `thresholdVersion: 2`, the selected threshold entry uses the legacy `{ "name": "...", "value": ... }` wrapper shape.
 
 ## Implementation Guide
 
@@ -150,6 +286,8 @@ Your selector must include:
 
 #### Extension
 
+In production, MetaMask Extension fetches remote flags from the [client-config API](https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod) at runtime. During E2E tests, a global mock server (`test/e2e/mock-e2e.js`) reads from the [feature flag registry](https://github.com/MetaMask/metamask-extension/blob/main/test/e2e/feature-flags/feature-flag-registry.ts) instead of calling the real API. Each registry entry stores the flag's production default value, so tests reflect real-world behavior unless a specific test explicitly overrides a flag.
+
 ##### Local Feature Flag Override
 
 - Developers can override `remoteFeatureFlag` values by defining them in `.manifest-overrides.json` and enable `MANIFEST_OVERRIDES=.manifest-overrides.json` in the `.metamaskrc.dist` locally.
@@ -186,22 +324,7 @@ Your selector must include:
 
 ##### B. E2E Test
 
-Add the customized value in your test configuration:
-
-```typescript
-await withFixtures({
-  fixtures: new FixtureBuilder()
-    .withMetaMetricsController({
-      metaMetricsId: MOCK_META_METRICS_ID,
-      participateInMetaMetrics: true,
-    })
-    .build(),
-  manifestFlags: {
-    remoteFeatureFlags: MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
-  },
-  title: this.test?.fullTitle(),
-});
-```
+For detailed guidelines on handling remote (and build-time) feature flags in E2E tests — including the feature flag registry, override patterns, and general principles — see [Feature flags in E2E tests](testing/e2e-testing.md#feature-flags-in-e2e-tests).
 
 #### Mobile
 

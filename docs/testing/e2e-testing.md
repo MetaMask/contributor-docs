@@ -206,3 +206,161 @@ solution: replace UI steps that build up the application state with the FixtureB
 scenario: import Account using private key and remove imported account
 solution: replace UI steps that build up the application state with the FixtureBuilder
 ```
+
+## Feature flags in E2E tests
+
+MetaMask uses two categories of feature flags, and each requires a different approach in E2E tests. Understanding the distinction helps you write tests that accurately reflect production behavior.
+
+### Remote feature flags (runtime)
+
+Remote feature flags are fetched at runtime from a configuration service. In production, the application calls a remote API to retrieve flag values. During E2E tests, a mock server or fixture intercepts these requests and returns controlled values instead.
+
+Each client should maintain a **feature flag registry** — a central source of truth that maps every remote flag to its current production default value. The E2E mock layer reads from this registry so that tests run against production-accurate defaults by default, without calling the real API.
+
+#### Guidelines
+
+- **Default to production values.** Tests should use the same flag values that real users see unless the test is specifically verifying behavior behind a different flag state. The registry makes this automatic.
+- **Override only when needed.** When a test must exercise a non-default flag state, use the test framework's override mechanism (e.g. fixture builder methods or manifest flag overrides) rather than changing the registry itself.
+- **Register every flag.** Any remote flag referenced in application code should have a corresponding entry in the registry. CI checks can enforce this automatically by scanning for flag references and verifying they exist in the registry.
+- **Keep the registry up to date.** When a flag is fully rolled out or removed from the remote API, update or remove its registry entry. Stale entries lead to tests that no longer reflect production.
+- **No custom builds required.** Because remote flags are resolved at runtime, you do not need to create a special build to test different remote flag values. Override them at the test level.
+
+#### Examples
+
+✅ Registry entry with production default — tests automatically use this value:
+
+```typescript
+redesignedConfirmations: {
+  name: 'redesignedConfirmations',
+  type: FeatureFlagType.Remote,
+  productionDefault: true,
+  status: FeatureFlagStatus.Active,
+},
+```
+
+✅ Override a remote flag for a specific test without changing the registry:
+
+```javascript
+// Override via fixture builder
+new FixtureBuilder()
+  .withRemoteFeatureFlags({ redesignedConfirmations: false })
+  .build();
+```
+
+```javascript
+// Override via manifest flags in test options
+await withFixtures(
+  {
+    manifestFlags: {
+      remoteFeatureFlags: { redesignedConfirmations: false },
+    },
+  },
+  async () => {
+    // test runs with the flag disabled
+  },
+);
+```
+
+❌ Modifying the registry to change a flag value for a single test:
+
+```typescript
+// DON'T do this — it changes the default for all tests
+redesignedConfirmations: {
+  name: 'redesignedConfirmations',
+  productionDefault: false, // changed from true just for one test
+},
+```
+
+### Build-time feature flags (compile-time)
+
+Build-time feature flags are set during the build process and baked into the compiled output. They control which code paths are included in a given build. Changing a build-time flag requires creating a new build before running tests.
+
+#### Guidelines
+
+- **Create a dedicated test build.** To test with a build-time flag enabled, set the flag in the build configuration or pass it as an environment variable, then create a test build.
+- **Keep build-time flags separate from remote flags.** Do not conflate the two. A build-time flag controls what code ships; a remote flag controls runtime behavior of code that is already shipped.
+- **Document available flags.** Each client should document its build-time flags and how to enable them for test builds, so contributors know which flags exist and how to use them.
+
+#### Examples
+
+✅ Enable a build-time flag via environment variable, then run tests:
+
+```bash
+# Create a test build with the flag enabled
+MULTICHAIN=1 yarn build:test
+
+# Run E2E tests against that build
+yarn test:e2e
+```
+
+✅ Enable a build-time flag via local configuration file:
+
+```bash
+# In your local config file (e.g. .metamaskrc, .env, etc.)
+MULTICHAIN=1
+
+# Then build and test as usual
+yarn build:test
+yarn test:e2e
+```
+
+❌ Trying to override a build-time flag at the test level (this has no effect):
+
+```javascript
+// DON'T do this — build-time flags are already compiled in
+new FixtureBuilder()
+  .withBuildFlag({ MULTICHAIN: true }) // has no effect at runtime
+  .build();
+```
+
+### General principles
+
+- **Test both states when possible.** For any flag that gates significant user-facing behavior, consider having tests for both the enabled and disabled states to prevent regressions in either path.
+- **Avoid flag-dependent test logic in shared helpers.** If a helper function behaves differently based on a flag, make the flag value an explicit parameter rather than reading it implicitly. This keeps tests predictable and easy to reason about.
+- **Clean up after rollout.** Once a feature flag is no longer needed (the feature is fully launched or removed), delete the flag references from application code, tests, and the registry. Leftover flags add confusion and maintenance burden.
+
+#### Examples
+
+✅ Testing both flag states explicitly:
+
+```javascript
+describe('token approvals', () => {
+  it('shows redesigned confirmation when flag is enabled', async () => {
+    new FixtureBuilder()
+      .withRemoteFeatureFlags({ redesignedConfirmations: true })
+      .build();
+    // assert redesigned UI is shown
+  });
+
+  it('shows legacy confirmation when flag is disabled', async () => {
+    new FixtureBuilder()
+      .withRemoteFeatureFlags({ redesignedConfirmations: false })
+      .build();
+    // assert legacy UI is shown
+  });
+});
+```
+
+✅ Making flag dependency explicit in a helper:
+
+```javascript
+function confirmTransaction(driver, { isRedesigned }) {
+  if (isRedesigned) {
+    return driver.clickElement('[data-testid="confirm-redesigned"]');
+  }
+  return driver.clickElement('[data-testid="confirm-legacy"]');
+}
+```
+
+❌ Reading the flag implicitly inside a shared helper:
+
+```javascript
+// DON'T do this — the helper's behavior depends on hidden global state
+function confirmTransaction(driver) {
+  const flags = getRemoteFeatureFlags();
+  if (flags.redesignedConfirmations) {
+    return driver.clickElement('[data-testid="confirm-redesigned"]');
+  }
+  return driver.clickElement('[data-testid="confirm-legacy"]');
+}
+```
