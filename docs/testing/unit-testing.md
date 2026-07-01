@@ -73,7 +73,7 @@ describe('KeyringController', () => {
 
 ## 💡 Use `describe` to group tests under scenarios
 
-When multiple tests verify behavior under the same condition, wrap them in a `describe` block. This way, you specify the condition only once. Start the description with `if ...` or `when ...` to form a complete sentence with each test description.
+When multiple tests verify the same conditional behavior, group them in a `describe` block. This way, you only need to specify the condition once. Start each test's name with `if ...` or `when ...` so it forms a complete sentence when combined with the `describe` block.
 
 1️⃣
 
@@ -111,12 +111,16 @@ describe('when adding a token', () => {
 
 ## Use `it` to specify the desired behavior for the code under test
 
-As each test [has to focus on a single aspect of that behavior](#keep-tests-focused), its description must describe that behavior clearly:
+[Each test must focus on a single aspect of the behavior](#keep-tests-focused), and its description must also describe that behavior clearly:
 
-1. Start with an active verb in present tense (e.g., "returns", "displays", "prevents")
-2. State the expected outcome or behavior directly
-3. Add contextual conditions only when necessary for clarity (e.g., "when session expires")
-4. Keep descriptions concise but complete
+1. Start the description with an active verb in present tense (e.g., "returns", "displays", "prevents").
+2. State the expected outcome or behavior directly.
+3. Add contextual conditions only when necessary for clarity (e.g., "when session expires").
+4. Keep descriptions concise but complete.
+5. Avoid filler words ("should", "correctly", "successfully", "gracefully", "properly").
+6. Avoid vague descriptions ("test", "edge case", "works", "handles").
+7. Avoid implementation details ("calls redirectTo", "throws InvalidPayloadError").
+8. Don't use the name of the function as the test description.
 
 ### Examples
 
@@ -167,8 +171,6 @@ it('processes transaction', () => {
   // ...
 });
 ```
-
----
 
 🚫 **Describing implementation instead of behavior**
 
@@ -234,15 +236,6 @@ it('accepts transaction up to maximum amount limit', () => {
 });
 ```
 
-Based on the examples above, avoid these common pitfalls:
-
-- **Filler words**: "should", "correctly", "successfully", "gracefully", "properly"
-- **Vague descriptions**: "test", "edge case", "works", "handles"
-- **Implementation details**: Describing function calls (e.g., "calls redirectTo") instead of behavior (e.g., "redirects to login")
-- **Generic error language**: "throws an error" instead of specific behavior (e.g., "throws InvalidPayloadError" or "prevents sending")
-- **Parameter lists**: Listing conditions instead of describing what they mean
-- **Redundancy**: Repeating the function name already in the `describe` block
-
 ### Read more
 
 - ["Tests as Specification"](http://xunitpatterns.com/Goals%20of%20Test%20Automation.html#Tests%20as%20Specification) and ["Tests as Documentation"](http://xunitpatterns.com/Goals%20of%20Test%20Automation.html#Tests%20as%20Documentation) in xUnit Patterns
@@ -275,7 +268,7 @@ it('returns the block number', () => {
 
 ## Don't directly test private code
 
-Private code is not intended for consumers of an interface. Private code includes:
+Private code is not intended for consumers of an interface, so don't test it directly. Private code includes:
 
 - Functions or classes not exported from a module
 - Methods that start with `#` ([ECMAScript private fields](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields))
@@ -283,9 +276,9 @@ Private code is not intended for consumers of an interface. Private code include
 - Methods with the `private` keyword in TypeScript
 - Functions or methods tagged with `@private` in TSDoc
 
-**Do not test private code directly.** Instead, test the public methods that call the private code. Write tests as if the private code is part of the public method.
+Instead, test the public methods that call the private code, writing tests as if the private code were part of the public method.
 
-For example, you might write this code:
+The following example defines two private methods:
 
 ```typescript
 // block-tracker.ts
@@ -319,7 +312,7 @@ export class BlockTracker extends EventEmitter {
 }
 ```
 
-Consumers (and your tests) can only see the public interface, which behaves as if the private methods were inlined:
+Since consumers (and tests) can only see the public interface, the example above behaves as if the private methods were inlined:
 
 ```typescript
 // block-tracker.ts
@@ -345,7 +338,7 @@ export class BlockTracker extends EventEmitter {
 }
 ```
 
-Therefore, test the public `stop` method by verifying all the behaviors that result from calling it, including the effects of the private methods:
+A test suite for the class might look like this. Testing the public `stop` method verifies all the behaviors that result from calling it, including the effects of the private methods:
 
 ```typescript
 describe('BlockTracker', () => {
@@ -369,7 +362,7 @@ describe('BlockTracker', () => {
 });
 ```
 
-## 💡 Highlight the "exercise" phase
+## Highlight the "exercise" phase
 
 A test has up to four ["phases"](http://xunitpatterns.com/Four%20Phase%20Test.html):
 
@@ -455,11 +448,11 @@ describe('KeyringController', () => {
 
 ## Keep tests isolated
 
-A test must pass when running alone or with other tests (in any order).
+A test must always pass. Running a test by itself or with a group of other tests must not change the result.
 
 Tests must run in a clean environment. If a test changes any part of the environment, it must undo those changes before finishing. This prevents the test from affecting other tests.
 
-Ways to keep tests isolated:
+The next sections suggest ways to keep tests isolated.
 
 ### Restore function mocks after each test
 
@@ -513,7 +506,6 @@ describe('token-utils', () => {
   });
 
   it('returns the details about the given token', () => {
-    // This will likely not work as `getNetworkStatus` still returns "loading"
     expect(getTokenDetails('0xABC123', optionsMock)).toStrictEqual({
       standard: 'ERC20',
       symbol: 'TEST',
@@ -537,7 +529,7 @@ When possible, use [dependency injection](https://en.wikipedia.org/wiki/Dependen
 
 Global variables are properties of the global context (usually `global`). Changes to these variables affect every test in a test file.
 
-If the global is a function, mock it using `jest.spyOn`. This makes it easy to undo later. (Combine this with the previous guideline to handle it automatically.)
+If you want to change a global function in a test, mock it using `jest.spyOn`. This makes the mock easy to reset later.
 
 🚫
 
@@ -599,7 +591,7 @@ describe('NftDetails', () => {
 });
 ```
 
-If the global is not a function:
+If you want to change a global property that is not a function, do not assign it directly in a test:
 
 🚫
 
@@ -754,7 +746,7 @@ describe("interpretMethodData", () => {
 });
 ```
 
-[Instead of using hooks](#avoid-before-each-and-after-each), use a factory function. This function defines default values and lets you override them when needed:
+[Instead of using hooks](#avoid-before-each-and-after-each), use a factory function. This function should define default values and let you override them when needed:
 
 ✅
 
@@ -897,14 +889,17 @@ function buildTokenDetectionController({
 <details><summary><b>Read more</b></summary>
 <br/>
 
-Using a `beforeEach` hook might seem convenient for similar tests. However, this approach increases maintenance costs for two reasons:
+Using a `beforeEach` hook to set up tests with similar needs might seem convenient. However, this approach increases maintenance costs for two reasons:
 
-- **Makes tests harder to read.** Different tests may need different setup, but `beforeEach` assigns equal importance to all setup steps. Readers must read all the setup code to find what matters for each test.
-- **Makes writing new tests difficult.** The `beforeEach` setup may not fit new test scenarios. You may need complex refactoring to remove steps that don't apply, or use workarounds that hurt consistency and readability.
+- **It makes tests harder to read.** Different tests may need different setup, but `beforeEach` assigns equal importance to all setup steps. Readers must read all the setup code to find what matters for each test.
+- **It makes writing new tests difficult.** The `beforeEach` setup may not fit new test scenarios. You may need complex refactoring to remove steps that don't apply, or use workarounds that hurt consistency and readability.
 
-Setup helper functions solve these problems. Tests can pass options to the function to specify the setup they need. This shows readers what is important for each test. Setup code is also easier to refactor when needed.
+Setup helper functions solve these problems in two ways:
 
-You can apply this pattern to teardown code too. In this case, your helper function wraps another function:
+- Tests can pass options to the function to specify the setup they need, showing readers what is important for each test.
+- Setup code is easier to refactor when needed.
+
+Helper functions work for teardown too, not just setup. Consider the following example, which uses `beforeEach` to create a controller and `afterEach` to destroy it:
 
 🚫
 
@@ -954,6 +949,8 @@ describe('TokensController', () => {
   });
 });
 ```
+
+A more maintainable pattern is a function that wraps the test, automatically creating and destroying the controller before and after it runs:
 
 ✅
 
@@ -1169,19 +1166,28 @@ Name your snapshot test cases clearly:
 
 ```ts
 describe('MyComponent', () => {
-  it('should renders correctly')
+  it('should renders correctly', () => {
+    // ...
+  });
+});
 ```
 
 ✅ Correct naming
 
 ```ts
 describe('MyComponent', () => {
-  it('matches rendered snapshot')
+  it('matches rendered snapshot', () => {
+    // ...
+  });
+});
 ```
 
 You can use variants of this naming to add context. For example:
 
 ```ts
 describe('MyComponent', () => {
-   it('matches rendered snapshot when not enabled')
+  it('matches rendered snapshot when not enabled', () => {
+    // ...
+  });
+});
 ```
