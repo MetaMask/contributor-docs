@@ -139,6 +139,63 @@ If the first entry is selected, the processed flag is:
 
 Existing non-threshold object flags do not need `thresholdVersion`. This property is only used on entries inside threshold arrays.
 
+#### Explicit MetaMetrics ID targeting
+
+> **For QA and Product Manager testing only.** This mechanism is intended for targeting specific individuals in any environment, including production. It is not a general-purpose segmentation system and should not be used as a substitute for percentage rollouts.
+
+Add an optional `metaMetricsIds` array to a threshold entry to pin specific users to that entry regardless of the hash-based rollout percentage. When the controller processes a threshold flag it checks each entry for an ID match before calculating the hash-based threshold. The first entry whose `metaMetricsIds` list contains the current user's MetaMetrics ID is selected immediately.
+
+**Precedence rules (highest to lowest):**
+
+1. Local overrides (developer tools / test harness)
+2. Explicit `metaMetricsIds` match — first matching entry wins
+3. Hash-based threshold selection (the normal rollout path)
+
+**Matching behaviour:**
+
+- IDs are compared case-insensitively after trimming whitespace from both sides.
+- If multiple entries list the same ID, the first one in the array wins.
+- Entries with a malformed `metaMetricsIds` field (e.g. a string instead of an array) are silently skipped; that entry still participates in hash-based selection.
+- `metaMetricsIds` values are redacted from persisted state, state logs, and debug snapshots.
+
+**Example — combined explicit-ID targeting and percentage rollout:**
+
+The entry below pins two QA users to the treatment group. All other users are distributed between treatment (30%) and control (70%) by the usual hash-based rollout.
+
+```json
+[
+  {
+    "thresholdName": "treatment — QA pinned + 30% rollout",
+    "thresholdVersion": 2,
+    "scope": {
+      "type": "threshold",
+      "value": 0.3
+    },
+    "metaMetricsIds": [
+      "f9e8d7c6-b5a4-4210-9876-543210fedcba",
+      "a1b2c3d4-e5f6-4789-abcd-ef1234567890"
+    ],
+    "value": { "enabled": true }
+  },
+  {
+    "thresholdName": "control — remaining 70%",
+    "thresholdVersion": 2,
+    "scope": {
+      "type": "threshold",
+      "value": 1
+    },
+    "value": { "enabled": false }
+  }
+]
+```
+
+- QA user `f9e8d7c6-...` → `{ "enabled": true }` (explicit match, bypasses hash)
+- QA user `a1b2c3d4-...` → `{ "enabled": true }` (explicit match, bypasses hash)
+- Any other user whose hash ≤ 0.3 → `{ "enabled": true }` (hash-based, treatment)
+- Any other user whose hash > 0.3 → `{ "enabled": false }` (hash-based, control)
+
+The `metaMetricsIds` field can be added to any threshold entry, including legacy entries (without `thresholdVersion`). Explicit-ID matches do not affect or populate the threshold cache.
+
 The distribution is deterministic based on the user's `metametricsId`, ensuring consistent group assignment across sessions.
 
 **3. Object flag with version-based scope**: Use for:
