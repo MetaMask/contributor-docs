@@ -83,22 +83,28 @@ Choose the appropriate feature flag type based on your needs:
 ]
 ```
 
-Threshold entries without `thresholdVersion` use the legacy output shape. After the controller selects the matching threshold entry, the processed flag is:
+After the controller selects the matching threshold entry, `remoteFeatureFlags[flagName]` contains the entry's `value` directly. For example, if the first entry above is selected:
 
 ```json
-{
-  "name": "feature is ON",
-  "value": true
-}
+true
 ```
 
-Use this shape when selectors read the selected flag data from `.value`.
+When the selected threshold entry includes `name`, the controller stores the group label separately on controller state in `featureFlagThresholdGroups`:
+
+```typescript
+remoteFeatureFlags.myThresholdFlag; // true
+featureFlagThresholdGroups.myThresholdFlag; // "feature is ON"
+```
+
+Read flag payloads from `remoteFeatureFlags`. Read A/B group assignment from `featureFlagThresholdGroups` when the selected entry includes `name`.
 
 #### Direct-value threshold entries
 
-Use `thresholdVersion: 2` when a threshold-based flag should expose the selected `value` directly, matching the shape of a non-threshold object flag. This is useful when converting an existing object flag to threshold rollout and existing selectors read root-level fields such as `flag.enabled`.
+Use `thresholdVersion: 2` in API configuration when a threshold entry's `value` is an object and you want to distinguish configuration metadata from fields inside the value object. This is useful when converting an existing object flag to threshold rollout and existing selectors read root-level fields such as `flag.enabled`.
 
-When using `thresholdVersion: 2`, use `thresholdName` instead of `name` to label the threshold entry. `thresholdName` is metadata for configuration readability and is not included in the processed feature flag value. Because the selected entry resolves directly to its `value`, this avoids confusion or collisions with any `name` field inside the value object itself. `thresholdName` is recommended for clarity, but the controller selects entries using `scope` and returns `value`.
+When using `thresholdVersion: 2`, use `thresholdName` instead of `name` to label the threshold entry in remote configuration. `thresholdName` is metadata for configuration readability and is not included in processed controller state. The controller still selects entries using `scope` and returns `value` directly from `remoteFeatureFlags`.
+
+To also expose the selected group name in `featureFlagThresholdGroups`, include `name` on the threshold entry (in addition to or instead of `thresholdName`, depending on your configuration needs).
 
 ```json
 [
@@ -139,7 +145,36 @@ If the first entry is selected, the processed flag is:
 
 Existing non-threshold object flags do not need `thresholdVersion`. This property is only used on entries inside threshold arrays.
 
-The distribution is deterministic based on the user's `metametricsId`, ensuring consistent group assignment across sessions.
+#### Threshold identifier (`idType`)
+
+Threshold entries may include an optional `idType` that selects which client identifier is used for deterministic bucket assignment:
+
+| `idType` | Identifier used | `RemoteFeatureFlagController` callback |
+| --- | --- | --- |
+| omitted (default) | Canonical ID | `getCanonicalId()` |
+| `"canonical"` | Canonical ID | `getCanonicalId()` |
+| `"metametrics"` | MetaMetrics ID | `getMetaMetricsId()` |
+
+Example using MetaMetrics segmentation for a legacy threshold flag:
+
+```json
+[
+  {
+    "idType": "metametrics",
+    "name": "feature is ON",
+    "scope": { "type": "threshold", "value": 0.3 },
+    "value": true
+  },
+  {
+    "idType": "metametrics",
+    "name": "feature is OFF",
+    "scope": { "type": "threshold", "value": 1 },
+    "value": false
+  }
+]
+```
+
+The distribution is deterministic based on the configured identifier combined with the feature flag name, ensuring consistent group assignment across sessions. If the configured identifier is unavailable (for example, an empty `getCanonicalId()` return value), threshold arrays are preserved unprocessed.
 
 **3. Object flag with version-based scope**: Use for:
 
@@ -219,7 +254,7 @@ In this example: the feature is rolled out to 30% of users on v13.0.0+, and 100%
 - v13.2.1 user (any bucket) → `{ "enabled": true }` (100% rollout)
 - v12.9.0 user → Feature excluded (no matching versions)
 
-When composing version-based and threshold scopes, place `thresholdVersion: 2` inside each threshold entry under the relevant version. Without `thresholdVersion: 2`, the selected threshold entry uses the legacy `{ "name": "...", "value": ... }` wrapper shape.
+When composing version-based and threshold scopes, place threshold entries under the relevant version. Processed threshold values are returned directly from `remoteFeatureFlags`; use `featureFlagThresholdGroups` for group names when entries include `name`.
 
 ## Implementation Guide
 
@@ -307,10 +342,7 @@ In production, MetaMask Extension fetches remote flags from the [client-config A
 {
   "_flags": {
     "remoteFeatureFlags": {
-      "testFlagForThreshold": {
-        "name": "test-flag",
-        "value": "121212"
-      }
+      "testFlagForThreshold": true
     }
   }
 }
