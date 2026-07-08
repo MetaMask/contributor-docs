@@ -4,6 +4,85 @@
 
 This document outlines the process for adding and managing remote feature flags in MetaMask (Extension and Mobile). Remote feature flags allow us to control feature availability and behavior in production without requiring a new release. They are created on the LaunchDarkly platform and distributed by our internal API [ClientConfigAPI](https://github.com/consensys-vertical-apps/mmwp-client-config-api). Please read the [Remote feature flags ADR](https://github.com/MetaMask/decisions/pull/43) for more details.
 
+## LaunchDarkly distributions and environments (Extension)
+
+This section is for product and program managers who need to know **which LaunchDarkly environment to use** when turning a feature on or off in the MetaMask extension.
+
+Remote feature flags let us change product behavior without shipping a new app version. Extension flags are managed in LaunchDarkly under the **MetaMask Client Config API - Extension** or **MetaMask Client Config API - Mobile** project.
+
+### Two concepts: distribution and environment
+
+Every flag change in LaunchDarkly targets a specific **distribution** and **environment**. You need both to reach the right users.
+
+**Distribution** = which MetaMask product the user installed.
+
+**Environment** = which stage of the release pipeline that install is on.
+
+Think of it as a grid: three distributions × three environments = nine LaunchDarkly environments.
+
+### Distributions (which product)
+
+| Distribution | Who uses it                                         | Install from                                                                                                          |
+| ------------ | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **main**     | General public                                      | [MetaMask on Chrome Web Store](https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)    |
+| **flask**    | Developers and early adopters testing unstable APIs | [MetaMask Flask](https://chromewebstore.google.com/detail/metamask-flask-developmen/ljfoeinjpaedjfecbmggjgodbgkmjkjk) |
+| **beta**     | Beta testers before a wider release                 | [MetaMask Beta](https://chromewebstore.google.com/detail/metamask-beta/pbbkamfgmaedccnfkmjcofcecjhfgldn)              |
+
+Each distribution has its **own set of flags**. Turning a flag on for `main` does not automatically turn it on for `flask` or `beta`.
+
+### Environments (which release stage)
+
+| Environment                | Typical users                                          | When to use it                                 |
+| -------------------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| **dev**                    | Internal builds, local testing, pre-release validation | Safe place to experiment before wider exposure |
+| **rc** (release candidate) | Builds in the final testing phase before production    | Validate behavior on near-production builds    |
+| **prod** (production)      | Public store installs                                  | Live users. Changes here affect real customers |
+
+The same distribution can be on different environments at the same time. For example, engineers may test on `main - dev` while customers run `main - prod`.
+
+### LaunchDarkly environment names
+
+In the LaunchDarkly UI, environments are labeled `{distribution} - {environment}`. Use this table to find the right one:
+
+|           | **dev**     | **rc**     | **prod**     |
+| --------- | ----------- | ---------- | ------------ |
+| **main**  | main - dev  | main - rc  | main - prod  |
+| **flask** | flask - dev | flask - rc | flask - prod |
+| **beta**  | beta - dev  | beta - rc  | beta - prod  |
+
+#### Quick reference: who sees my change?
+
+| I want to affect…                           | Set the flag in LaunchDarkly to…                                       |
+| ------------------------------------------- | ---------------------------------------------------------------------- |
+| All public MetaMask users                   | **main - prod**                                                        |
+| MetaMask users on a release candidate build | **main - rc**                                                          |
+| Internal / engineering MetaMask builds      | **main - dev**                                                         |
+| Flask users on the public store             | **flask - prod**                                                       |
+| Beta testers                                | **beta - prod** (or **beta - rc** / **beta - dev** for earlier stages) |
+
+Always double-check both the distribution and the environment before saving a flag change. A common mistake is toggling **main - dev** when the goal is **main - prod**.
+
+### Typical rollout path
+
+A common progression for a new feature on the main distribution:
+
+1. **main - dev** — enable for internal validation
+2. **main - rc** — enable for release candidate testing
+3. **main - prod** — enable for all public users
+
+The same pattern applies independently to **flask** and **beta** if the feature should also appear in those products.
+
+### Things to know
+
+- **Flags are not shared across distributions.** If a feature should ship on main and flask, each distribution needs its own flag update.
+- **prod means real users.** Treat **main - prod** changes with the same care as a production release.
+- **Users must have Basic functionality turned on** (Settings > Security & Privacy) and have completed onboarding for the extension to fetch remote flag values. Basic functionality is on by default for most users. Flag changes may not appear instantly for everyone (the extension refreshes flags when the UI is opened, about every 15 minutes while enabled).
+- **A/B tests** use the same LaunchDarkly environments but follow additional naming and rollout conventions. Ask your engineering partner or see the [Extension A/B testing guide](https://github.com/MetaMask/metamask-extension/blob/main/docs/ab-testing.md) / [Mobile A/B testing guide](https://github.com/MetaMask/metamask-mobile/blob/main/docs/ab-testing.md).
+
+---
+
+The sections below cover flag value formats, engineering implementation, and testing for Extension and Mobile.
+
 ### Choosing the Right Feature Flag Type
 
 Choose the appropriate feature flag type based on your needs:
