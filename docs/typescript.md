@@ -122,6 +122,52 @@ const updatedTransactionMeta = {
 };
 ```
 
+#### Derive types from authoritative sources instead of re-declaring them
+
+When a type already exists at an authoritative source — a controller's state type, a function's return, a package's exported type, a schema — reference and **derive** from it rather than hand-writing a fresh type that restates its shape. This is the type-level counterpart to preferring inference: indexed access (`State['field']`), `typeof`, `ReturnType` / `Parameters`, and utility types (`Pick` / `Omit` / `Partial`) let a derived type track its source automatically.
+
+- A hand-written type that restates an existing one **duplicates** the shape: every reader must reconcile the two, and every change has to touch both.
+- The restatement is a _guess_ at the source's shape, and the guess is almost always **wider** than the real type — it admits values the authoritative type would reject (see [Avoid unintentionally widening an inferred type with a type annotation](#avoid-unintentionally-widening-an-inferred-type-with-a-type-annotation)). Marking every field optional is the most common way this happens.
+- Because the copy is hard-coded rather than derived, it is **brittle against code drift** (see [Prefer type inference over annotations and assertions](#prefer-type-inference-over-annotations-and-assertions)): when the source evolves the copy silently goes stale, and the compiler cannot flag the divergence, so the failure surfaces at runtime rather than at build.
+
+Define a fresh type only when no authoritative source exists — a genuinely new shape at a boundary the code owns. Before defining, look for the source: the type is often already exported from the `@metamask/*` package the value comes from.
+
+**Example <a id="example-5f6f1503-1ce6-432f-8d38-61d0f44a03ce"></a> ([🔗 permalink](#example-5f6f1503-1ce6-432f-8d38-61d0f44a03ce)):**
+
+🚫 A dependency typed too wide, which forces every consumer to re-cast the shape by hand:
+
+```typescript
+type Dependencies = {
+  // `Record<string, unknown>` is a placeholder, not a type: it discards the real
+  // state shape, so nothing downstream can be read without a cast.
+  getMetaMaskState: () => Record<string, unknown>;
+};
+
+// Reading a field requires re-declaring its shape at the use site …
+const { tokensChainsCache } = getMetaMaskState() as {
+  tokensChainsCache?: Record<string, { data?: Record<string, unknown> }>;
+};
+
+// … and passing the state to a typed selector requires an `as never` to force
+// the mismatch through:
+getTokensControllerAllTokens({ metamask: getMetaMaskState() } as never);
+```
+
+✅ Type the dependency from the authoritative controller state; the field is then derivable and the selector type-checks, with no casts:
+
+```typescript
+import type { TokenListState } from '@metamask/assets-controllers';
+
+type Dependencies = {
+  // Composed from the controller-state types the module actually reads.
+  getMetaMaskState: () => TokenListState /* & …other controller state… */;
+};
+
+const { tokensChainsCache } = getMetaMaskState(); // typed; no cast
+```
+
+The `Record<string, unknown>` did not save work — it moved the work downstream into a cast at every use site, including an `as never` that silently defeats the selector's parameter type. Deriving the dependency from the authoritative state removes both.
+
 ### Type Annotations
 
 An explicit type annotation may be used to override an inferred type if:
