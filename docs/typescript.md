@@ -132,34 +132,41 @@ When a type already exists at an authoritative source — a controller's state t
 
 Define a fresh type only when no authoritative source exists — a genuinely new shape at a boundary the code owns. Before defining, look for the source: the type is often already exported from the `@metamask/*` package the value comes from.
 
-🚫 Re-declare a slice of an existing controller state type
+**Example <a id="example-5f6f1503-1ce6-432f-8d38-61d0f44a03ce"></a> ([🔗 permalink](#example-5f6f1503-1ce6-432f-8d38-61d0f44a03ce)):**
+
+🚫 A dependency typed too wide, which forces every consumer to re-cast the shape by hand:
 
 ```typescript
-// Restates part of NetworkController state: all-optional (wider than the real,
-// required field), keyed by `string` instead of `Hex`, and unlinked from the
-// source — so it drifts silently when the controller's shape changes.
-type NetworkControllerState = {
-  networkConfigurationsByChainId?: Record<
-    string,
-    {
-      defaultRpcEndpointIndex?: number;
-      rpcEndpoints?: { networkClientId?: string }[];
-    }
-  >;
+type Dependencies = {
+  // `Record<string, unknown>` is a placeholder, not a type: it discards the real
+  // state shape, so nothing downstream can be read without a cast.
+  getMetaMaskState: () => Record<string, unknown>;
 };
+
+// Reading a field requires re-declaring its shape at the use site …
+const { tokensChainsCache } = getMetaMaskState() as {
+  tokensChainsCache?: Record<string, { data?: Record<string, unknown> }>;
+};
+
+// … and passing the state to a typed selector requires an `as never` to force
+// the mismatch through:
+getTokensControllerAllTokens({ metamask: getMetaMaskState() } as never);
 ```
 
-✅ Derive the slice from the authoritative exported type
+✅ Type the dependency from the authoritative controller state; the field is then derivable and the selector type-checks, with no casts:
 
 ```typescript
-import type { NetworkState } from '@metamask/network-controller';
+import type { TokenListState } from '@metamask/assets-controllers';
 
-// Tracks NetworkController's real shape (`Record<Hex, NetworkConfiguration>`)
-// and narrows to just the field in use.
-type NetworkConfigurations = NetworkState['networkConfigurationsByChainId'];
+type Dependencies = {
+  // Composed from the controller-state types the module actually reads.
+  getMetaMaskState: () => TokenListState /* & …other controller state… */;
+};
+
+const { tokensChainsCache } = getMetaMaskState(); // typed; no cast
 ```
 
-The derived form stays correct when `NetworkController` changes `networkConfigurationsByChainId`; the hand-written copy does not, and the compiler cannot tell you it has gone stale.
+The `Record<string, unknown>` did not save work — it moved the work downstream into a cast at every use site, including an `as never` that silently defeats the selector's parameter type. Deriving the dependency from the authoritative state removes both.
 
 ### Type Annotations
 
