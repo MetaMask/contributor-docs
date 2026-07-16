@@ -122,6 +122,45 @@ const updatedTransactionMeta = {
 };
 ```
 
+#### Derive types from authoritative sources instead of re-declaring them
+
+When a type already exists at an authoritative source — a controller's state type, a function's return, a package's exported type, a schema — reference and **derive** from it rather than hand-writing a fresh type that restates its shape. This is the type-level counterpart to preferring inference: indexed access (`State['field']`), `typeof`, `ReturnType` / `Parameters`, and utility types (`Pick` / `Omit` / `Partial`) let a derived type track its source automatically.
+
+- A hand-written type that restates an existing one **duplicates** the shape: every reader must reconcile the two, and every change has to touch both.
+- The restatement is a _guess_ at the source's shape, and the guess is almost always **wider** than the real type — it admits values the authoritative type would reject (see [Avoid unintentionally widening an inferred type with a type annotation](#avoid-unintentionally-widening-an-inferred-type-with-a-type-annotation)). Marking every field optional is the most common way this happens.
+- Because the copy is hard-coded rather than derived, it is **brittle against code drift** (see [Prefer type inference over annotations and assertions](#prefer-type-inference-over-annotations-and-assertions)): when the source evolves the copy silently goes stale, and the compiler cannot flag the divergence, so the failure surfaces at runtime rather than at build.
+
+Define a fresh type only when no authoritative source exists — a genuinely new shape at a boundary the code owns. Before defining, look for the source: the type is often already exported from the `@metamask/*` package the value comes from.
+
+🚫 Re-declare a slice of an existing controller state type
+
+```typescript
+// Restates part of NetworkController state: all-optional (wider than the real,
+// required field), keyed by `string` instead of `Hex`, and unlinked from the
+// source — so it drifts silently when the controller's shape changes.
+type NetworkControllerState = {
+  networkConfigurationsByChainId?: Record<
+    string,
+    {
+      defaultRpcEndpointIndex?: number;
+      rpcEndpoints?: { networkClientId?: string }[];
+    }
+  >;
+};
+```
+
+✅ Derive the slice from the authoritative exported type
+
+```typescript
+import type { NetworkState } from '@metamask/network-controller';
+
+// Tracks NetworkController's real shape (`Record<Hex, NetworkConfiguration>`)
+// and narrows to just the field in use.
+type NetworkConfigurations = NetworkState['networkConfigurationsByChainId'];
+```
+
+The derived form stays correct when `NetworkController` changes `networkConfigurationsByChainId`; the hand-written copy does not, and the compiler cannot tell you it has gone stale.
+
 ### Type Annotations
 
 An explicit type annotation may be used to override an inferred type if:
