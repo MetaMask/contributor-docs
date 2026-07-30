@@ -128,7 +128,9 @@ When a type already exists at an authoritative source — a controller's state t
 
 - A hand-written type that restates an existing one **duplicates** the shape: every reader must reconcile the two, and every change has to touch both.
 - The restatement is a _guess_ at the source's shape, and the guess is almost always **wider** than the real type — it admits values the authoritative type would reject (see [Avoid unintentionally widening an inferred type with a type annotation](#avoid-unintentionally-widening-an-inferred-type-with-a-type-annotation)). Marking every field optional is the most common way this happens.
+- Where the guess is _narrower_ than the source, it is usually because a **`| undefined` was dropped**. This reads as tidying, but it erases the compiler's record of why a runtime guard exists: with the nullable case now unrepresentable, the guard looks dead and tends to be deleted in the same edit — and nothing is reported, because the restated type no longer admits the case the guard handled.
 - Because the copy is hard-coded rather than derived, it is **brittle against code drift** (see [Prefer type inference over annotations and assertions](#prefer-type-inference-over-annotations-and-assertions)): when the source evolves the copy silently goes stale, and the compiler cannot flag the divergence, so the failure surfaces at runtime rather than at build.
+- The risk is highest where the compiler **cannot** contradict the guess. When the caller is still JavaScript (`checkJs` is off in our repos) or the value arrives as `any`, a hand-written parameter type is checked against nothing and no error will ever fire, however far it drifts. These are the boundaries — and partially-migrated modules are full of them — where deriving is worth insisting on in review.
 
 Define a fresh type only when no authoritative source exists — a genuinely new shape at a boundary the code owns. Before defining, look for the source: the type is often already exported from the `@metamask/*` package the value comes from.
 
@@ -167,6 +169,49 @@ const { tokensChainsCache } = getMetaMaskState(); // typed; no cast
 ```
 
 The `Record<string, unknown>` did not save work — it moved the work downstream into a cast at every use site, including an `as never` that silently defeats the selector's parameter type. Deriving the dependency from the authoritative state removes both.
+
+**Example <a id="example-7c098526-f485-4e74-bdab-bfefcfdc5583"></a> ([🔗 permalink](#example-7c098526-f485-4e74-bdab-bfefcfdc5583)):**
+
+A restated type that drops a `| undefined`, in a module whose caller is still JavaScript.
+
+🚫 The parameter is re-declared, losing the nullability the call site itself documents — so the default that handled the nullable case now looks dead:
+
+```typescript
+// caller.js — still JavaScript, so nothing below is type-checked against the callee
+/** @type {import('./store').StorageShape | undefined} */
+let versionedData;
+reportStructure(versionedData);
+```
+
+```typescript
+// The conversion restates the parameter and drops `| undefined` …
+export function reportStructure(obj: Record<string, unknown>) {
+  return deepMap(cloneDeep(obj), describe);
+}
+
+// … and because the nullable case is no longer representable, the default that
+// existed for it reads as dead code and is removed in the same edit:
+function deepMap(target: Record<string, unknown>, visit: Visitor) {
+  // was: function deepMap(target = {}, visit) { … }
+  Object.entries(target).forEach(/* … */); // throws if `target` is undefined
+}
+```
+
+✅ Derive the parameter from the source the caller already names; the guard is then visibly still load-bearing:
+
+```typescript
+import type { StorageShape } from './store';
+
+export function reportStructure(obj: StorageShape | undefined) {
+  return deepMap(cloneDeep(obj), describe);
+}
+
+function deepMap(target: Record<string, unknown> = {}, visit: Visitor) {
+  Object.entries(target).forEach(/* … */);
+}
+```
+
+Nothing failed at build time in the 🚫 version, and nothing would: the caller is JavaScript, so `tsc` never compares the argument against the parameter. Deriving the type is what gives the compiler the standing to object at all.
 
 ### Type Annotations
 
@@ -689,6 +734,7 @@ To prevent `any` instances from being introduced into the codebase, it is not en
   - The suppressed errors still affect the code, but `any` makes it impossible to assess and counteract their influence.
   - `any` has the same effect as going through the entire codebase to apply `@ts-ignore` to every single instance of the target variable or type.
   - Much like type assertions, code with `any` usage becomes brittle against changes, since the compiler is unable to update its feedback even if the suppressed error has been altered, or entirely new type errors have been added.
+
   <!-- TODO: Add example -->
 
 - `any` subsumes all other types it comes into contact with. Any type that is in a union, intersection, is a property of, or has any other relationship with an `any` type or value becomes an `any` type itself. This represents an unmitigated loss of type information.
