@@ -1166,12 +1166,12 @@ Enabling composed selectors to accept different, even disjoint state types resol
 
 Converting a file to TypeScript is a type-level edit. It may add annotations, rename the file, and replace JSDoc — it may not change what the program does.
 
-When a conversion diff also changes a runtime value, that change is usually the conversion working _around_ a type error rather than fixing one. This matters more than the size of the change suggests: a PR described as mechanical, rename-only, or "no behavior change" is reviewed more lightly than a behavior change would be, so a runtime edit smuggled in as typing work gets the least scrutiny of anything in the diff.
+When a conversion diff also changes a runtime value, check whether the change is the conversion working _around_ a type error rather than fixing one. This matters more than the size of the change suggests: a PR described as mechanical, rename-only, or "no behavior change" is reviewed more lightly than a behavior change would be, so a runtime edit smuggled in as typing work gets the least scrutiny of anything in the diff.
 
 Four patterns to look for, all of which read as typing work:
 
 - **A literal replaced by a runtime lookup.** `['IFRAME_SCRIPTING']` becoming `[SomeApi.Reason.IFRAME_SCRIPTING]` adds a dependency on that object existing at runtime. Read the declaration before "fixing" the type: many platform-API parameters are template-literal string types (`` `${SomeEnum}`[] ``), which accept the plain literal already, so the swap buys nothing and costs a runtime assumption.
-- **A default parameter or fallback deleted.** `function f(x = {})` becoming `function f(x: T)` removes a guard. Ask what the guard was _for_ — usually the `| undefined` the new type just dropped (see [Derive types from authoritative sources instead of re-declaring them](#derive-types-from-authoritative-sources-instead-of-re-declaring-them)).
+- **A default parameter or fallback deleted.** `function f(x = {})` becoming `function f(x: T)` removes a guard. Ask what the guard was _for_ — a `| undefined` dropped by the new type is one answer worth checking first (see [Derive types from authoritative sources instead of re-declaring them](#derive-types-from-authoritative-sources-instead-of-re-declaring-them)).
 - **A call made optional.** `obj.method()` becoming `obj.method?.()` to satisfy a hand-written `| undefined` converts a **throw into a silent no-op**. The loud failure was load-bearing; the same broken state now produces no signal at all.
 - **A local widened to keep a check alive.** Annotating `let name: string | undefined` on a value the authoritative type calls `string`, so that an existing `=== undefined` branch still compiles. If the runtime check is genuinely needed, the _input_ type is wrong — widen that deliberately instead of widening downstream to match.
 
