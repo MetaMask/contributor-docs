@@ -1159,3 +1159,71 @@ Enabling composed selectors to accept different, even disjoint state types resol
 > Following this guideline does not affect selector memoization. When background state updates are dispatched to the Redux store, the Redux state object is shallow copied. This does not mutate the references of nested composite data structures, which makes cache invalidation a non-concern.
 >
 > The only exception to this is an idempotent selector that returns the entire Redux state (e.g. `(state: RootState) => state`). This pattern should be avoided if possible, as it will cause a performance hit to any downstream selector.
+
+## Migrating JavaScript to TypeScript
+
+### A typing change should not change runtime behavior
+
+Converting a file to TypeScript is a type-level edit. It may add annotations, rename the file, and replace JSDoc — it may not change what the program does.
+
+When a conversion diff also changes a runtime value, check whether the change is the conversion working _around_ a type error rather than fixing one. This matters more than the size of the change suggests: a PR described as mechanical, rename-only, or "no behavior change" is reviewed more lightly than a behavior change would be, so a runtime edit smuggled in as typing work gets the least scrutiny of anything in the diff.
+
+Four patterns to look for, all of which read as typing work:
+
+- **A literal replaced by a runtime lookup.** `['IFRAME_SCRIPTING']` becoming `[SomeApi.Reason.IFRAME_SCRIPTING]` adds a dependency on that object existing at runtime. Read the declaration before "fixing" the type: many platform-API parameters are template-literal string types (`` `${SomeEnum}`[] ``), which accept the plain literal already, so the swap buys nothing and costs a runtime assumption.
+- **A default parameter or fallback deleted.** `function f(x = {})` becoming `function f(x: T)` removes a guard. Ask what the guard was _for_ — a `| undefined` dropped by the new type is one answer worth checking first (see [Derive types from authoritative sources instead of re-declaring them](#derive-types-from-authoritative-sources-instead-of-re-declaring-them)).
+- **A call made optional.** `obj.method()` becoming `obj.method?.()` to satisfy a hand-written `| undefined` converts a **throw into a silent no-op**. The loud failure was load-bearing; the same broken state now produces no signal at all.
+- **A local widened to keep a check alive.** Annotating `let name: string | undefined` on a value the authoritative type calls `string`, so that an existing `=== undefined` branch still compiles. If the runtime check is genuinely needed, the _input_ type is wrong — widen that deliberately instead of widening downstream to match.
+- **A thrown error replaced with a different one.** Narrowing a possibly-undefined value by guarding it and throwing a hand-written `Error` swaps the native failure for a synthetic one. Both still reach the error tracker, but type, message, and originating frame are the fingerprint it groups on — so the substitute opens a fresh issue with no history, and any ignore rule, sampling rule, alert condition, or ownership routing written against the old shape stops matching. Prefer a form that leaves the original failure intact; if a custom error is genuinely wanted, use a named class and rethrow with `cause` so the original survives.
+
+For each one, establish whether it is reachable and say so either way. "Traced, and inert on today's call paths" is a useful review outcome; "this might be a bug" is not.
+
+#### Weigh a conversion's risk by observability, not just likelihood
+
+Ask where a newly introduced failure would _surface_. A change inside `try { … } catch (e) { captureException(e); return; }` degrades a feature without crashing: nothing goes red, no test fails, and the only signal is an error-tracker entry nobody is watching. The same edit in a hot path is caught in minutes.
+
+So an unlikely failure in a swallowed path can outrank a likely one in a loud path — the cost of being wrong includes how long it takes to find out.
+
+**Example <a id="example-63f43d96-a73e-4259-b4bb-1c4833368bf5"></a> ([🔗 permalink](#example-63f43d96-a73e-4259-b4bb-1c4833368bf5)):**
+
+🚫 A conversion replaces two string literals with runtime enum lookups, and adds a cast, to satisfy types that never required any of it:
+
+```typescript
+const contexts = (await chrome.runtime.getContexts({
+  contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
+})) as chrome.runtime.ExtensionContext[];
+
+await chrome.offscreen.createDocument({
+  url: './offscreen.html',
+  reasons: [chrome.offscreen.Reason.IFRAME_SCRIPTING],
+  justification: '…',
+});
+```
+
+The declarations these lines are checked against are template-literal _string_ types, and `getContexts` already returns the cast-to type:
+
+```typescript
+interface ContextFilter {
+  contextTypes?: `${ContextType}`[] | undefined;
+}
+interface CreateParameters {
+  reasons: `${Reason}`[];
+}
+function getContexts(filter: ContextFilter): Promise<ExtensionContext[]>;
+```
+
+✅ The original literals type-check unchanged, and the cast is redundant:
+
+```typescript
+const contexts = await chrome.runtime.getContexts({
+  contextTypes: ['OFFSCREEN_DOCUMENT'],
+});
+
+await chrome.offscreen.createDocument({
+  url: './offscreen.html',
+  reasons: ['IFRAME_SCRIPTING'],
+  justification: '…',
+});
+```
+
+The 🚫 version is not wrong today — the enum objects do exist at runtime. But it converts two constants into an assumption about the host environment, in a function whose failure path is a swallowed `captureException`, in exchange for nothing the compiler asked for.
